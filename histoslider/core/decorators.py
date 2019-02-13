@@ -1,6 +1,8 @@
 import traceback
 from functools import wraps
 
+from histoslider.core.helpers import report_error
+
 
 def _make_key(args, kwargs):
     return args, frozenset(kwargs.items())
@@ -93,6 +95,6 @@ def catch_error(msg):
                 m = "%s\n%s" % (msg, str(e))
                 detail = str(traceback.format_exc())
                 self = args[0]
-                self.report_error(m, detail)
+                report_error(m, detail)
         return wrapper
     return decorator

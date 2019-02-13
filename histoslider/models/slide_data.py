@@ -1,6 +1,6 @@
 from PyQt5.QtGui import QIcon
 
-from histoslider.image.helpers import SlideType
+from histoslider.image.slide_type import SlideType
 from histoslider.models.acquisition_data import AcquisitionData
 from histoslider.models.base_data import BaseData
 

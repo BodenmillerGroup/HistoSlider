@@ -4,18 +4,14 @@ from pyqtgraph import ImageItem
 
 
 class GreyImageItem(ImageItem):
-    def __init__(self, image=None, filename=None, **kargs):
-        ImageItem.__init__(self, image, **kargs)
+    def __init__(self):
+        ImageItem.__init__(self)
         self.setPxMode(False)
         self.setAutoDownsample(False)
-        self.image = image
 
-        if filename is not None:
-            self.load_image(filename)
-
-    def load_image(self, filename: str):
+    def load_image(self, filename: str, RGB=True):
         img = Image.open(filename)
         self.image = np.asarray(img, dtype=np.float32).T
 
-    def attach_image(self, img):
+    def attach_image(self, img, RGB=True):
         self.image = np.asarray(img, dtype=np.float32).T

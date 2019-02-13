@@ -1,21 +1,21 @@
-import imctools.io.mcdparser as mcdparser
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QMouseEvent, QPaintEvent, QWheelEvent
-from PyQt5.QtWidgets import QGraphicsView, QWidget, QMenu, QAction
+from PyQt5.QtWidgets import QGraphicsView, QWidget
+import pyqtgraph as pg
+import numpy as np
 
 from histoslider.core.hub_listener import HubListener
-from histoslider.core.message import TreeViewCurrentItemChangedMessage
-from histoslider.image.helpers import SlideType
+from histoslider.core.message import TreeViewCurrentItemChangedMessage, SlideRemovedMessage
 from histoslider.image.image_item import ImageItem
-from histoslider.image.slide_item import SlideItem
 from histoslider.image.slide_scene import SlideScene
+from histoslider.image.slide_type import SlideType
 from histoslider.models.channel_data import ChannelData
 from histoslider.models.data_manager import DataManager
 from histoslider.models.slide_data import SlideData
 
 
 class SlideView(QGraphicsView, HubListener):
-    def __init__(self, parent: QWidget, histogram):
+    def __init__(self, parent: QWidget, histogram: pg.HistogramLUTWidget):
         scene = SlideScene()
         QGraphicsView.__init__(self, scene, parent)
         HubListener.__init__(self)
@@ -27,30 +27,36 @@ class SlideView(QGraphicsView, HubListener):
 
     def register_to_hub(self, hub):
         hub.subscribe(self, TreeViewCurrentItemChangedMessage, self._on_current_item_changed)
+        hub.subscribe(self, SlideRemovedMessage, self._on_slide_removed)
+
+    def _on_slide_removed(self, message: SlideRemovedMessage):
+        self.scene().clear()
+        self.histogram.setImageItem(pg.ImageItem(np.zeros()))
+        self.histogram.autoHistogramRange()
 
     def _on_current_item_changed(self, message: TreeViewCurrentItemChangedMessage):
-        success = False
+        loaded = False
         if isinstance(message.item, SlideData):
             slide_data: SlideData = message.item
             if slide_data.slide_type == SlideType.TIFF:
                 self.graphItem = ImageItem()
-                success = self.graphItem.loadImage(slide_data.path, True)
+                self.graphItem.loadImage(slide_data.path, True)
+                loaded = True
         elif isinstance(message.item, ChannelData):
             channel_data: ChannelData = message.item
-            with mcdparser.McdParser(channel_data.slide.path) as mcd:
-                acq = mcd.get_imc_acquisition(channel_data.acquisition.name, channel_data.acquisition.description)
-                img = acq.get_img_by_label(channel_data.label)
-                self.scene().clear()
-                self.graphItem = SlideItem()
-                success = self.graphItem.attachImage(img, False)
+            self.graphItem = ImageItem()
+            self.graphItem.attachImage(channel_data.img, False)
+            loaded = True
 
-        if success:
+        if loaded:
             self.scene().dirty = True
+            self.scene().clear()
             self.scene().addItem(self.graphItem)
             self.scene().setSceneRect(self.graphItem.boundingRect())
             self.histogram.setImageItem(self.graphItem.image_item)
             self.histogram.autoHistogramRange()
             self.showImage(self.downsample)
+            self.scene().dirty = False
 
     def showImage(self, downsample: float):
         if self.scene().width() == 0:

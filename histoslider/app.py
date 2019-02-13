@@ -1,6 +1,6 @@
 from PyQt5.QtCore import QFile, QTextStream
 from PyQt5.QtGui import QIcon, QPixmapCache
-from PyQt5.QtWidgets import QApplication, QMessageBox
+from PyQt5.QtWidgets import QApplication
 
 
 class App(QApplication):
@@ -18,17 +18,3 @@ class App(QApplication):
         f.open(QFile.ReadOnly | QFile.Text)
         self.setStyleSheet(QTextStream(f).readAll())
         f.close()
-
-    def report_error(self, message: str, detail: str):
-        """
-        Display an error in a modal
-
-        :param message: A short description of the error
-        :type message: str
-        :param detail: A longer description
-        :type detail: str
-        """
-        qmb = QMessageBox(QMessageBox.Critical, "Error", message)
-        qmb.setDetailedText(detail)
-        qmb.resize(400, qmb.size().height())
-        qmb.exec_()

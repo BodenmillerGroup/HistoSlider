@@ -17,6 +17,7 @@ from histoslider.core.decorators import catch_error
 from histoslider.core.message import TreeViewCurrentItemChangedMessage, SlideRemovedMessage, SlideImportedMessage
 from histoslider.image.mcd_loader import McdLoader
 from histoslider.image.slide_view import SlideView
+from histoslider.image.slide_image_view import SlideImageView
 from histoslider.image.tiff_loader import TiffLoader
 from histoslider.models.data_manager import DataManager
 from histoslider.ui.main_window_ui import Ui_MainWindow
@@ -25,10 +26,9 @@ from histoslider.ui.main_window_ui import Ui_MainWindow
 class MainWindow(QMainWindow, Ui_MainWindow):
     """Main Window."""
 
-    def __init__(self, report_error_callback):
+    def __init__(self):
         QMainWindow.__init__(self)
         self.setupUi(self)
-        self.report_error = report_error_callback
 
         self.process = psutil.Process(os.getpid())
         self.setAttribute(Qt.WA_DeleteOnClose)
@@ -45,9 +45,9 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.treeViewOverview.selectionModel().selectionChanged.connect(self._treeview_selection_changed)
         self.treeViewOverview.selectionModel().currentChanged.connect(self._treeview_current_changed)
 
-        self.histogram = HistogramLUTWidget(self)
-        self.viewer = SlideView(self, self.histogram)
-        self.verticalLayoutSettings.addWidget(self.histogram)
+        self.viewer = SlideImageView(self)
+        # self.histogram = HistogramLUTWidget(self)
+        # self.verticalLayoutSettings.addWidget(self.histogram)
 
         self.tabWidget.addTab(self.viewer, "Blend")
 

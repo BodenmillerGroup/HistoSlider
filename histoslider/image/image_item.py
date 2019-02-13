@@ -2,43 +2,32 @@ from PyQt5.QtCore import QRectF
 from PyQt5.QtGui import QPainter
 from PyQt5.QtWidgets import QGraphicsItem, QStyleOptionGraphicsItem, QWidget
 
+from histoslider.core.decorators import catch_error
 from histoslider.image.grey_image_item import GreyImageItem
 
 
 class ImageItem(QGraphicsItem):
     def __init__(self, parent: QGraphicsItem = None):
         QGraphicsItem.__init__(self, parent)
-        self.image_item = GreyImageItem(parent=self)
+        self.image_item = GreyImageItem()
 
-    def loadImage(self, file, RGB: bool = False):
+    @catch_error('Cannot load the image')
+    def loadImage(self, filename: str, RGB=True):
         """
         :param file: get_filename or PIL object to be loaded
         :return bool: success of loading
         """
-        # load the image
-        try:
-            self.image_item.load_image(filename=file)
-            self.prepareGeometryChange()
-        except Exception as e:
-            print(e)
-            return False
+        self.image_item.load_image(filename, RGB)
+        self.prepareGeometryChange()
 
-        return True
-
+    @catch_error('Cannot attach the image')
     def attachImage(self, img, RGB=True):
         """
         :param file: get_filename or PIL object to be loaded
         :return bool: success of loading
         """
-        # load the image
-        try:
-            self.image_item.attach_image(img, RGB)
-            self.prepareGeometryChange()
-        except Exception as e:
-            print(e)
-            return False
-
-        return True
+        self.image_item.attach_image(img, RGB)
+        self.prepareGeometryChange()
 
     def boundingRect(self):
         if self.image_item.image is not None:

@@ -7,7 +7,7 @@ from histoslider.ui.main_window import MainWindow
 def main():
     app = App(sys.argv)
 
-    mw = MainWindow(app.report_error)
+    mw = MainWindow()
     mw.show()
 
     sys.exit(app.exec_())

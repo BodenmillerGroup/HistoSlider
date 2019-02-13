@@ -1,6 +1,6 @@
 import os
 
-from histoslider.image.helpers import SlideType
+from histoslider.image.slide_type import SlideType
 from histoslider.models.slide_data import SlideData
 
 
