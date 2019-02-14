@@ -12,12 +12,7 @@ class SlideImageItem(ImageItem):
     def load_image(self, filename: str, RGB=True):
         img = Image.open(filename)
         data = np.asarray(img, dtype=np.float32)
-        if len(data.shape) > 2:
-            data = data.transpose([1, 0, 2])
-        else:
-            data = data.T
         self.setImage(data)
 
     def attach_image(self, img, RGB=True):
-        # data = np.asarray(img, dtype=np.float32).T
         self.setImage(img)

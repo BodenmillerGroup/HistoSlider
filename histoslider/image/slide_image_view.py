@@ -9,16 +9,6 @@ from histoslider.models.channel_data import ChannelData
 from histoslider.models.data_manager import DataManager
 from histoslider.models.slide_data import SlideData
 
-# Global PyQtGraph settings
-setConfigOptions(
-    foreground="d",
-    background="w",
-    leftButtonPan=True,
-    antialias=False,
-    useOpenGL=False,
-    useWeave=False
-)
-
 
 class SlideImageView(ImageView, HubListener):
     def __init__(self, parent: QWidget):
