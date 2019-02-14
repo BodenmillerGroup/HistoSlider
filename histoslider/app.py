@@ -2,6 +2,8 @@ from PyQt5.QtCore import QFile, QTextStream
 from PyQt5.QtGui import QIcon, QPixmapCache
 from PyQt5.QtWidgets import QApplication
 
+from histoslider.models.data_manager import DataManager
+
 
 class App(QApplication):
     def __init__(self, args):
@@ -18,3 +20,6 @@ class App(QApplication):
         f.open(QFile.ReadOnly | QFile.Text)
         self.setStyleSheet(QTextStream(f).readAll())
         f.close()
+
+        # DataManager singleton initialization
+        DataManager()

@@ -1,5 +1,6 @@
 from functools import partial
 
+import gc
 from PyQt5.QtCore import Qt, QModelIndex, QItemSelection
 from PyQt5.QtGui import QPixmapCache
 from PyQt5.QtWidgets import QTreeView, QWidget, QAbstractItemView, QMenu, QAction
@@ -50,6 +51,7 @@ class WorkspaceTreeView(QTreeView):
         DataManager.workspace_model.endResetModel()
         DataManager.hub.broadcast(SlideRemovedMessage(self))
         QPixmapCache.clear()
+        gc.collect()
 
     def _treeview_current_changed(self, current: QModelIndex, previous: QModelIndex):
         if current.isValid():

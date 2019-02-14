@@ -25,12 +25,14 @@ class SlideImageView(ImageView, HubListener):
         ImageView.__init__(self, parent, "SlideImageView")
         HubListener.__init__(self)
         self.register_to_hub(DataManager.hub)
+        self.getHistogramWidget().hide()
 
     def register_to_hub(self, hub):
         hub.subscribe(self, TreeViewCurrentItemChangedMessage, self._on_current_item_changed)
         hub.subscribe(self, SlideRemovedMessage, self._on_slide_removed)
 
     def _on_slide_removed(self, message: SlideRemovedMessage):
+        self.getHistogramWidget().hide()
         self.clear()
 
     def _on_current_item_changed(self, message: TreeViewCurrentItemChangedMessage):
@@ -49,3 +51,4 @@ class SlideImageView(ImageView, HubListener):
 
         if loaded:
             self.setImage(self.graphItem.image_item.image)
+            self.getHistogramWidget().show()

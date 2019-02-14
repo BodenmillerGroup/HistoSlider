@@ -19,6 +19,7 @@ class Ui_MainWindow(object):
         self.verticalLayoutCentral.setObjectName("verticalLayoutCentral")
         self.tabWidget = QtWidgets.QTabWidget(self.centralWidget)
         self.tabWidget.setDocumentMode(False)
+        self.tabWidget.setMovable(True)
         self.tabWidget.setTabBarAutoHide(False)
         self.tabWidget.setObjectName("tabWidget")
         self.verticalLayoutCentral.addWidget(self.tabWidget)

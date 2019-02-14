@@ -44,6 +44,15 @@ class TreeViewCurrentItemChangedMessage(Message):
         self.item = item
 
 
+class ShowItemChangedMessage(Message):
+
+    """ Indicates that the current slide has changed """
+
+    def __init__(self, sender, item, tag=None):
+        Message.__init__(self, sender, tag=tag)
+        self.item = item
+
+
 class SlideImportedMessage(Message):
 
     """ Indicates that the slide has been imported """

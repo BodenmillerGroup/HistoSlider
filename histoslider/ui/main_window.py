@@ -2,7 +2,7 @@ import os
 
 import psutil
 from PyQt5.QtCore import Qt, QTimer, QSettings, QByteArray
-from PyQt5.QtGui import QPixmapCache
+from PyQt5.QtGui import QPixmapCache, QIcon
 from PyQt5.QtWidgets import (
     QMainWindow,
     QFileDialog,
@@ -15,6 +15,7 @@ from histoslider.core.message import SlideImportedMessage
 from histoslider.image.mcd_loader import McdLoader
 from histoslider.image.slide_image_view import SlideImageView
 from histoslider.image.tiff_loader import TiffLoader
+from histoslider.image.tile_view import TileView
 from histoslider.models.data_manager import DataManager
 from histoslider.ui.main_window_ui import Ui_MainWindow
 from histoslider.ui.workspace_tree_view import WorkspaceTreeView
@@ -41,8 +42,10 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.verticalLayoutOverview.addWidget(self.workspace_tree_view)
 
         self.viewer = SlideImageView(self)
+        self.tile_image_view = TileView(self)
 
-        self.tabWidget.addTab(self.viewer, "Blend")
+        self.tabWidget.addTab(self.viewer, QIcon(":/icons/icons8-eukaryotic-cells-16.png"), "Blend")
+        self.tabWidget.addTab(self.tile_image_view, QIcon(":/icons/icons8-medium-icons-16.png"), "Tiles")
 
         self.actionImportSlide.triggered.connect(self.import_slide_dialog)
         self.actionOpenWorkspace.triggered.connect(self.load_workspace_dialog)
