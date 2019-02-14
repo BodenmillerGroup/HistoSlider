@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file '/home/anton/bblab/histoslider/histoslider/ui/main_window.ui'
+# Form implementation generated from reading ui file '/home/anton/bblab/HistoSlider/histoslider/ui/main_window.ui'
 #
 # Created by: PyQt5 UI code generator 5.12
 #
@@ -43,12 +43,6 @@ class Ui_MainWindow(object):
         self.dockWidgetContentsOverview.setObjectName("dockWidgetContentsOverview")
         self.verticalLayoutOverview = QtWidgets.QVBoxLayout(self.dockWidgetContentsOverview)
         self.verticalLayoutOverview.setObjectName("verticalLayoutOverview")
-        self.treeViewOverview = QtWidgets.QTreeView(self.dockWidgetContentsOverview)
-        self.treeViewOverview.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
-        self.treeViewOverview.setSelectionMode(QtWidgets.QAbstractItemView.SingleSelection)
-        self.treeViewOverview.setSelectionBehavior(QtWidgets.QAbstractItemView.SelectItems)
-        self.treeViewOverview.setObjectName("treeViewOverview")
-        self.verticalLayoutOverview.addWidget(self.treeViewOverview)
         self.dockWidgetOverview.setWidget(self.dockWidgetContentsOverview)
         MainWindow.addDockWidget(QtCore.Qt.DockWidgetArea(1), self.dockWidgetOverview)
         self.dockWidgetSettings = QtWidgets.QDockWidget(MainWindow)

@@ -1,26 +1,23 @@
 import os
-from functools import partial
 
 import psutil
-from PyQt5.QtCore import Qt, QTimer, QModelIndex, QSettings, QByteArray, QItemSelection
+from PyQt5.QtCore import Qt, QTimer, QSettings, QByteArray
 from PyQt5.QtGui import QPixmapCache
 from PyQt5.QtWidgets import (
     QMainWindow,
     QFileDialog,
     QLabel,
     QApplication,
-    QMenu,
-    QAction, QDialog)
-from pyqtgraph import HistogramLUTWidget
+    QDialog)
 
 from histoslider.core.decorators import catch_error
-from histoslider.core.message import TreeViewCurrentItemChangedMessage, SlideRemovedMessage, SlideImportedMessage
+from histoslider.core.message import SlideImportedMessage
 from histoslider.image.mcd_loader import McdLoader
-from histoslider.image.slide_view import SlideView
 from histoslider.image.slide_image_view import SlideImageView
 from histoslider.image.tiff_loader import TiffLoader
 from histoslider.models.data_manager import DataManager
 from histoslider.ui.main_window_ui import Ui_MainWindow
+from histoslider.ui.workspace_tree_view import WorkspaceTreeView
 
 
 class MainWindow(QMainWindow, Ui_MainWindow):
@@ -40,14 +37,10 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.memory_usage_label = QLabel()
         self.statusBar.addPermanentWidget(self.memory_usage_label)
 
-        self.treeViewOverview.setModel(DataManager.workspace_model)
-        self.treeViewOverview.customContextMenuRequested.connect(self.open_menu)
-        self.treeViewOverview.selectionModel().selectionChanged.connect(self._treeview_selection_changed)
-        self.treeViewOverview.selectionModel().currentChanged.connect(self._treeview_current_changed)
+        self.workspace_tree_view = WorkspaceTreeView(self.dockWidgetContentsOverview)
+        self.verticalLayoutOverview.addWidget(self.workspace_tree_view)
 
         self.viewer = SlideImageView(self)
-        # self.histogram = HistogramLUTWidget(self)
-        # self.verticalLayoutSettings.addWidget(self.histogram)
 
         self.tabWidget.addTab(self.viewer, "Blend")
 
@@ -57,14 +50,6 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.actionExit.triggered.connect(lambda: QApplication.exit())
 
         self.load_settings()
-
-    def _treeview_current_changed(self, current: QModelIndex, previous: QModelIndex):
-        if current.isValid():
-            item = current.model().getItem(current)
-            DataManager.hub.broadcast(TreeViewCurrentItemChangedMessage(self, item))
-
-    def _treeview_selection_changed(self, selected: QItemSelection, deselected: QItemSelection):
-        indexes = selected.indexes()
 
     def load_settings(self):
         settings = QSettings()
@@ -99,30 +84,6 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         if dialog.exec() == QDialog.Accepted:
             DataManager.save_workspace(dialog.selectedFiles()[0])
 
-    def open_menu(self, position):
-        indexes = self.treeViewOverview.selectedIndexes()
-
-        level = None
-        if len(indexes) > 0:
-            level = 0
-            index = indexes[0]
-            while index.parent().isValid():
-                index = index.parent()
-                level += 1
-
-        menu = QMenu(self.treeViewOverview)
-
-        if level == 1:
-            action = QAction("Delete slide", menu)
-            action.triggered.connect(partial(self.delete_slide, indexes))
-            menu.addAction(action)
-        elif level == 2:
-            menu.addAction("Edit object/container")
-        elif level == 3:
-            menu.addAction("Edit object")
-
-        menu.exec_(self.treeViewOverview.viewport().mapToGlobal(position))
-
     def update_memory_usage(self):
         # return the memory usage in MB
         mem = self.process.memory_info()[0] / float(2 ** 20)
@@ -145,14 +106,6 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         DataManager.workspace_model.endResetModel()
         QPixmapCache.clear()
         DataManager.hub.broadcast(SlideImportedMessage(self))
-
-    def delete_slide(self, indexes: [QModelIndex]):
-        DataManager.workspace_model.beginResetModel()
-        for index in indexes:
-            DataManager.workspace_model.removeRow(index.row(), parent=index.parent())
-        DataManager.workspace_model.endResetModel()
-        QPixmapCache.clear()
-        DataManager.hub.broadcast(SlideRemovedMessage(self))
 
     def import_slide_dialog(self):
         options = QFileDialog.Options()
