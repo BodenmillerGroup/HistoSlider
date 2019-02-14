@@ -9,6 +9,7 @@ from PyQt5.QtWidgets import (
     QLabel,
     QApplication,
     QDialog)
+from pyqtgraph import BusyCursor
 
 from histoslider.core.decorators import catch_error
 from histoslider.core.message import SlideImportedMessage
@@ -94,21 +95,22 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
     @catch_error("Could not import slide")
     def import_slide(self, file_path: str):
-        filename, file_extension = os.path.splitext(file_path)
-        if file_extension == '.mcd':
-            loader = McdLoader(file_path)
-            slide = loader.load()
-        elif file_extension == '.tiff' or file_extension == '.tif':
-            loader = TiffLoader(file_path)
-            slide = loader.load()
-        else:
-            loader = TiffLoader(file_path)
-            slide = loader.load()
-        DataManager.workspace_model.beginResetModel()
-        DataManager.workspace_model.workspace_data.add_slide(slide)
-        DataManager.workspace_model.endResetModel()
-        QPixmapCache.clear()
-        DataManager.hub.broadcast(SlideImportedMessage(self))
+        with BusyCursor():
+            filename, file_extension = os.path.splitext(file_path)
+            if file_extension == '.mcd':
+                loader = McdLoader(file_path)
+                slide = loader.load()
+            elif file_extension == '.tiff' or file_extension == '.tif':
+                loader = TiffLoader(file_path)
+                slide = loader.load()
+            else:
+                loader = TiffLoader(file_path)
+                slide = loader.load()
+            DataManager.workspace_model.beginResetModel()
+            DataManager.workspace_model.workspace_data.add_slide(slide)
+            DataManager.workspace_model.endResetModel()
+            QPixmapCache.clear()
+            DataManager.hub.broadcast(SlideImportedMessage(self))
 
     def import_slide_dialog(self):
         options = QFileDialog.Options()

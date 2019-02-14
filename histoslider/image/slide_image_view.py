@@ -3,7 +3,7 @@ from pyqtgraph import ImageView, setConfigOptions
 
 from histoslider.core.hub_listener import HubListener
 from histoslider.core.message import TreeViewCurrentItemChangedMessage, SlideRemovedMessage
-from histoslider.image.image_item import ImageItem
+from histoslider.image.slide_graphics_item import SlideGraphicsItem
 from histoslider.image.slide_type import SlideType
 from histoslider.models.channel_data import ChannelData
 from histoslider.models.data_manager import DataManager
@@ -37,18 +37,17 @@ class SlideImageView(ImageView, HubListener):
 
     def _on_current_item_changed(self, message: TreeViewCurrentItemChangedMessage):
         loaded = False
+        slide_graphics_item = SlideGraphicsItem()
         if isinstance(message.item, SlideData):
             slide_data: SlideData = message.item
             if slide_data.slide_type == SlideType.TIFF:
-                self.graphItem = ImageItem()
-                self.graphItem.loadImage(slide_data.path, True)
+                slide_graphics_item.load_image(slide_data.path, True)
                 loaded = True
         elif isinstance(message.item, ChannelData):
             channel_data: ChannelData = message.item
-            self.graphItem = ImageItem()
-            self.graphItem.attachImage(channel_data.img, False)
+            slide_graphics_item.attach_image(channel_data.img, False)
             loaded = True
 
         if loaded:
-            self.setImage(self.graphItem.image_item.image)
+            self.setImage(slide_graphics_item.image_item.image)
             self.getHistogramWidget().show()

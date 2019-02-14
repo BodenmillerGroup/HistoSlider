@@ -3,7 +3,7 @@ from PIL import Image
 from pyqtgraph import ImageItem
 
 
-class GreyImageItem(ImageItem):
+class SlideImageItem(ImageItem):
     def __init__(self):
         ImageItem.__init__(self)
         self.setPxMode(False)
@@ -11,7 +11,13 @@ class GreyImageItem(ImageItem):
 
     def load_image(self, filename: str, RGB=True):
         img = Image.open(filename)
-        self.image = np.asarray(img, dtype=np.float32).T
+        data = np.asarray(img, dtype=np.float32)
+        if len(data.shape) > 2:
+            data = data.transpose([1, 0, 2])
+        else:
+            data = data.T
+        self.setImage(data)
 
     def attach_image(self, img, RGB=True):
-        self.image = np.asarray(img, dtype=np.float32).T
+        # data = np.asarray(img, dtype=np.float32).T
+        self.setImage(img)
