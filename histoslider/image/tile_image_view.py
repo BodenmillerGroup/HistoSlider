@@ -1,6 +1,6 @@
 from pyqtgraph import ViewBox, mkPen
 
-from histoslider.image.slide_graphics_item import SlideGraphicsItem
+from histoslider.image.slide_image_item import SlideImageItem
 from histoslider.image.slide_type import SlideType
 from histoslider.models.channel_data import ChannelData
 from histoslider.models.slide_data import SlideData
@@ -11,7 +11,7 @@ class TileImageView(ViewBox):
         pen = mkPen("d", width=1)
         ViewBox.__init__(self, parent, border=pen, lockAspect=True, name=item.name)
         loaded = False
-        slide_graphics_item = SlideGraphicsItem()
+        slide_graphics_item = SlideImageItem()
         if isinstance(item, SlideData):
             slide_data: SlideData = item
             if slide_data.slide_type == SlideType.TIFF:
@@ -23,4 +23,4 @@ class TileImageView(ViewBox):
             loaded = True
 
         if loaded:
-            self.addItem(slide_graphics_item.image_item)
+            self.addItem(slide_graphics_item)
