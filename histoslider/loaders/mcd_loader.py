@@ -3,9 +3,9 @@ import os
 import imctools.io.mcdparser as mcdparser
 
 from histoslider.image.slide_type import SlideType
-from histoslider.models.acquisition_data import AcquisitionData
-from histoslider.models.channel_data import ChannelData
-from histoslider.models.slide_data import SlideData
+from histoslider.models.acquisition import Acquisition
+from histoslider.models.channel import Channel
+from histoslider.models.slide import Slide
 
 
 class McdLoader:
@@ -15,14 +15,14 @@ class McdLoader:
     def load(self):
         with mcdparser.McdParser(self.file_path) as mcd:
             file_name = os.path.basename(self.file_path)
-            slide_data = SlideData(file_name, self.file_path, SlideType.MCD)
+            slide = Slide(file_name, self.file_path, SlideType.MCD)
             for id in mcd.acquisition_ids:
                 description = mcd.get_acquisition_description(id)
                 imc_ac = mcd.get_imc_acquisition(id, description)
-                acquisition_data = AcquisitionData(imc_ac.image_description, imc_ac.image_description)
-                slide_data.add_acquisition(acquisition_data)
+                acquisition = Acquisition(imc_ac.image_description, imc_ac.image_description)
+                slide.add_acquisition(acquisition)
                 for i in range(imc_ac.n_channels):
                     img = imc_ac.get_img_by_label(imc_ac.channel_labels[i])
-                    channel_data = ChannelData(imc_ac.channel_labels[i], imc_ac.channel_metals[i], imc_ac.channel_mass[i], img)
-                    acquisition_data.add_channel(channel_data)
-            return slide_data
+                    channel = Channel(imc_ac.channel_labels[i], imc_ac.channel_metals[i], imc_ac.channel_mass[i], img)
+                    acquisition.add_channel(channel)
+            return slide

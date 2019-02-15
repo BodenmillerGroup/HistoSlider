@@ -1,17 +1,19 @@
+from typing import List
+
 from PyQt5.QtGui import QIcon
 
 from histoslider.image.slide_type import SlideType
-from histoslider.models.acquisition_data import AcquisitionData
+from histoslider.models.acquisition import Acquisition
 from histoslider.models.base_data import BaseData
 
 
-class SlideData(BaseData):
+class Slide(BaseData):
     def __init__(self, name: str, path: str, slide_type: SlideType):
         super().__init__(name)
         self.path = path
         self.slide_type = slide_type
 
-    def add_acquisition(self, acquisition: AcquisitionData):
+    def add_acquisition(self, acquisition: Acquisition):
         self.addChild(acquisition)
 
     @property
@@ -21,3 +23,7 @@ class SlideData(BaseData):
     @property
     def tooltip(self):
         return "Slide"
+
+    @property
+    def acquisitions(self) -> List[Acquisition]:
+        return self._children

@@ -16,15 +16,16 @@ class BlendViewWidget(QWidget):
         self.verticalLayout.addWidget(self.toolbar)
         self.verticalLayout.addWidget(self.blend_view)
 
-    def fit_all_tiles(self):
-        pass
+    def show_scale_bar(self, state: bool):
+        self.blend_view.show_scale_bar(state)
 
     @property
     def toolbar(self) -> QToolBar:
         toolbar = QToolBar(self)
 
-        fit_all_tiles_action = QAction(QIcon(":/icons/grid.png"), "Fit All Tiles", self)
-        fit_all_tiles_action.triggered.connect(self.fit_all_tiles)
-        toolbar.addAction(fit_all_tiles_action)
+        show_scale_bar_action = QAction(QIcon(":/icons/icons8-ruler-16.png"), "Scale Bar", self)
+        show_scale_bar_action.triggered.connect(self.show_scale_bar)
+        show_scale_bar_action.setCheckable(True)
+        toolbar.addAction(show_scale_bar_action)
 
         return toolbar

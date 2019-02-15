@@ -1,17 +1,15 @@
 <RCC>
     <qresource prefix="/">
         <file>style.qss</file>
-        <file>icons/demo.svg</file>
         <file>icons/app.icns</file>
         <file>icons/app.ico</file>
-        <file>icons/app.svg</file>
         <file>icons/grid.png</file>
-        <file>icons/open.svg</file>
         <file>icons/exit.png</file>
         <file>icons/icons8-add-file-16.png</file>
         <file>icons/icons8-add-new-16.png</file>
         <file>icons/icons8-cancel.svg</file>
         <file>icons/icons8-eukaryotic-cells-16.png</file>
+        <file>icons/icons8-eukaryotic-cells-96.png</file>
         <file>icons/icons8-save-16.png</file>
         <file>icons/icons8-save-as-16.png</file>
         <file>icons/icons8-switch-16.png</file>
@@ -19,5 +17,9 @@
         <file>icons/icons8-film-roll-16.png</file>
         <file>icons/icons8-compact-camera-16.png</file>
         <file>icons/icons8-medium-icons-16.png</file>
+        <file>icons/icons8-import-16.png</file>
+        <file>icons/icons8-opened-folder-16.png</file>
+        <file>icons/icons8-about-16.png</file>
+        <file>icons/icons8-ruler-16.png</file>
     </qresource>
 </RCC>

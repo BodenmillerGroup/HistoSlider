@@ -1,7 +1,7 @@
 import os
 
 from histoslider.image.slide_type import SlideType
-from histoslider.models.slide_data import SlideData
+from histoslider.models.slide import Slide
 
 
 class TiffLoader:
@@ -10,5 +10,5 @@ class TiffLoader:
 
     def load(self):
         file_name = os.path.basename(self.file_path)
-        slide_data = SlideData(file_name, self.file_path, SlideType.TIFF)
-        return slide_data
+        slide = Slide(file_name, self.file_path, SlideType.TIFF)
+        return slide

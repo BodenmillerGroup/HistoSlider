@@ -16,9 +16,7 @@ class SlideImageItem(ImageItem):
         img = Image.open(filename)
         data = np.asarray(img, dtype=np.float32)
         self.setImage(data)
-        # self.prepareGeometryChange()
 
     @catch_error('Cannot attach the image')
     def attach_image(self, img, RGB=True):
         self.setImage(img)
-        # self.prepareGeometryChange()

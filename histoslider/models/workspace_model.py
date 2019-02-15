@@ -1,7 +1,7 @@
 from PyQt5.QtCore import QAbstractItemModel, QModelIndex, Qt, pyqtSignal
 
 from histoslider.models.base_data import BaseData
-from histoslider.models.workspace_data import WorkspaceData
+from histoslider.models.workspace import Workspace
 
 
 class WorkspaceModel(QAbstractItemModel):
@@ -10,7 +10,7 @@ class WorkspaceModel(QAbstractItemModel):
 
     def __init__(self, parent=None):
         super(WorkspaceModel, self).__init__(parent)
-        self.workspace_data = WorkspaceData("Workspace")
+        self.workspace_data = Workspace("Workspace")
 
     def rowCount(self, index: QModelIndex):
         if index.isValid():
@@ -113,7 +113,7 @@ class WorkspaceModel(QAbstractItemModel):
 
     def load_workspace(self, path: str):
         with open(path, 'r') as file:
-            self.workspace_data = WorkspaceData.from_json(file.read())
+            self.workspace_data = Workspace.from_json(file.read())
         self.workspace_data.path = path
 
     def save_workspace(self, path: str):

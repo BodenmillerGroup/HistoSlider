@@ -73,6 +73,9 @@
    <attribute name="toolBarBreak">
     <bool>false</bool>
    </attribute>
+   <addaction name="actionOpenWorkspace"/>
+   <addaction name="actionSaveWorkspace"/>
+   <addaction name="separator"/>
    <addaction name="actionImportSlide"/>
   </widget>
   <widget class="QDockWidget" name="dockWidgetOverview">
@@ -121,6 +124,10 @@
    </property>
   </action>
   <action name="actionAbout">
+   <property name="icon">
+    <iconset resource="../../resources/resources.qrc">
+     <normaloff>:/icons/icons8-about-16.png</normaloff>:/icons/icons8-about-16.png</iconset>
+   </property>
    <property name="text">
     <string>About</string>
    </property>
@@ -128,7 +135,7 @@
   <action name="actionImportSlide">
    <property name="icon">
     <iconset resource="../../resources/resources.qrc">
-     <normaloff>:/icons/open.svg</normaloff>:/icons/open.svg</iconset>
+     <normaloff>:/icons/icons8-import-16.png</normaloff>:/icons/icons8-import-16.png</iconset>
    </property>
    <property name="text">
     <string>Import Slide</string>
@@ -140,7 +147,7 @@
   <action name="actionOpenWorkspace">
    <property name="icon">
     <iconset resource="../../resources/resources.qrc">
-     <normaloff>:/icons/open.svg</normaloff>:/icons/open.svg</iconset>
+     <normaloff>:/icons/icons8-opened-folder-16.png</normaloff>:/icons/icons8-opened-folder-16.png</iconset>
    </property>
    <property name="text">
     <string>Open Workspace</string>

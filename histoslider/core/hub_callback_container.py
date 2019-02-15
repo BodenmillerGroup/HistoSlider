@@ -15,7 +15,7 @@ class HubCallbackContainer:
     """
 
     def __init__(self):
-        self.callbacks = {}
+        self.callbacks = dict()
 
     def _wrap(self, handler, filter):
         """

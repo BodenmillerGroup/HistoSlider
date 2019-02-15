@@ -23,7 +23,7 @@ class App(QApplication):
         self.setOrganizationName("UZH Zurich")
         self.setOrganizationDomain("http://www.bodenmillerlab.org")
         self.setApplicationName("HistoSlider")
-        self.setWindowIcon(QIcon(":/icons/app.svg"))
+        self.setWindowIcon(QIcon(":/icons/icons8-eukaryotic-cells-96.png"))
 
         cache_size_in_kb = 700 * 10 ** 3
         QPixmapCache.setCacheLimit(cache_size_in_kb)

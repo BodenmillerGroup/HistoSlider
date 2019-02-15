@@ -26,22 +26,24 @@ class DataManager:
         DataManager.workspace_model.show_item_changed.connect(DataManager._on_show_item_changed)
 
     @staticmethod
-    def load_workspace(path: str):
-        DataManager.workspace_model.beginResetModel()
-        DataManager.workspace_model.load_workspace(path)
-        DataManager.workspace_model.endResetModel()
+    def load_workspace(path: str) -> None:
+        with BusyCursor():
+            DataManager.workspace_model.beginResetModel()
+            DataManager.workspace_model.load_workspace(path)
+            DataManager.workspace_model.endResetModel()
 
     @staticmethod
-    def save_workspace(path: str):
-        DataManager.workspace_model.save_workspace(path)
+    def save_workspace(path: str) -> None:
+        with BusyCursor():
+            DataManager.workspace_model.save_workspace(path)
 
     @staticmethod
-    def _on_show_item_changed(item):
+    def _on_show_item_changed(item) -> None:
         DataManager.hub.broadcast(ShowItemChangedMessage(DataManager, item))
 
     @staticmethod
     @catch_error("Could not import slide")
-    def import_slide(file_path: str):
+    def import_slide(file_path: str) -> None:
         with BusyCursor():
             filename, file_extension = os.path.splitext(file_path)
             if file_extension == '.mcd':
@@ -64,7 +66,7 @@ class DataManager:
 
     @staticmethod
     @catch_error("Could not delete slide(s)")
-    def delete_slides(indexes: [QModelIndex]):
+    def delete_slides(indexes: [QModelIndex]) -> None:
         DataManager.workspace_model.beginResetModel()
         for index in indexes:
             DataManager.workspace_model.removeRow(index.row(), parent=index.parent())

@@ -1,12 +1,14 @@
+from typing import Dict
+
 from PyQt5.QtWidgets import QWidget
 from pyqtgraph import GraphicsView, GraphicsLayout, ViewBox
 
 from histoslider.core.hub_listener import HubListener
 from histoslider.core.message import TreeViewCurrentItemChangedMessage, SlideRemovedMessage, ShowItemChangedMessage
 from histoslider.ui.tile_view import TileView
-from histoslider.models.channel_data import ChannelData
+from histoslider.models.channel import Channel
 from histoslider.core.data_manager import DataManager
-from histoslider.models.slide_data import SlideData
+from histoslider.models.slide import Slide
 
 
 class TilesView(GraphicsView, HubListener):
@@ -18,7 +20,7 @@ class TilesView(GraphicsView, HubListener):
         self.layout = GraphicsLayout()
         self.setCentralItem(self.layout)
 
-        self.tiles = {}
+        self.tiles: Dict[str, TileView] = dict()
 
     def register_to_hub(self, hub):
         hub.subscribe(self, TreeViewCurrentItemChangedMessage, self._on_current_item_changed)
@@ -33,7 +35,7 @@ class TilesView(GraphicsView, HubListener):
 
     def _on_show_item_changed(self, message: ShowItemChangedMessage):
         item = message.item
-        if isinstance(item, SlideData) or isinstance(item, ChannelData):
+        if isinstance(item, Slide) or isinstance(item, Channel):
             if item.checked:
                 if not item.name in self.tiles:
                     tile_image_view = TileView(self.layout, item)

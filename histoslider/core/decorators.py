@@ -10,7 +10,7 @@ def _make_key(args, kwargs):
 
 def memoize(func):
     """Save results of function calls to avoid repeated calculation"""
-    memo = {}
+    memo = dict()
 
     @wraps(func)
     def wrapper(*args, **kwargs):
@@ -75,7 +75,7 @@ def memoize_attr_check(attr):
 def singleton(cls):
     """Turn a class into a singleton, such that new objects
     in this class share the same instance"""
-    instances = {}
+    instances = dict()
 
     @wraps(cls)
     def getinstance():

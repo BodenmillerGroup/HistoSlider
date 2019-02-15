@@ -1,12 +1,12 @@
 from histoslider.models.acquisition_2d_data import Acquisition2DData
-from histoslider.models.slide_data import SlideData
-from histoslider.models.workspace_data import WorkspaceData
+from histoslider.models.slide import Slide
+from histoslider.models.workspace import Workspace
 
 
 def test_models():
-    workspace = WorkspaceData("My Workspace")
-    slide = SlideData("Slide")
-    slide2 = SlideData("Slide 2")
+    workspace = Workspace("My Workspace")
+    slide = Slide("Slide")
+    slide2 = Slide("Slide 2")
 
     acq = Acquisition2DData("a1")
     acq2 = Acquisition2DData("a2")
@@ -18,7 +18,7 @@ def test_models():
     workspace.add_slide(slide2)
     json = workspace.to_json()
 
-    w2 = WorkspaceData.from_json(json)
+    w2 = Workspace.from_json(json)
 
     assert json == w2.to_json()
 
