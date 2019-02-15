@@ -3,19 +3,21 @@ from pyqtgraph import GraphicsView, GraphicsLayout, ViewBox
 
 from histoslider.core.hub_listener import HubListener
 from histoslider.core.message import TreeViewCurrentItemChangedMessage, SlideRemovedMessage, ShowItemChangedMessage
-from histoslider.image.tile_image_view import TileImageView
+from histoslider.ui.tile_view import TileView
 from histoslider.models.channel_data import ChannelData
-from histoslider.models.data_manager import DataManager
+from histoslider.core.data_manager import DataManager
 from histoslider.models.slide_data import SlideData
 
 
-class TileView(GraphicsView, HubListener):
+class TilesView(GraphicsView, HubListener):
     def __init__(self, parent: QWidget):
         GraphicsView.__init__(self, parent)
         HubListener.__init__(self)
         self.register_to_hub(DataManager.hub)
+
         self.layout = GraphicsLayout()
         self.setCentralItem(self.layout)
+
         self.tiles = {}
 
     def register_to_hub(self, hub):
@@ -34,7 +36,7 @@ class TileView(GraphicsView, HubListener):
         if isinstance(item, SlideData) or isinstance(item, ChannelData):
             if item.checked:
                 if not item.name in self.tiles:
-                    tile_image_view = TileImageView(self.layout, item)
+                    tile_image_view = TileView(self.layout, item)
                     self.layout.addItem(tile_image_view)
                     for name, tile in self.tiles.items():
                         tile_image_view.linkView(ViewBox.XAxis, tile)
@@ -45,3 +47,7 @@ class TileView(GraphicsView, HubListener):
                     tile_image_view = self.tiles[item.name]
                     self.layout.removeItem(tile_image_view)
                     del self.tiles[item.name]
+
+    def fit_all_tiles(self):
+        for name, tile in self.tiles.items():
+            tile.autoRange()

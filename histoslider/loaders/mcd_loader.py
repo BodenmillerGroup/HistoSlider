@@ -19,7 +19,7 @@ class McdLoader:
             for id in mcd.acquisition_ids:
                 description = mcd.get_acquisition_description(id)
                 imc_ac = mcd.get_imc_acquisition(id, description)
-                acquisition_data = AcquisitionData(imc_ac.image_ID, imc_ac.image_description)
+                acquisition_data = AcquisitionData(imc_ac.image_description, imc_ac.image_description)
                 slide_data.add_acquisition(acquisition_data)
                 for i in range(imc_ac.n_channels):
                     img = imc_ac.get_img_by_label(imc_ac.channel_labels[i])

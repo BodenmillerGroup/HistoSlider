@@ -1,16 +1,16 @@
 from PyQt5.QtWidgets import QWidget
-from pyqtgraph import ImageView, setConfigOptions
+from pyqtgraph import ImageView
 
 from histoslider.core.hub_listener import HubListener
 from histoslider.core.message import TreeViewCurrentItemChangedMessage, SlideRemovedMessage
 from histoslider.image.slide_image_item import SlideImageItem
 from histoslider.image.slide_type import SlideType
 from histoslider.models.channel_data import ChannelData
-from histoslider.models.data_manager import DataManager
+from histoslider.core.data_manager import DataManager
 from histoslider.models.slide_data import SlideData
 
 
-class SlideImageView(ImageView, HubListener):
+class BlendView(ImageView, HubListener):
     def __init__(self, parent: QWidget):
         ImageView.__init__(self, parent, "SlideImageView")
         HubListener.__init__(self)
@@ -35,7 +35,7 @@ class SlideImageView(ImageView, HubListener):
                 loaded = True
         elif isinstance(message.item, ChannelData):
             channel_data: ChannelData = message.item
-            slide_graphics_item.attach_image(channel_data.img, False)
+            slide_graphics_item.attach_image(channel_data.image, False)
             loaded = True
 
         if loaded:

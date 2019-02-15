@@ -1,12 +1,10 @@
 from functools import partial
 
-import gc
 from PyQt5.QtCore import Qt, QModelIndex, QItemSelection
-from PyQt5.QtGui import QPixmapCache
 from PyQt5.QtWidgets import QTreeView, QWidget, QAbstractItemView, QMenu, QAction
 
-from histoslider.core.message import SlideRemovedMessage, TreeViewCurrentItemChangedMessage
-from histoslider.models.data_manager import DataManager
+from histoslider.core.message import TreeViewCurrentItemChangedMessage
+from histoslider.core.data_manager import DataManager
 
 
 class WorkspaceTreeView(QTreeView):
@@ -35,7 +33,7 @@ class WorkspaceTreeView(QTreeView):
 
         if level == 1:
             action = QAction("Delete slide", menu)
-            action.triggered.connect(partial(self.delete_slide, indexes))
+            action.triggered.connect(partial(self.delete_slides, indexes))
             menu.addAction(action)
         elif level == 2:
             menu.addAction("Edit object/container")
@@ -44,14 +42,8 @@ class WorkspaceTreeView(QTreeView):
 
         menu.exec_(self.viewport().mapToGlobal(position))
 
-    def delete_slide(self, indexes: [QModelIndex]):
-        DataManager.workspace_model.beginResetModel()
-        for index in indexes:
-            DataManager.workspace_model.removeRow(index.row(), parent=index.parent())
-        DataManager.workspace_model.endResetModel()
-        DataManager.hub.broadcast(SlideRemovedMessage(self))
-        QPixmapCache.clear()
-        gc.collect()
+    def delete_slides(self, indexes: [QModelIndex]):
+        DataManager.delete_slides(indexes)
 
     def _treeview_current_changed(self, current: QModelIndex, previous: QModelIndex):
         if current.isValid():

@@ -3,7 +3,7 @@ from PyQt5.QtGui import QIcon, QPixmapCache
 from PyQt5.QtWidgets import QApplication
 from pyqtgraph import setConfigOptions
 
-from histoslider.models.data_manager import DataManager
+from histoslider.core.data_manager import DataManager
 
 # Global PyQtGraph settings
 setConfigOptions(

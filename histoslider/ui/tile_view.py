@@ -6,10 +6,9 @@ from histoslider.models.channel_data import ChannelData
 from histoslider.models.slide_data import SlideData
 
 
-class TileImageView(ViewBox):
+class TileView(ViewBox):
     def __init__(self, parent, item):
-        pen = mkPen("d", width=1)
-        ViewBox.__init__(self, parent, border=pen, lockAspect=True, name=item.name)
+        ViewBox.__init__(self, parent, border=mkPen("d", width=1), lockAspect=True, name=item.name, invertY=True)
         loaded = False
         slide_graphics_item = SlideImageItem()
         if isinstance(item, SlideData):
@@ -19,8 +18,8 @@ class TileImageView(ViewBox):
                 loaded = True
         elif isinstance(item, ChannelData):
             channel_data: ChannelData = item
-            slide_graphics_item.attach_image(channel_data.img, False)
+            slide_graphics_item.attach_image(channel_data.image, False)
             loaded = True
 
         if loaded:
-            self.addItem(slide_graphics_item)
+            self.addItem(slide_graphics_item, ignoreBounds=False)

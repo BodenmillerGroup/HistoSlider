@@ -4,12 +4,12 @@ from histoslider.models.base_data import BaseData
 
 
 class ChannelData(BaseData):
-    def __init__(self, label: str, metal: str, mass: int, img):
+    def __init__(self, label: str, metal: str, mass: int, image):
         super().__init__(label)
         self.label = label
         self.metal = metal
         self.mass = mass
-        self.img = img
+        self.image = image
 
     @property
     def acquisition(self):
