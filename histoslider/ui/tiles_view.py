@@ -48,7 +48,7 @@ class TilesView(GraphicsView, HubListener):
                 if item.name in self.tiles:
                     tile_image_view = self.tiles[item.name]
                     self.layout.removeItem(tile_image_view)
-                    del self.tiles[item.name]
+                    self.tiles.pop(item.name)
 
     def fit_all_tiles(self):
         for name, tile in self.tiles.items():
