@@ -6,7 +6,7 @@ from pyqtgraph import GraphicsView, GraphicsLayout, ViewBox
 from histoslider.core.hub_listener import HubListener
 from histoslider.core.message import TreeViewCurrentItemChangedMessage, SlideRemovedMessage, ShowItemChangedMessage
 from histoslider.ui.tile_view import TileView
-from histoslider.models.channel import Channel
+from histoslider.models.acquisition_channel import AcquisitionChannel
 from histoslider.core.data_manager import DataManager
 from histoslider.models.slide import Slide
 
@@ -35,7 +35,7 @@ class TilesView(GraphicsView, HubListener):
 
     def _on_show_item_changed(self, message: ShowItemChangedMessage):
         item = message.item
-        if isinstance(item, Slide) or isinstance(item, Channel):
+        if isinstance(item, Slide) or isinstance(item, AcquisitionChannel):
             if item.checked:
                 if not item.name in self.tiles:
                     tile_image_view = TileView(self.layout, item)

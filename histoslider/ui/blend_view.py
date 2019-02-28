@@ -9,7 +9,7 @@ from histoslider.core.hub_listener import HubListener
 from histoslider.core.message import TreeViewCurrentItemChangedMessage, SlideRemovedMessage, ShowItemChangedMessage
 from histoslider.image.slide_image_item import SlideImageItem
 from histoslider.image.slide_type import SlideType
-from histoslider.models.channel import Channel
+from histoslider.models.acquisition_channel import AcquisitionChannel
 from histoslider.core.data_manager import DataManager
 from histoslider.models.slide import Slide
 
@@ -43,10 +43,10 @@ class BlendView(ImageView, HubListener):
         if isinstance(message.item, Slide):
             slide_data: Slide = message.item
             if slide_data.slide_type == SlideType.TIFF:
-                slide_graphics_item.load_image(slide_data.path, True)
+                slide_graphics_item.load_image(slide_data.file_path, True)
                 loaded = True
-        elif isinstance(message.item, Channel):
-            channel_data: Channel = message.item
+        elif isinstance(message.item, AcquisitionChannel):
+            channel_data: AcquisitionChannel = message.item
             slide_graphics_item.attach_image(channel_data.image, False)
             loaded = True
 
@@ -56,7 +56,7 @@ class BlendView(ImageView, HubListener):
 
     def _on_show_item_changed(self, message: ShowItemChangedMessage):
         item = message.item
-        if isinstance(item, Channel):
+        if isinstance(item, AcquisitionChannel):
             if item.checked:
                 if not item.name in self.layers:
                     layer = item.image

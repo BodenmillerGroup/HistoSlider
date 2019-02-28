@@ -4,21 +4,21 @@ from typing import List
 
 from PyQt5.QtGui import QIcon
 
-from histoslider.models.acquisition_channel import AcquisitionChannel
-from histoslider.models.acquisition_meta import AcquisitionMeta
+from histoslider.models.acquisition_roi import AcquisitionROI
 from histoslider.models.base_data import BaseData
+from histoslider.models.panorama_meta import PanoramaMeta
 
 
-class Acquisition(BaseData):
-    def __init__(self, meta: AcquisitionMeta):
+class Panorama(BaseData):
+    def __init__(self, meta: PanoramaMeta):
         super().__init__(meta.description)
         self.meta = meta
 
-    def add_channel(self, channel: AcquisitionChannel):
-        self.addChild(channel)
+    def add_acquisition_roi(self, acquisition_roi: AcquisitionROI):
+        self.addChild(acquisition_roi)
 
     @property
-    def acquisition_roi(self) -> "AcquisitionROI":
+    def slide(self) -> "Slide":
         return self.parent()
 
     @property
@@ -27,8 +27,8 @@ class Acquisition(BaseData):
 
     @property
     def tooltip(self):
-        return "Acquisition"
+        return "Panorama"
 
     @property
-    def channels(self) -> List[AcquisitionChannel]:
+    def acquisition_rois(self) -> List[AcquisitionROI]:
         return self._children

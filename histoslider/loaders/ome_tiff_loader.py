@@ -4,7 +4,7 @@ from imctools.io.ometiffparser import OmetiffParser
 
 from histoslider.image.slide_type import SlideType
 from histoslider.models.acquisition import Acquisition
-from histoslider.models.channel import Channel
+from histoslider.models.acquisition_channel import AcquisitionChannel
 from histoslider.models.slide import Slide
 
 
@@ -21,7 +21,7 @@ class OmeTiffLoader:
         slide.add_acquisition(acquisition)
         for i in range(imc_ac.n_channels):
             img = imc_ac.get_img_by_label(imc_ac.channel_labels[i])
-            channel = Channel(imc_ac.channel_labels[i], imc_ac.channel_metals[i], imc_ac.channel_mass[i], img)
+            channel = AcquisitionChannel(imc_ac.channel_labels[i], imc_ac.channel_metals[i], imc_ac.channel_mass[i], img)
             acquisition.add_channel(channel)
 
         return slide

@@ -42,7 +42,7 @@ class DataManager:
         DataManager.hub.broadcast(ShowItemChangedMessage(DataManager, item))
 
     @staticmethod
-    @catch_error("Could not import slide")
+    # @catch_error("Could not import slide")
     def import_slide(file_path: str) -> None:
         with BusyCursor():
             filename, file_extension = os.path.splitext(file_path)
