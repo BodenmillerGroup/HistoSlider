@@ -1,5 +1,4 @@
 from PyQt5.QtCore import QAbstractItemModel, QModelIndex, Qt, pyqtSignal
-from PyQt5.QtGui import QBrush
 
 from histoslider.models.base_data import BaseData
 from histoslider.models.workspace import Workspace

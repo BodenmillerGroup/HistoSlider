@@ -83,5 +83,4 @@ class McdSlide(Slide):
         if not self.loaded:
             return
         self.meta = None
-        self.clear()
         super().unload()

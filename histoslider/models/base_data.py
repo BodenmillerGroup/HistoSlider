@@ -1,5 +1,3 @@
-import uuid
-
 from PyQt5.QtCore import Qt
 
 
@@ -8,7 +6,6 @@ class BaseData:
     column_flags = [Qt.ItemIsEnabled | Qt.ItemIsSelectable | Qt.ItemIsUserCheckable]
 
     def __init__(self, name: str):
-        self.id = uuid.uuid4().int
         self.name = name
 
         self._parent = None

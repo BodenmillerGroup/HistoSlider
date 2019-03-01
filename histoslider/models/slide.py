@@ -25,4 +25,11 @@ class Slide(BaseData):
         self.loaded = True
 
     def unload(self):
+        self.clear()
         self.loaded = False
+
+    def __getstate__(self):
+        state = self.__dict__.copy()
+        state['_children'].clear()
+        state['loaded'] = False
+        return state

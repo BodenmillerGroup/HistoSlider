@@ -18,7 +18,7 @@ class Panorama(BaseData):
         self.addChild(acquisition_roi)
 
     @property
-    def slide(self) -> "Slide":
+    def slide(self) -> "McdSlide":
         return self.parent()
 
     @property

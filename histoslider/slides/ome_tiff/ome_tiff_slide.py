@@ -57,5 +57,4 @@ class OmeTiffSlide(Slide):
         if not self.loaded:
             return
         self.meta = None
-        self.clear()
         super().unload()

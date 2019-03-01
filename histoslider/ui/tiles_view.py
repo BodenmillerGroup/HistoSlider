@@ -31,9 +31,11 @@ class TilesView(GraphicsView, HubListener):
 
     def _on_slide_removed(self, message: SlideRemovedMessage):
         self.layout.clear()
+        self.tiles.clear()
 
     def _on_slide_unloaded(self, message: SlideUnloadedMessage):
         self.layout.clear()
+        self.tiles.clear()
 
     def _on_current_item_changed(self, message: TreeViewCurrentItemChangedMessage):
         pass
@@ -44,10 +46,10 @@ class TilesView(GraphicsView, HubListener):
             if item.checked:
                 if not item.name in self.tiles:
                     tile_image_view = TileView(self.layout, item)
-                    self.layout.addItem(tile_image_view)
                     for name, tile in self.tiles.items():
                         tile_image_view.linkView(ViewBox.XAxis, tile)
                         tile_image_view.linkView(ViewBox.YAxis, tile)
+                    self.layout.addItem(tile_image_view)
                     self.tiles[item.name] = tile_image_view
             else:
                 if item.name in self.tiles:

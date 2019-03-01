@@ -29,5 +29,4 @@ class TiffSlide(Slide):
     def unload(self):
         if not self.loaded:
             return
-        self.clear()
         super().unload()
