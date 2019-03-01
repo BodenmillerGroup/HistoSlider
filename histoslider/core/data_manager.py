@@ -7,11 +7,12 @@ from pyqtgraph import BusyCursor
 
 from histoslider.core.decorators import catch_error
 from histoslider.core.hub import Hub
-from histoslider.core.message import ShowItemChangedMessage, SlideImportedMessage, SlideRemovedMessage
-from histoslider.loaders.mcd_loader import McdLoader
-from histoslider.loaders.ome_tiff_loader import OmeTiffLoader
-from histoslider.loaders.tiff_loader import TiffLoader
+from histoslider.core.message import ShowItemChangedMessage, SlideImportedMessage, SlideRemovedMessage, \
+    SlideUnloadedMessage, SlideLoadedMessage
+from histoslider.slides.mcd.mcd_slide import McdSlide
 from histoslider.models.workspace_model import WorkspaceModel
+from histoslider.slides.ome_tiff.ome_tiff_slide import OmeTiffSlide
+from histoslider.slides.tiff.tiff_slide import TiffSlide
 
 
 class DataManager:
@@ -47,22 +48,45 @@ class DataManager:
         with BusyCursor():
             filename, file_extension = os.path.splitext(file_path)
             if file_extension == '.mcd':
-                loader = McdLoader(file_path)
-                slide = loader.load()
+                slide = McdSlide(file_path)
             elif file_extension == '.tiff' or file_extension == '.tif':
                 if filename.endswith('.ome'):
-                    loader = OmeTiffLoader(file_path)
+                    slide = OmeTiffSlide(file_path)
                 else:
-                    loader = TiffLoader(file_path)
-                slide = loader.load()
+                    slide = TiffSlide(file_path)
             else:
-                loader = TiffLoader(file_path)
-                slide = loader.load()
+                slide = TiffSlide(file_path)
             DataManager.workspace_model.beginResetModel()
             DataManager.workspace_model.workspace_data.add_slide(slide)
             DataManager.workspace_model.endResetModel()
             QPixmapCache.clear()
             DataManager.hub.broadcast(SlideImportedMessage(DataManager))
+
+    @staticmethod
+    # @catch_error("Could not load slide")
+    def load_slides(indexes: [QModelIndex]) -> None:
+        with BusyCursor():
+            DataManager.workspace_model.beginResetModel()
+            for index in indexes:
+                if index.isValid():
+                    item = index.model().getItem(index)
+                    item.load()
+            DataManager.workspace_model.endResetModel()
+            DataManager.hub.broadcast(SlideLoadedMessage(DataManager))
+
+    @staticmethod
+    @catch_error("Could not unload slide")
+    def unload_slides(indexes: [QModelIndex]) -> None:
+        with BusyCursor():
+            DataManager.workspace_model.beginResetModel()
+            for index in indexes:
+                if index.isValid():
+                    item = index.model().getItem(index)
+                    item.unload()
+            DataManager.workspace_model.endResetModel()
+            DataManager.hub.broadcast(SlideUnloadedMessage(DataManager))
+            QPixmapCache.clear()
+            gc.collect()
 
     @staticmethod
     @catch_error("Could not delete slide(s)")

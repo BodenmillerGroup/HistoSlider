@@ -4,10 +4,10 @@ from typing import List
 
 from PyQt5.QtGui import QIcon
 
-from histoslider.models.acquisition import Acquisition
-from histoslider.models.acquisition_roi_meta import AcquisitionROIMeta
+from histoslider.slides.mcd.mcd_acquisition import McdAcquisition
+from histoslider.slides.mcd.acquisition_roi_meta import AcquisitionROIMeta
 from histoslider.models.base_data import BaseData
-from histoslider.models.roi_point_meta import ROIPointMeta
+from histoslider.slides.mcd.roi_point_meta import ROIPointMeta
 
 
 class AcquisitionROI(BaseData):
@@ -16,7 +16,7 @@ class AcquisitionROI(BaseData):
         self.meta: AcquisitionROIMeta = meta
         self.roi_points: List[ROIPointMeta] = roi_points
 
-    def add_acquisition(self, acquisition: Acquisition):
+    def add_acquisition(self, acquisition: McdAcquisition):
         self.addChild(acquisition)
 
     @property
@@ -32,5 +32,5 @@ class AcquisitionROI(BaseData):
         return "Acquisition ROI"
 
     @property
-    def acquisitions(self) -> List[Acquisition]:
+    def acquisitions(self) -> List[McdAcquisition]:
         return self._children

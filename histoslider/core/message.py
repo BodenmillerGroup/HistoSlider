@@ -63,3 +63,15 @@ class SlideRemovedMessage(Message):
 
     """ Indicates that the slide has been removed """
     pass
+
+
+class SlideLoadedMessage(Message):
+
+    """ Indicates that the slide has been loaded """
+    pass
+
+
+class SlideUnloadedMessage(Message):
+
+    """ Indicates that the slide has been unloaded """
+    pass

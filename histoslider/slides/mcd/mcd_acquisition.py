@@ -4,17 +4,17 @@ from typing import List
 
 from PyQt5.QtGui import QIcon
 
-from histoslider.models.acquisition_channel import AcquisitionChannel
-from histoslider.models.acquisition_meta import AcquisitionMeta
+from histoslider.slides.mcd.mcd_channel import McdChannel
+from histoslider.slides.mcd.mcd_acquisition_meta import McdAcquisitionMeta
 from histoslider.models.base_data import BaseData
 
 
-class Acquisition(BaseData):
-    def __init__(self, meta: AcquisitionMeta):
+class McdAcquisition(BaseData):
+    def __init__(self, meta: McdAcquisitionMeta):
         super().__init__(meta.description)
         self.meta = meta
 
-    def add_channel(self, channel: AcquisitionChannel):
+    def add_channel(self, channel: McdChannel):
         self.addChild(channel)
 
     @property
@@ -30,5 +30,5 @@ class Acquisition(BaseData):
         return "Acquisition"
 
     @property
-    def channels(self) -> List[AcquisitionChannel]:
+    def channels(self) -> List[McdChannel]:
         return self._children

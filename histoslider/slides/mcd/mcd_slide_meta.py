@@ -5,7 +5,7 @@ from dacite import from_dict, Config
 
 
 @dataclass
-class SlideMeta:
+class McdSlideMeta:
     id: int
     uid: str
     description: str
@@ -19,7 +19,7 @@ class SlideMeta:
 
     @staticmethod
     def from_dict(data: Dict):
-        result = from_dict(data_class=SlideMeta, data=data,
+        result = from_dict(data_class=McdSlideMeta, data=data,
                            config=Config(remap={'id': 'ID',
                                                 'uid': 'UID',
                                                 'description': 'Description',

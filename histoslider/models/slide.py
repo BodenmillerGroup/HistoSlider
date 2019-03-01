@@ -1,24 +1,17 @@
 from __future__ import annotations
 
-from typing import List
-
 from PyQt5.QtGui import QIcon
 
 from histoslider.image.slide_type import SlideType
 from histoslider.models.base_data import BaseData
-from histoslider.models.panorama import Panorama
-from histoslider.models.slide_meta import SlideMeta
 
 
 class Slide(BaseData):
-    def __init__(self, meta: SlideMeta, file_path: str, slide_type: SlideType):
-        super().__init__(meta.description)
-        self.meta = meta
-        self.file_path = file_path
-        self.slide_type = slide_type
-
-    def add_panorama(self, panorama: Panorama):
-        self.addChild(panorama)
+    def __init__(self, label: str, slide_path: str, slide_type: SlideType):
+        super().__init__(label)
+        self.slide_path: str = slide_path
+        self.slide_type: SlideType = slide_type
+        self.loaded: bool = False
 
     @property
     def icon(self):
@@ -28,6 +21,8 @@ class Slide(BaseData):
     def tooltip(self):
         return "Slide"
 
-    @property
-    def panoramas(self) -> List[Panorama]:
-        return self._children
+    def load(self):
+        self.loaded = True
+
+    def unload(self):
+        self.loaded = False

@@ -4,9 +4,9 @@ from typing import List
 
 from PyQt5.QtGui import QIcon
 
-from histoslider.models.acquisition_roi import AcquisitionROI
+from histoslider.slides.mcd.acquisition_roi import AcquisitionROI
 from histoslider.models.base_data import BaseData
-from histoslider.models.panorama_meta import PanoramaMeta
+from histoslider.slides.mcd.panorama_meta import PanoramaMeta
 
 
 class Panorama(BaseData):

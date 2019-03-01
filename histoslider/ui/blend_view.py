@@ -1,29 +1,29 @@
 from typing import Dict
 
-from PIL import Image
 from PyQt5.QtWidgets import QWidget
 from pyqtgraph import ImageView, ScaleBar
 import numpy as np
 
 from histoslider.core.hub_listener import HubListener
-from histoslider.core.message import TreeViewCurrentItemChangedMessage, SlideRemovedMessage, ShowItemChangedMessage
+from histoslider.core.message import TreeViewCurrentItemChangedMessage, SlideRemovedMessage, ShowItemChangedMessage, \
+    SlideUnloadedMessage
 from histoslider.image.slide_image_item import SlideImageItem
 from histoslider.image.slide_type import SlideType
-from histoslider.models.acquisition_channel import AcquisitionChannel
-from histoslider.core.data_manager import DataManager
+from histoslider.models.channel import Channel
 from histoslider.models.slide import Slide
+from histoslider.core.data_manager import DataManager
 
 
 class BlendView(ImageView, HubListener):
     def __init__(self, parent: QWidget):
-        ImageView.__init__(self, parent, "SlideImageView")
+        ImageView.__init__(self, parent, "BlendView")
         HubListener.__init__(self)
         self.register_to_hub(DataManager.hub)
         self.getHistogramWidget().hide()
 
         self.layers: Dict[str, object] = dict()
 
-        self.scale = ScaleBar(size=1, suffix='μm')
+        self.scale = ScaleBar(size=10, suffix='μm')
         self.scale.setParentItem(self.getView())
         self.scale.anchor((1, 1), (1, 1), offset=(-20, -20))
         self.scale.hide()
@@ -31,9 +31,14 @@ class BlendView(ImageView, HubListener):
     def register_to_hub(self, hub):
         hub.subscribe(self, TreeViewCurrentItemChangedMessage, self._on_current_item_changed)
         hub.subscribe(self, SlideRemovedMessage, self._on_slide_removed)
+        hub.subscribe(self, SlideUnloadedMessage, self._on_slide_unloaded)
         hub.subscribe(self, ShowItemChangedMessage, self._on_show_item_changed)
 
     def _on_slide_removed(self, message: SlideRemovedMessage):
+        self.getHistogramWidget().hide()
+        self.clear()
+
+    def _on_slide_unloaded(self, message: SlideUnloadedMessage):
         self.getHistogramWidget().hide()
         self.clear()
 
@@ -43,10 +48,10 @@ class BlendView(ImageView, HubListener):
         if isinstance(message.item, Slide):
             slide_data: Slide = message.item
             if slide_data.slide_type == SlideType.TIFF:
-                slide_graphics_item.load_image(slide_data.file_path, True)
+                slide_graphics_item.load_image(slide_data.slide_path, True)
                 loaded = True
-        elif isinstance(message.item, AcquisitionChannel):
-            channel_data: AcquisitionChannel = message.item
+        elif isinstance(message.item, Channel):
+            channel_data: Channel = message.item
             slide_graphics_item.attach_image(channel_data.image, False)
             loaded = True
 
@@ -56,7 +61,7 @@ class BlendView(ImageView, HubListener):
 
     def _on_show_item_changed(self, message: ShowItemChangedMessage):
         item = message.item
-        if isinstance(item, AcquisitionChannel):
+        if isinstance(item, Channel):
             if item.checked:
                 if not item.name in self.layers:
                     layer = item.image

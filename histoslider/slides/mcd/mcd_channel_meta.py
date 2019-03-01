@@ -5,7 +5,7 @@ from dacite import from_dict, Config
 
 
 @dataclass
-class AcquisitionChannelMeta:
+class McdChannelMeta:
     id: int
     acquisition_id: int
     order_number: int
@@ -15,7 +15,7 @@ class AcquisitionChannelMeta:
 
     @staticmethod
     def from_dict(data: Dict):
-        result = from_dict(data_class=AcquisitionChannelMeta, data=data,
+        result = from_dict(data_class=McdChannelMeta, data=data,
                            config=Config(remap={'id': 'ID',
                                                 'acquisition_id': 'AcquisitionID',
                                                 'order_number': 'OrderNumber',

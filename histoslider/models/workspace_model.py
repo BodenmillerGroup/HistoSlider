@@ -1,4 +1,5 @@
 from PyQt5.QtCore import QAbstractItemModel, QModelIndex, Qt, pyqtSignal
+from PyQt5.QtGui import QBrush
 
 from histoslider.models.base_data import BaseData
 from histoslider.models.workspace import Workspace
@@ -77,6 +78,10 @@ class WorkspaceModel(QAbstractItemModel):
         if role == Qt.DecorationRole:
             if index.column() == 0:
                 return item.icon
+
+        if role == Qt.ForegroundRole:
+            if index.column() == 0:
+                return item.foreground
 
         if role == Qt.CheckStateRole:
             if index.column() == 0:

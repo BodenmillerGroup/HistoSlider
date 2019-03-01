@@ -3,14 +3,14 @@ from typing import List
 import jsonpickle
 
 from histoslider.models.base_data import BaseData
-from histoslider.models.slide import Slide
+from histoslider.slides.mcd.mcd_slide import McdSlide
 
 
 class Workspace(BaseData):
     def __init__(self, name: str):
         super().__init__(name)
 
-    def add_slide(self, slide: Slide):
+    def add_slide(self, slide: McdSlide):
         self.addChild(slide)
 
     def to_json(self):
@@ -21,5 +21,5 @@ class Workspace(BaseData):
         return jsonpickle.decode(json)
 
     @property
-    def slides(self) -> List[Slide]:
+    def slides(self) -> List[McdSlide]:
         return self._children

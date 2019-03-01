@@ -3,7 +3,7 @@ from __future__ import annotations
 from PyQt5.QtGui import QIcon
 
 from histoslider.models.base_data import BaseData
-from histoslider.models.roi_point_meta import ROIPointMeta
+from histoslider.slides.mcd.roi_point_meta import ROIPointMeta
 
 
 class ROIPoint(BaseData):

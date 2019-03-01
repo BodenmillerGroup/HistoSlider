@@ -21,6 +21,10 @@ class BaseData:
         return None
 
     @property
+    def foreground(self):
+        return None
+
+    @property
     def tooltip(self):
         return None
 
@@ -55,6 +59,9 @@ class BaseData:
         child = self._children.pop(position)
         child._parent = None
         return True
+
+    def clear(self):
+        self._children.clear()
 
     def data(self, column: int):
         if 0 <= column < self.columnCount():

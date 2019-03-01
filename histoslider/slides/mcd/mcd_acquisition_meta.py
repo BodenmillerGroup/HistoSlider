@@ -7,7 +7,7 @@ from dateutil import parser
 
 
 @dataclass
-class AcquisitionMeta:
+class McdAcquisitionMeta:
     id: int
     acquisition_roi_id: int
     description: str
@@ -41,7 +41,7 @@ class AcquisitionMeta:
 
     @staticmethod
     def from_dict(data: Dict):
-        result = from_dict(data_class=AcquisitionMeta, data=data,
+        result = from_dict(data_class=McdAcquisitionMeta, data=data,
                            config=Config(remap={'id': 'ID',
                                                 'acquisition_roi_id': 'AcquisitionROIID',
                                                 'description': 'Description',

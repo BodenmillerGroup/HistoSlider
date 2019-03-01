@@ -1,7 +1,7 @@
 from functools import partial
 
 from PyQt5.QtCore import Qt, QModelIndex, QItemSelection
-from PyQt5.QtWidgets import QTreeView, QWidget, QAbstractItemView, QMenu, QAction
+from PyQt5.QtWidgets import QTreeView, QWidget, QAbstractItemView, QMenu
 
 from histoslider.core.message import TreeViewCurrentItemChangedMessage
 from histoslider.core.data_manager import DataManager
@@ -32,15 +32,26 @@ class WorkspaceTreeView(QTreeView):
         menu = QMenu(self)
 
         if level == 1:
-            action = QAction("Delete slide", menu)
+            action = menu.addAction("Load slide")
+            action.triggered.connect(partial(self.load_slides, indexes))
+
+            action = menu.addAction("Unload slide")
+            action.triggered.connect(partial(self.unload_slides, indexes))
+
+            action = menu.addAction("Delete slide")
             action.triggered.connect(partial(self.delete_slides, indexes))
-            menu.addAction(action)
         elif level == 2:
             menu.addAction("Edit object/container")
         elif level == 3:
             menu.addAction("Edit object")
 
         menu.exec_(self.viewport().mapToGlobal(position))
+
+    def unload_slides(self, indexes: [QModelIndex]):
+        DataManager.unload_slides(indexes)
+
+    def load_slides(self, indexes: [QModelIndex]):
+        DataManager.load_slides(indexes)
 
     def delete_slides(self, indexes: [QModelIndex]):
         DataManager.delete_slides(indexes)

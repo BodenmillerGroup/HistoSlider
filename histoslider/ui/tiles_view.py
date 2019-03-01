@@ -3,12 +3,13 @@ from typing import Dict
 from PyQt5.QtWidgets import QWidget
 from pyqtgraph import GraphicsView, GraphicsLayout, ViewBox
 
-from histoslider.core.hub_listener import HubListener
-from histoslider.core.message import TreeViewCurrentItemChangedMessage, SlideRemovedMessage, ShowItemChangedMessage
-from histoslider.ui.tile_view import TileView
-from histoslider.models.acquisition_channel import AcquisitionChannel
 from histoslider.core.data_manager import DataManager
+from histoslider.core.hub_listener import HubListener
+from histoslider.core.message import TreeViewCurrentItemChangedMessage, SlideRemovedMessage, ShowItemChangedMessage, \
+    SlideUnloadedMessage
+from histoslider.models.channel import Channel
 from histoslider.models.slide import Slide
+from histoslider.ui.tile_view import TileView
 
 
 class TilesView(GraphicsView, HubListener):
@@ -25,9 +26,13 @@ class TilesView(GraphicsView, HubListener):
     def register_to_hub(self, hub):
         hub.subscribe(self, TreeViewCurrentItemChangedMessage, self._on_current_item_changed)
         hub.subscribe(self, SlideRemovedMessage, self._on_slide_removed)
+        hub.subscribe(self, SlideUnloadedMessage, self._on_slide_unloaded)
         hub.subscribe(self, ShowItemChangedMessage, self._on_show_item_changed)
 
     def _on_slide_removed(self, message: SlideRemovedMessage):
+        self.layout.clear()
+
+    def _on_slide_unloaded(self, message: SlideUnloadedMessage):
         self.layout.clear()
 
     def _on_current_item_changed(self, message: TreeViewCurrentItemChangedMessage):
@@ -35,7 +40,7 @@ class TilesView(GraphicsView, HubListener):
 
     def _on_show_item_changed(self, message: ShowItemChangedMessage):
         item = message.item
-        if isinstance(item, Slide) or isinstance(item, AcquisitionChannel):
+        if isinstance(item, Slide) or isinstance(item, Channel):
             if item.checked:
                 if not item.name in self.tiles:
                     tile_image_view = TileView(self.layout, item)

@@ -1,12 +1,12 @@
 from histoslider.models.acquisition_2d_data import Acquisition2DData
-from histoslider.models.slide import Slide
+from histoslider.slides.mcd.mcd_slide import McdSlide
 from histoslider.models.workspace import Workspace
 
 
 def test_models():
     workspace = Workspace("My Workspace")
-    slide = Slide("Slide")
-    slide2 = Slide("Slide 2")
+    slide = McdSlide("Slide")
+    slide2 = McdSlide("Slide 2")
 
     acq = Acquisition2DData("a1")
     acq2 = Acquisition2DData("a2")
