@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>845</width>
-    <height>631</height>
+    <width>1080</width>
+    <height>713</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -38,7 +38,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>845</width>
+     <width>1080</width>
      <height>22</height>
     </rect>
    </property>
@@ -87,17 +87,6 @@
    </attribute>
    <widget class="QWidget" name="dockWidgetContentsOverview">
     <layout class="QVBoxLayout" name="verticalLayoutOverview"/>
-   </widget>
-  </widget>
-  <widget class="QDockWidget" name="dockWidgetSettings">
-   <property name="windowTitle">
-    <string>Settings</string>
-   </property>
-   <attribute name="dockWidgetArea">
-    <number>2</number>
-   </attribute>
-   <widget class="QWidget" name="dockWidgetContentsSettings">
-    <layout class="QVBoxLayout" name="verticalLayoutSettings"/>
    </widget>
   </widget>
   <widget class="QDockWidget" name="dockWidgetChannels">
