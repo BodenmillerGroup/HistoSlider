@@ -14,6 +14,7 @@ from histoslider.core.data_manager import DataManager
 from histoslider.ui.blend_view_widget import BlendViewWidget
 from histoslider.ui.channels_view_widget import ChannelsViewWidget
 from histoslider.ui.main_window_ui import Ui_MainWindow
+from histoslider.ui.origin_view_widget import OriginViewWidget
 from histoslider.ui.tiles_view_widget import TilesViewWidget
 from histoslider.ui.workspace_tree_view import WorkspaceTreeView
 
@@ -41,9 +42,11 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.channels_view_widget = ChannelsViewWidget(self.dockWidgetContentsChannels)
         self.verticalLayoutChannels.addWidget(self.channels_view_widget)
 
+        self.origin_view_widget = OriginViewWidget(self)
         self.blend_view_widget = BlendViewWidget(self)
         self.tiles_view_widget = TilesViewWidget(self)
 
+        self.tabWidget.addTab(self.origin_view_widget, QIcon(":/icons/icons8-eukaryotic-cells-16.png"), "Origin")
         self.tabWidget.addTab(self.blend_view_widget, QIcon(":/icons/icons8-eukaryotic-cells-16.png"), "Blend")
         self.tabWidget.addTab(self.tiles_view_widget, QIcon(":/icons/icons8-medium-icons-16.png"), "Tiles")
 

@@ -30,6 +30,7 @@ class ChannelsViewWidget(QWidget, HubListener):
         item = message.item
         if isinstance(item, Acquisition):
             acquisition: Acquisition = item
+            self.channels_view.set_channels(item.get_channels())
 
     def fit_all_tiles(self):
         pass

@@ -1,6 +1,8 @@
 from PyQt5.QtCore import QSortFilterProxyModel, QItemSelection
 from PyQt5.QtWidgets import QTableView, QAbstractItemView
 
+from histoslider.models.channels_model import ChannelsModel
+
 
 class ChannelsTableView(QTableView):
     def __init__(self, parent):
@@ -13,7 +15,7 @@ class ChannelsTableView(QTableView):
 
     def set_channels(self, channels):
         proxy_model = self.model()
-        channel_model = ChannelsModel()
+        channel_model = ChannelsModel(channels)
         proxy_model.setSourceModel(channel_model)
 
 

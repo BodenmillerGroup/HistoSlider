@@ -40,22 +40,38 @@ class TilesView(GraphicsView, HubListener):
     def _on_current_item_changed(self, message: TreeViewCurrentItemChangedMessage):
         pass
 
+    def get_cell(self, i: int):
+        l = len(self.tiles.keys())
+        if l > 4:
+            rows = (0, 0, 0, 1, 1, 1, 2, 2, 2)
+            cols = (0, 1, 2, 0, 1, 2, 0, 1, 2)
+        else:
+            rows = (0, 0, 1, 1)
+            cols = (0, 1, 0, 1)
+        return rows[i], cols[i]
+
     def _on_show_item_changed(self, message: ShowItemChangedMessage):
         item = message.item
         if isinstance(item, Slide) or isinstance(item, Channel):
+            self.layout.clear()
             if item.checked:
-                if not item.name in self.tiles:
+                if item.name not in self.tiles:
                     tile_image_view = TileView(self.layout, item)
-                    for name, tile in self.tiles.items():
-                        tile_image_view.linkView(ViewBox.XAxis, tile)
-                        tile_image_view.linkView(ViewBox.YAxis, tile)
-                    self.layout.addItem(tile_image_view)
                     self.tiles[item.name] = tile_image_view
             else:
                 if item.name in self.tiles:
-                    tile_image_view = self.tiles[item.name]
-                    self.layout.removeItem(tile_image_view)
                     self.tiles.pop(item.name)
+
+            if len(self.tiles) > 0:
+                i = 0
+                first_tile = self.tiles[list(self.tiles.keys())[0]]
+                for tile in self.tiles.values():
+                    if first_tile is not tile:
+                        tile.linkView(ViewBox.XAxis, first_tile)
+                        tile.linkView(ViewBox.YAxis, first_tile)
+                    cell = self.get_cell(i)
+                    self.layout.addItem(tile, cell[0], cell[1])
+                    i = i + 1
 
     def fit_all_tiles(self):
         for name, tile in self.tiles.items():
