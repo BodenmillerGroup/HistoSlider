@@ -63,15 +63,13 @@ class TilesView(GraphicsView, HubListener):
                     self.tiles.pop(item.name)
 
             if len(self.tiles) > 0:
-                i = 0
                 first_tile = self.tiles[list(self.tiles.keys())[0]]
-                for tile in self.tiles.values():
+                for i, tile in enumerate(self.tiles.values()):
                     if first_tile is not tile:
                         tile.linkView(ViewBox.XAxis, first_tile)
                         tile.linkView(ViewBox.YAxis, first_tile)
                     cell = self.get_cell(i)
                     self.layout.addItem(tile, cell[0], cell[1])
-                    i = i + 1
 
     def fit_all_tiles(self):
         for name, tile in self.tiles.items():

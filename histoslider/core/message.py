@@ -1,3 +1,8 @@
+from typing import Dict
+
+from histoslider.models.channel import Channel
+
+
 class Message:
 
     """
@@ -51,6 +56,15 @@ class ShowItemChangedMessage(Message):
     def __init__(self, sender, item, tag=None):
         Message.__init__(self, sender, tag=tag)
         self.item = item
+
+
+class CheckedChannelsChangedMessage(Message):
+
+    """ Indicates that checked channels are changed """
+
+    def __init__(self, sender, channels: Dict[str, Channel], tag=None):
+        Message.__init__(self, sender, tag=tag)
+        self.channels = channels
 
 
 class SlideImportedMessage(Message):

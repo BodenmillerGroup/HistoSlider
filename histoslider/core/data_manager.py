@@ -1,4 +1,5 @@
 import os
+from typing import Dict
 
 import gc
 from PyQt5.QtCore import QModelIndex
@@ -8,7 +9,8 @@ from pyqtgraph import BusyCursor
 from histoslider.core.decorators import catch_error
 from histoslider.core.hub import Hub
 from histoslider.core.message import ShowItemChangedMessage, SlideImportedMessage, SlideRemovedMessage, \
-    SlideUnloadedMessage, SlideLoadedMessage
+    SlideUnloadedMessage, SlideLoadedMessage, CheckedChannelsChangedMessage
+from histoslider.models.channel import Channel
 from histoslider.slides.mcd.mcd_slide import McdSlide
 from histoslider.models.workspace_model import WorkspaceModel
 from histoslider.slides.ome_tiff.ome_tiff_slide import OmeTiffSlide
@@ -18,6 +20,7 @@ from histoslider.slides.tiff.tiff_slide import TiffSlide
 class DataManager:
     workspace_model: WorkspaceModel = None
     hub: Hub = None
+    checked_channels: Dict[str, Channel] = dict()
 
     def __init__(self):
         if DataManager.workspace_model and DataManager.hub:
@@ -29,6 +32,7 @@ class DataManager:
     @staticmethod
     def load_workspace(path: str) -> None:
         with BusyCursor():
+            DataManager.checked_channels.clear()
             DataManager.workspace_model.beginResetModel()
             DataManager.workspace_model.load_workspace(path)
             DataManager.workspace_model.endResetModel()
@@ -39,8 +43,15 @@ class DataManager:
             DataManager.workspace_model.save_workspace(path)
 
     @staticmethod
-    def _on_show_item_changed(item) -> None:
+    def _on_show_item_changed(item: Channel) -> None:
+        if item.checked:
+            if item.name not in DataManager.checked_channels:
+                DataManager.checked_channels[item.name] = item
+        else:
+            if item.name in DataManager.checked_channels:
+                DataManager.checked_channels.pop(item.name)
         DataManager.hub.broadcast(ShowItemChangedMessage(DataManager, item))
+        DataManager.hub.broadcast(CheckedChannelsChangedMessage(DataManager, DataManager.checked_channels))
 
     @staticmethod
     # @catch_error("Could not import slide")
@@ -59,6 +70,7 @@ class DataManager:
             DataManager.workspace_model.beginResetModel()
             DataManager.workspace_model.workspace_data.add_slide(slide)
             DataManager.workspace_model.endResetModel()
+            DataManager.checked_channels.clear()
             QPixmapCache.clear()
             DataManager.hub.broadcast(SlideImportedMessage(DataManager))
 
@@ -85,6 +97,7 @@ class DataManager:
                     item.unload()
             DataManager.workspace_model.endResetModel()
             DataManager.hub.broadcast(SlideUnloadedMessage(DataManager))
+            DataManager.checked_channels.clear()
             QPixmapCache.clear()
             gc.collect()
 
@@ -96,5 +109,6 @@ class DataManager:
             DataManager.workspace_model.removeRow(index.row(), parent=index.parent())
         DataManager.workspace_model.endResetModel()
         DataManager.hub.broadcast(SlideRemovedMessage(DataManager))
+        DataManager.checked_channels.clear()
         QPixmapCache.clear()
         gc.collect()

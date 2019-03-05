@@ -56,27 +56,28 @@ class McdSlide(Slide):
                 panorama_meta = PanoramaMeta.from_dict(panorama_item.properties)
                 panorama = Panorama(panorama_meta)
                 self.add_panorama(panorama)
-                for acquisition_roi_item in panorama_item.childs['AcquisitionROI'].values():
-                    acquisition_roi_meta = AcquisitionROIMeta.from_dict(acquisition_roi_item.properties)
-                    roi_points: List[ROIPointMeta] = list()
-                    for roi_point_item in acquisition_roi_item.childs['ROIPoint'].values():
-                        roi_point_meta = ROIPointMeta.from_dict(roi_point_item.properties)
-                        roi_points.append(roi_point_meta)
-                    acquisition_roi = AcquisitionROI(acquisition_roi_meta, roi_points)
-                    panorama.add_acquisition_roi(acquisition_roi)
-                    for acquisition_item in acquisition_roi_item.childs['Acquisition'].values():
-                        acquisition_meta = McdAcquisitionMeta.from_dict(acquisition_item.properties)
-                        # Dict key should be str!
-                        imc_acquisition = mcd.get_imc_acquisition(str(acquisition_meta.id))
-                        acquisition = McdAcquisition(acquisition_meta)
-                        acquisition_roi.add_acquisition(acquisition)
-                        channel_list = list(acquisition_item.childs['AcquisitionChannel'].values())
-                        for i in range(imc_acquisition.n_channels):
-                            acquisition_channel_meta = McdChannelMeta.from_dict(channel_list[i].properties)
-                            img = imc_acquisition.get_img_by_label(imc_acquisition.channel_labels[i])
-                            acquisition_channel = McdChannel(acquisition_channel_meta, imc_acquisition.channel_metals[i],
-                                                             imc_acquisition.channel_mass[i], img)
-                            acquisition.add_channel(acquisition_channel)
+                if 'AcquisitionROI' in panorama_item.childs:
+                    for acquisition_roi_item in panorama_item.childs['AcquisitionROI'].values():
+                        acquisition_roi_meta = AcquisitionROIMeta.from_dict(acquisition_roi_item.properties)
+                        roi_points: List[ROIPointMeta] = list()
+                        for roi_point_item in acquisition_roi_item.childs['ROIPoint'].values():
+                            roi_point_meta = ROIPointMeta.from_dict(roi_point_item.properties)
+                            roi_points.append(roi_point_meta)
+                        acquisition_roi = AcquisitionROI(acquisition_roi_meta, roi_points)
+                        panorama.add_acquisition_roi(acquisition_roi)
+                        for acquisition_item in acquisition_roi_item.childs['Acquisition'].values():
+                            acquisition_meta = McdAcquisitionMeta.from_dict(acquisition_item.properties)
+                            # Dict key should be str!
+                            imc_acquisition = mcd.get_imc_acquisition(str(acquisition_meta.id))
+                            acquisition = McdAcquisition(acquisition_meta)
+                            acquisition_roi.add_acquisition(acquisition)
+                            channel_list = list(acquisition_item.childs['AcquisitionChannel'].values())
+                            for i in range(imc_acquisition.n_channels):
+                                acquisition_channel_meta = McdChannelMeta.from_dict(channel_list[i].properties)
+                                img = imc_acquisition.get_img_by_label(imc_acquisition.channel_labels[i])
+                                acquisition_channel = McdChannel(acquisition_channel_meta, imc_acquisition.channel_metals[i],
+                                                                 imc_acquisition.channel_mass[i], img)
+                                acquisition.add_channel(acquisition_channel)
         super().load()
 
     def unload(self):
