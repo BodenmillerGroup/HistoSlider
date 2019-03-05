@@ -87,8 +87,8 @@ class DataManager:
             DataManager.hub.broadcast(SlideLoadedMessage(DataManager))
 
     @staticmethod
-    @catch_error("Could not unload slide")
-    def unload_slides(indexes: [QModelIndex]) -> None:
+    @catch_error("Could not close slide")
+    def close_slides(indexes: [QModelIndex]) -> None:
         with BusyCursor():
             DataManager.workspace_model.beginResetModel()
             for index in indexes:
@@ -102,8 +102,8 @@ class DataManager:
             gc.collect()
 
     @staticmethod
-    @catch_error("Could not delete slide(s)")
-    def delete_slides(indexes: [QModelIndex]) -> None:
+    @catch_error("Could not remove slide")
+    def remove_slides(indexes: [QModelIndex]) -> None:
         DataManager.workspace_model.beginResetModel()
         for index in indexes:
             DataManager.workspace_model.removeRow(index.row(), parent=index.parent())

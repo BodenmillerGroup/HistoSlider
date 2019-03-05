@@ -41,15 +41,15 @@ class BlendView(ImageView, HubListener):
         self.clear()
 
     def _on_show_item_changed(self, message: CheckedChannelChangedMessage):
-        item = message.channel
-        if isinstance(item, Channel):
-            if item.checked:
-                if item.name not in self.layers:
-                    layer = item.image
-                    self.layers[item.name] = layer
+        channel = message.channel
+        if isinstance(channel, Channel):
+            if channel.checked:
+                if channel.name not in self.layers:
+                    layer = channel.image
+                    self.layers[channel.name] = layer
             else:
-                if item.name in self.layers:
-                    self.layers.pop(item.name)
+                if channel.name in self.layers:
+                    self.layers.pop(channel.name)
 
             if len(self.layers) > 0:
                 blend_image = None

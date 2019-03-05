@@ -104,7 +104,7 @@ class Ui_MainWindow(object):
         MainWindow.setWindowTitle(_translate("MainWindow", "HistoSlider"))
         self.menuFile.setTitle(_translate("MainWindow", "&File"))
         self.menuHelp.setTitle(_translate("MainWindow", "&Help"))
-        self.toolBar.setWindowTitle(_translate("MainWindow", "toolBar"))
+        self.toolBar.setWindowTitle(_translate("MainWindow", "ToolBar"))
         self.dockWidgetOverview.setWindowTitle(_translate("MainWindow", "Overview"))
         self.dockWidgetChannels.setWindowTitle(_translate("MainWindow", "Channels"))
         self.actionExit.setText(_translate("MainWindow", "E&xit"))
