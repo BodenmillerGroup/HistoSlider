@@ -40,22 +40,22 @@ class ErrorMessage(Message):
     pass
 
 
-class TreeViewCurrentItemChangedMessage(Message):
+class SelectedChannelChangedMessage(Message):
 
-    """ Indicates that the current slide has changed """
+    """ Indicates that the selected channel has changed """
 
-    def __init__(self, sender, item, tag=None):
+    def __init__(self, sender, channel: Channel, tag=None):
         Message.__init__(self, sender, tag=tag)
-        self.item = item
+        self.channel = channel
 
 
-class ShowItemChangedMessage(Message):
+class CheckedChannelChangedMessage(Message):
 
-    """ Indicates that the current slide has changed """
+    """ Indicates that the selected channel has changed """
 
-    def __init__(self, sender, item, tag=None):
+    def __init__(self, sender, channel: Channel, tag=None):
         Message.__init__(self, sender, tag=tag)
-        self.item = item
+        self.channel = channel
 
 
 class CheckedChannelsChangedMessage(Message):

@@ -4,7 +4,7 @@ from imctools.io.mcdxmlparser import Acquisition
 
 from histoslider.core.data_manager import DataManager
 from histoslider.core.hub_listener import HubListener
-from histoslider.core.message import TreeViewCurrentItemChangedMessage
+from histoslider.core.message import SelectedChannelChangedMessage
 from histoslider.ui.channels_table_view import ChannelsTableView
 
 
@@ -24,10 +24,10 @@ class ChannelsViewWidget(QWidget, HubListener):
         self.register_to_hub(DataManager.hub)
 
     def register_to_hub(self, hub):
-        hub.subscribe(self, TreeViewCurrentItemChangedMessage, self._on_current_item_changed)
+        hub.subscribe(self, SelectedChannelChangedMessage, self._on_selected_channel_changed)
 
-    def _on_current_item_changed(self, message: TreeViewCurrentItemChangedMessage):
-        item = message.item
+    def _on_selected_channel_changed(self, message: SelectedChannelChangedMessage):
+        item = message.channel
         if isinstance(item, Acquisition):
             acquisition: Acquisition = item
             self.channels_view.set_channels(item.get_channels())

@@ -6,13 +6,13 @@ from dacite import from_dict, Config
 
 @dataclass
 class ROIPointMeta:
-    id: int
-    acquisition_roi_id: int
-    order_number: int
-    slide_x_pos_um: int
-    slide_y_pos_um: int
-    panorama_pixel_x_pos: int
-    panorama_pixel_y_pos: int
+    id: str
+    acquisition_roi_id: str
+    order_number: str
+    slide_x_pos_um: str
+    slide_y_pos_um: str
+    panorama_pixel_x_pos: str
+    panorama_pixel_y_pos: str
 
     @staticmethod
     def from_dict(data: Dict):
@@ -25,13 +25,13 @@ class ROIPointMeta:
                                                 'panorama_pixel_x_pos': 'PanoramaPixelXPos',
                                                 'panorama_pixel_y_pos': 'PanoramaPixelYPos'
                                                 },
-                                         cast=['id',
-                                               'acquisition_roi_id',
-                                               'order_number',
-                                               'slide_x_pos_um',
-                                               'slide_y_pos_um',
-                                               'panorama_pixel_x_pos',
-                                               'panorama_pixel_y_pos'
-                                               ]
+                                         # cast=['id',
+                                         #       'acquisition_roi_id',
+                                         #       'order_number',
+                                         #       'slide_x_pos_um',
+                                         #       'slide_y_pos_um',
+                                         #       'panorama_pixel_x_pos',
+                                         #       'panorama_pixel_y_pos'
+                                         #       ]
                                          ))
         return result

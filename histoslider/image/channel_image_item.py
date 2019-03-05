@@ -5,14 +5,14 @@ from pyqtgraph import ImageItem
 from histoslider.core.decorators import catch_error
 
 
-class SlideImageItem(ImageItem):
+class ChannelImageItem(ImageItem):
     def __init__(self):
         ImageItem.__init__(self)
         self.setPxMode(False)
         self.setAutoDownsample(False)
 
     @catch_error('Cannot load the image')
-    def load_image(self, filename: str, RGB=True):
-        img = Image.open(filename)
+    def load_image(self, file_path: str):
+        img = Image.open(file_path)
         data = np.asarray(img, dtype=np.float32)
         self.setImage(data)

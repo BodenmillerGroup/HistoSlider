@@ -5,10 +5,8 @@ from pyqtgraph import GraphicsView, GraphicsLayout, ViewBox
 
 from histoslider.core.data_manager import DataManager
 from histoslider.core.hub_listener import HubListener
-from histoslider.core.message import TreeViewCurrentItemChangedMessage, SlideRemovedMessage, ShowItemChangedMessage, \
-    SlideUnloadedMessage
+from histoslider.core.message import SlideRemovedMessage, CheckedChannelChangedMessage, SlideUnloadedMessage
 from histoslider.models.channel import Channel
-from histoslider.models.slide import Slide
 from histoslider.ui.tile_view import TileView
 
 
@@ -24,10 +22,9 @@ class TilesView(GraphicsView, HubListener):
         self.tiles: Dict[str, TileView] = dict()
 
     def register_to_hub(self, hub):
-        hub.subscribe(self, TreeViewCurrentItemChangedMessage, self._on_current_item_changed)
         hub.subscribe(self, SlideRemovedMessage, self._on_slide_removed)
         hub.subscribe(self, SlideUnloadedMessage, self._on_slide_unloaded)
-        hub.subscribe(self, ShowItemChangedMessage, self._on_show_item_changed)
+        hub.subscribe(self, CheckedChannelChangedMessage, self._on_checked_channel_changed)
 
     def _on_slide_removed(self, message: SlideRemovedMessage):
         self.layout.clear()
@@ -36,9 +33,6 @@ class TilesView(GraphicsView, HubListener):
     def _on_slide_unloaded(self, message: SlideUnloadedMessage):
         self.layout.clear()
         self.tiles.clear()
-
-    def _on_current_item_changed(self, message: TreeViewCurrentItemChangedMessage):
-        pass
 
     def get_cell(self, i: int):
         l = len(self.tiles.keys())
@@ -50,17 +44,17 @@ class TilesView(GraphicsView, HubListener):
             cols = (0, 1, 0, 1)
         return rows[i], cols[i]
 
-    def _on_show_item_changed(self, message: ShowItemChangedMessage):
-        item = message.item
-        if isinstance(item, Slide) or isinstance(item, Channel):
+    def _on_checked_channel_changed(self, message: CheckedChannelChangedMessage):
+        channel = message.channel
+        if isinstance(channel, Channel):
             self.layout.clear()
-            if item.checked:
-                if item.name not in self.tiles:
-                    tile_image_view = TileView(self.layout, item)
-                    self.tiles[item.name] = tile_image_view
+            if channel.checked:
+                if channel.name not in self.tiles:
+                    tile_image_view = TileView(self.layout, channel)
+                    self.tiles[channel.name] = tile_image_view
             else:
-                if item.name in self.tiles:
-                    self.tiles.pop(item.name)
+                if channel.name in self.tiles:
+                    self.tiles.pop(channel.name)
 
             if len(self.tiles) > 0:
                 first_tile = self.tiles[list(self.tiles.keys())[0]]

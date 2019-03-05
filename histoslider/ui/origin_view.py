@@ -3,11 +3,9 @@ from pyqtgraph import ImageView, ScaleBar
 
 from histoslider.core.data_manager import DataManager
 from histoslider.core.hub_listener import HubListener
-from histoslider.core.message import TreeViewCurrentItemChangedMessage, SlideRemovedMessage, SlideUnloadedMessage
-from histoslider.image.slide_image_item import SlideImageItem
-from histoslider.image.slide_type import SlideType
+from histoslider.core.message import SelectedChannelChangedMessage, SlideRemovedMessage, SlideUnloadedMessage
+from histoslider.image.channel_image_item import ChannelImageItem
 from histoslider.models.channel import Channel
-from histoslider.models.slide import Slide
 
 
 class OriginView(ImageView, HubListener):
@@ -28,7 +26,7 @@ class OriginView(ImageView, HubListener):
         self.channel: Channel = None
 
     def register_to_hub(self, hub):
-        hub.subscribe(self, TreeViewCurrentItemChangedMessage, self._on_current_item_changed)
+        hub.subscribe(self, SelectedChannelChangedMessage, self._on_selected_channel_changed)
         hub.subscribe(self, SlideRemovedMessage, self._on_slide_removed)
         hub.subscribe(self, SlideUnloadedMessage, self._on_slide_unloaded)
 
@@ -53,26 +51,16 @@ class OriginView(ImageView, HubListener):
         self.getHistogramWidget().hide()
         self.clear()
 
-    def _on_current_item_changed(self, message: TreeViewCurrentItemChangedMessage):
-        if not isinstance(message.item, Channel):
+    def _on_selected_channel_changed(self, message: SelectedChannelChangedMessage):
+        if not isinstance(message.channel, Channel):
             return
 
-        loaded = False
-        slide_graphics_item = SlideImageItem()
-        if isinstance(message.item, Slide):
-            slide_data: Slide = message.item
-            if slide_data.slide_type == SlideType.TIFF:
-                slide_graphics_item.load_image(slide_data.slide_path, True)
-                loaded = True
-        elif isinstance(message.item, Channel):
-            self.channel = message.item
-            slide_graphics_item.setImage(self.channel.image)
-            loaded = True
-
-        if loaded:
-            self.setImage(slide_graphics_item.image, levels=self.channel.settings.levels)
-            self.getImageItem().setLookupTable(self.channel.settings.lut)
-            self.getHistogramWidget().show()
+        slide_graphics_item = ChannelImageItem()
+        self.channel = message.channel
+        slide_graphics_item.setImage(self.channel.image)
+        self.setImage(slide_graphics_item.image, levels=self.channel.settings.levels)
+        self.getImageItem().setLookupTable(self.channel.settings.lut)
+        self.getHistogramWidget().show()
 
     def show_scale_bar(self, state: bool):
         if state:

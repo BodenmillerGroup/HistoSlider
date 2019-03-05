@@ -7,7 +7,7 @@ from dacite import from_dict, Config
 @dataclass
 class McdSlideMeta:
     id: int
-    uid: str
+    uid: Optional[str]
     description: str
     slide_type: str
     filename: str
@@ -21,7 +21,7 @@ class McdSlideMeta:
     def from_dict(data: Dict):
         result = from_dict(data_class=McdSlideMeta, data=data,
                            config=Config(remap={'id': 'ID',
-                                                'uid': 'UID',
+                                                # 'uid': 'UID',
                                                 'description': 'Description',
                                                 'slide_type': 'SlideType',
                                                 'filename': 'Filename',

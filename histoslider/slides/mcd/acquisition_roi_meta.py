@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Dict
+from typing import Dict, Optional
 
 from dacite import from_dict, Config
 
@@ -8,7 +8,7 @@ from dacite import from_dict, Config
 class AcquisitionROIMeta:
     id: int
     panorama_id: int
-    roi_type: str
+    roi_type: Optional[str]
 
     @staticmethod
     def from_dict(data: Dict):

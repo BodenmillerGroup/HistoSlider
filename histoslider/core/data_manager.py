@@ -8,7 +8,7 @@ from pyqtgraph import BusyCursor
 
 from histoslider.core.decorators import catch_error
 from histoslider.core.hub import Hub
-from histoslider.core.message import ShowItemChangedMessage, SlideImportedMessage, SlideRemovedMessage, \
+from histoslider.core.message import CheckedChannelChangedMessage, SlideImportedMessage, SlideRemovedMessage, \
     SlideUnloadedMessage, SlideLoadedMessage, CheckedChannelsChangedMessage
 from histoslider.models.channel import Channel
 from histoslider.slides.mcd.mcd_slide import McdSlide
@@ -50,7 +50,7 @@ class DataManager:
         else:
             if item.name in DataManager.checked_channels:
                 DataManager.checked_channels.pop(item.name)
-        DataManager.hub.broadcast(ShowItemChangedMessage(DataManager, item))
+        DataManager.hub.broadcast(CheckedChannelChangedMessage(DataManager, item))
         DataManager.hub.broadcast(CheckedChannelsChangedMessage(DataManager, DataManager.checked_channels))
 
     @staticmethod

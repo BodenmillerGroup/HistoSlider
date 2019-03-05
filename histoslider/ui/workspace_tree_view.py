@@ -3,7 +3,7 @@ from functools import partial
 from PyQt5.QtCore import Qt, QModelIndex, QItemSelection
 from PyQt5.QtWidgets import QTreeView, QWidget, QAbstractItemView, QMenu
 
-from histoslider.core.message import TreeViewCurrentItemChangedMessage
+from histoslider.core.message import SelectedChannelChangedMessage
 from histoslider.core.data_manager import DataManager
 from histoslider.models.slide import Slide
 
@@ -61,7 +61,7 @@ class WorkspaceTreeView(QTreeView):
     def _treeview_current_changed(self, current: QModelIndex, previous: QModelIndex):
         if current.isValid():
             item = current.model().getItem(current)
-            DataManager.hub.broadcast(TreeViewCurrentItemChangedMessage(self, item))
+            DataManager.hub.broadcast(SelectedChannelChangedMessage(self, item))
 
     def _treeview_selection_changed(self, selected: QItemSelection, deselected: QItemSelection):
         indexes = selected.indexes()

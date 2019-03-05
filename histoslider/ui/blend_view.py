@@ -6,7 +6,7 @@ from skimage import color
 
 from histoslider.core.data_manager import DataManager
 from histoslider.core.hub_listener import HubListener
-from histoslider.core.message import SlideRemovedMessage, ShowItemChangedMessage, SlideUnloadedMessage
+from histoslider.core.message import SlideRemovedMessage, CheckedChannelChangedMessage, SlideUnloadedMessage
 from histoslider.models.channel import Channel
 
 
@@ -30,7 +30,7 @@ class BlendView(ImageView, HubListener):
     def register_to_hub(self, hub):
         hub.subscribe(self, SlideRemovedMessage, self._on_slide_removed)
         hub.subscribe(self, SlideUnloadedMessage, self._on_slide_unloaded)
-        hub.subscribe(self, ShowItemChangedMessage, self._on_show_item_changed)
+        hub.subscribe(self, CheckedChannelChangedMessage, self._on_show_item_changed)
 
     def _on_slide_removed(self, message: SlideRemovedMessage):
         self.getHistogramWidget().hide()
@@ -40,8 +40,8 @@ class BlendView(ImageView, HubListener):
         self.getHistogramWidget().hide()
         self.clear()
 
-    def _on_show_item_changed(self, message: ShowItemChangedMessage):
-        item = message.item
+    def _on_show_item_changed(self, message: CheckedChannelChangedMessage):
+        item = message.channel
         if isinstance(item, Channel):
             if item.checked:
                 if item.name not in self.layers:
