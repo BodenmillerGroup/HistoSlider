@@ -6,7 +6,7 @@ from histoslider.models.workspace import Workspace
 
 class WorkspaceModel(QAbstractItemModel):
 
-    show_item_changed = pyqtSignal(BaseData)
+    checked_item_changed = pyqtSignal(BaseData)
 
     def __init__(self, parent=None):
         super(WorkspaceModel, self).__init__(parent)
@@ -98,7 +98,7 @@ class WorkspaceModel(QAbstractItemModel):
         item = self.getItem(index)
         if role == Qt.CheckStateRole:
             item.checked = not item.checked
-            self.show_item_changed.emit(item)
+            self.checked_item_changed.emit(item)
             return True
         else:
             return False

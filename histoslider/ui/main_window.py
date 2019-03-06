@@ -104,7 +104,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
     def import_slide_dialog(self):
         options = QFileDialog.Options()
-        file_ext_strings = ["*.mcd", "*.tiff", "*.tif"]
+        file_ext_strings = ["*.mcd", "*.tiff", "*.tif", "*.txt"]
         file_ext_string = " ".join(file_ext_strings)
         file_path, _ = QFileDialog.getOpenFileName(
             self,

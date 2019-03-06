@@ -5,12 +5,12 @@ from PyQt5.QtGui import QIcon
 from histoslider.models.base_data import BaseData
 
 
-class McdROIPoint(BaseData):
+class ROIPoint(BaseData):
     def __init__(self, label: str, meta: dict):
         super().__init__(label, meta)
 
     @property
-    def acquisition_roi(self) -> "McdAcquisitionROI":
+    def acquisition_roi(self) -> "AcquisitionROI":
         return self.parent()
 
     @property

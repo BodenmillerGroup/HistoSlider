@@ -4,21 +4,21 @@ from typing import List
 
 from PyQt5.QtGui import QIcon
 
-from histoslider.slides.mcd.mcd_acquisition import McdAcquisition
+from histoslider.models.acquisition import Acquisition
 from histoslider.models.base_data import BaseData
-from histoslider.slides.mcd.mcd_roi_point import McdROIPoint
+from histoslider.models.roi_point import ROIPoint
 
 
-class McdAcquisitionROI(BaseData):
-    def __init__(self, label: str, meta: dict, roi_points: List[McdROIPoint]):
+class AcquisitionROI(BaseData):
+    def __init__(self, label: str, meta: dict, roi_points: List[ROIPoint]):
         super().__init__(label, meta)
-        self.roi_points: List[McdROIPoint] = roi_points
+        self.roi_points: List[ROIPoint] = roi_points
 
-    def add_acquisition(self, acquisition: McdAcquisition):
+    def add_acquisition(self, acquisition: Acquisition):
         self.addChild(acquisition)
 
     @property
-    def panorama(self) -> "McdPanorama":
+    def panorama(self) -> "Panorama":
         return self.parent()
 
     @property
@@ -30,5 +30,5 @@ class McdAcquisitionROI(BaseData):
         return "Acquisition ROI"
 
     @property
-    def acquisitions(self) -> List[McdAcquisition]:
+    def acquisitions(self) -> List[Acquisition]:
         return self._children

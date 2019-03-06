@@ -9,7 +9,7 @@ from histoslider.models.base_data import BaseData
 
 
 class Acquisition(BaseData):
-    def __init__(self, label: str, meta: dict = None):
+    def __init__(self, label: str, meta: dict):
         super().__init__(label, meta)
 
     def add_channel(self, channel: Channel):
@@ -26,3 +26,7 @@ class Acquisition(BaseData):
     @property
     def channels(self) -> List[Channel]:
         return self._children
+
+    @property
+    def id(self):
+        return self.meta["ID"]
