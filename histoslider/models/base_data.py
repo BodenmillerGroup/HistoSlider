@@ -5,8 +5,9 @@ class BaseData:
     column_names = ['Name']
     column_flags = [Qt.ItemIsEnabled | Qt.ItemIsSelectable | Qt.ItemIsUserCheckable]
 
-    def __init__(self, name: str):
+    def __init__(self, name: str, meta: dict = None):
         self.name = name
+        self.meta: dict = meta
 
         self._parent = None
         self._children = []

@@ -11,14 +11,12 @@ from histoslider.image.slide_type import SlideType
 from histoslider.models.slide import Slide
 from histoslider.slides.ome_tiff.ome_tiff_acquisition import OmeTiffAcquisition
 from histoslider.slides.ome_tiff.ome_tiff_channel import OmeTiffChannel
-from histoslider.slides.ome_tiff.ome_tiff_slide_meta import OmeTiffSlideMeta
 
 
 class OmeTiffSlide(Slide):
     def __init__(self, slide_path: str):
         file_name = os.path.basename(slide_path)
         super().__init__(file_name, slide_path, SlideType.OMETIFF)
-        self.meta: OmeTiffSlideMeta = None
 
     @property
     def icon(self):
@@ -43,13 +41,17 @@ class OmeTiffSlide(Slide):
         if self.loaded:
             return
         ome = OmetiffParser(self.slide_path)
-        self.meta = OmeTiffSlideMeta.from_dict(ome.meta_dict)
+        self.meta = ome.meta_dict
         imc_acquisition = ome.get_imc_acquisition()
         acquisition = OmeTiffAcquisition(imc_acquisition)
         self.add_acquisition(acquisition)
         for i in range(imc_acquisition.n_channels):
             img = imc_acquisition.get_img_by_label(imc_acquisition.channel_labels[i])
-            channel = OmeTiffChannel(imc_acquisition.channel_labels[i], imc_acquisition.channel_metals[i], imc_acquisition.channel_mass[i], img)
+            meta = dict()
+            meta['Label'] = imc_acquisition.channel_labels[i]
+            meta['Metal'] = imc_acquisition.channel_metals[i]
+            meta['Mass'] = imc_acquisition.channel_mass[i]
+            channel = OmeTiffChannel(imc_acquisition.channel_labels[i], meta, img)
             acquisition.add_channel(channel)
         super().load()
 

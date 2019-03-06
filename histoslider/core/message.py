@@ -1,5 +1,6 @@
 from typing import Dict
 
+from histoslider.models.base_data import BaseData
 from histoslider.models.channel import Channel
 
 
@@ -40,13 +41,13 @@ class ErrorMessage(Message):
     pass
 
 
-class SelectedChannelChangedMessage(Message):
+class SelectedTreeNodeChangedMessage(Message):
 
-    """ Indicates that the selected channel has changed """
+    """ Indicates that the selected TreeView node has changed """
 
-    def __init__(self, sender, channel: Channel, tag=None):
+    def __init__(self, sender, node: BaseData, tag=None):
         Message.__init__(self, sender, tag=tag)
-        self.channel = channel
+        self.node = node
 
 
 class CheckedChannelChangedMessage(Message):

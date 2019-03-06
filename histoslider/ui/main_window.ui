@@ -100,6 +100,17 @@
     <layout class="QVBoxLayout" name="verticalLayoutChannels"/>
    </widget>
   </widget>
+  <widget class="QDockWidget" name="dockWidgetInfo">
+   <property name="windowTitle">
+    <string>Info</string>
+   </property>
+   <attribute name="dockWidgetArea">
+    <number>1</number>
+   </attribute>
+   <widget class="QWidget" name="dockWidgetContentsInfo">
+    <layout class="QVBoxLayout" name="verticalLayoutInfo"/>
+   </widget>
+  </widget>
   <action name="actionExit">
    <property name="icon">
     <iconset resource="../../resources/resources.qrc">
@@ -158,6 +169,7 @@
    </property>
   </action>
   <zorder>dockWidgetChannels</zorder>
+  <zorder>dockWidgetInfo</zorder>
  </widget>
  <resources>
   <include location="../../resources/resources.qrc"/>

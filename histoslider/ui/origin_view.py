@@ -3,7 +3,7 @@ from pyqtgraph import ImageView, ScaleBar
 
 from histoslider.core.data_manager import DataManager
 from histoslider.core.hub_listener import HubListener
-from histoslider.core.message import SelectedChannelChangedMessage, SlideRemovedMessage, SlideUnloadedMessage
+from histoslider.core.message import SelectedTreeNodeChangedMessage, SlideRemovedMessage, SlideUnloadedMessage
 from histoslider.image.channel_image_item import ChannelImageItem
 from histoslider.models.channel import Channel
 
@@ -26,7 +26,7 @@ class OriginView(ImageView, HubListener):
         self.channel: Channel = None
 
     def register_to_hub(self, hub):
-        hub.subscribe(self, SelectedChannelChangedMessage, self._on_selected_channel_changed)
+        hub.subscribe(self, SelectedTreeNodeChangedMessage, self._on_selected_tree_node_changed)
         hub.subscribe(self, SlideRemovedMessage, self._on_slide_removed)
         hub.subscribe(self, SlideUnloadedMessage, self._on_slide_unloaded)
 
@@ -51,12 +51,12 @@ class OriginView(ImageView, HubListener):
         self.getHistogramWidget().hide()
         self.clear()
 
-    def _on_selected_channel_changed(self, message: SelectedChannelChangedMessage):
-        if not isinstance(message.channel, Channel):
+    def _on_selected_tree_node_changed(self, message: SelectedTreeNodeChangedMessage):
+        if not isinstance(message.node, Channel):
             return
 
         slide_graphics_item = ChannelImageItem()
-        self.channel = message.channel
+        self.channel = message.node
         slide_graphics_item.setImage(self.channel.image)
         self.setImage(slide_graphics_item.image, levels=self.channel.settings.levels)
         self.getImageItem().setLookupTable(self.channel.settings.lut)

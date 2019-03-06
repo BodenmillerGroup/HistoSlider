@@ -7,8 +7,8 @@ from histoslider.models.base_data import BaseData
 
 
 class Slide(BaseData):
-    def __init__(self, label: str, slide_path: str, slide_type: SlideType):
-        super().__init__(label)
+    def __init__(self, label: str, slide_path: str, slide_type: SlideType, meta: dict = None):
+        super().__init__(label, meta)
         self.slide_path: str = slide_path
         self.slide_type: SlideType = slide_type
         self.loaded: bool = False

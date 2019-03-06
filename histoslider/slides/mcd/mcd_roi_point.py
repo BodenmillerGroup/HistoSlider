@@ -3,16 +3,14 @@ from __future__ import annotations
 from PyQt5.QtGui import QIcon
 
 from histoslider.models.base_data import BaseData
-from histoslider.slides.mcd.roi_point_meta import ROIPointMeta
 
 
-class ROIPoint(BaseData):
-    def __init__(self, meta: ROIPointMeta):
-        super().__init__(str(meta.order_number))
-        self.meta = meta
+class McdROIPoint(BaseData):
+    def __init__(self, label: str, meta: dict):
+        super().__init__(label, meta)
 
     @property
-    def acquisition_roi(self) -> "AcquisitionROI":
+    def acquisition_roi(self) -> "McdAcquisitionROI":
         return self.parent()
 
     @property

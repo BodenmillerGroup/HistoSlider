@@ -41,7 +41,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.verticalLayoutOverview.addWidget(self.workspace_tree_view)
 
         self.info_widget = InfoWidget(self.dockWidgetContentsOverview)
-        self.verticalLayoutOverview.addWidget(self.info_widget)
+        self.verticalLayoutInfo.addWidget(self.info_widget)
 
         self.channels_view_widget = ChannelsViewWidget(self.dockWidgetContentsChannels)
         self.verticalLayoutChannels.addWidget(self.channels_view_widget)

@@ -1,5 +1,3 @@
-from typing import Dict
-
 from PyQt5.QtCore import QAbstractTableModel, QModelIndex, Qt
 
 
@@ -7,7 +5,7 @@ class ChannelsModel(QAbstractTableModel):
 
     header = ("Name", "Metall", "Mass")
 
-    def __init__(self, channels: Dict, parent=None):
+    def __init__(self, channels: dict, parent=None):
         QAbstractTableModel.__init__(self, parent)
         self._channels = channels
 

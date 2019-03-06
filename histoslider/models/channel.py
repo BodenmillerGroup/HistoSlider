@@ -9,10 +9,8 @@ from histoslider.models.base_data import BaseData
 
 
 class Channel(BaseData):
-    def __init__(self, label: str, metal: str, mass: float, image: ndarray):
-        super().__init__(label)
-        self.metal = metal
-        self.mass = mass
+    def __init__(self, label: str, meta: dict, image: ndarray):
+        super().__init__(label, meta)
         self.image = image
 
         self.settings = ChannelSettings()
@@ -29,3 +27,11 @@ class Channel(BaseData):
     def rgb_image(self):
         rgb = color.gray2rgb(self.image, False)
         return rgb * self.settings.color_multiplier
+
+    @property
+    def metal(self) -> str:
+        return self.meta["Metal"] if "Metal" in self.meta else None
+
+    @property
+    def mass(self) -> float:
+        return float(self.meta["Mass"]) if "Mass" in self.meta else None
