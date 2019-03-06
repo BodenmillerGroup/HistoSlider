@@ -5,6 +5,7 @@ from imctools.io.mcdxmlparser import Acquisition
 from histoslider.core.data_manager import DataManager
 from histoslider.core.hub_listener import HubListener
 from histoslider.core.message import SelectedTreeNodeChangedMessage
+from histoslider.r.r_manager import RManager
 from histoslider.ui.channels_table_view import ChannelsTableView
 
 
@@ -33,7 +34,7 @@ class ChannelsViewWidget(QWidget, HubListener):
             self.channels_view.set_channels(item.get_channels())
 
     def fit_all_tiles(self):
-        pass
+        r = RManager()
 
     @property
     def toolbar(self) -> QToolBar:
