@@ -36,6 +36,7 @@ class Ui_MainWindow(object):
         self.statusBar.setObjectName("statusBar")
         MainWindow.setStatusBar(self.statusBar)
         self.toolBar = QtWidgets.QToolBar(MainWindow)
+        self.toolBar.setToolButtonStyle(QtCore.Qt.ToolButtonTextBesideIcon)
         self.toolBar.setObjectName("toolBar")
         MainWindow.addToolBar(QtCore.Qt.TopToolBarArea, self.toolBar)
         self.dockWidgetOverview = QtWidgets.QDockWidget(MainWindow)
@@ -103,6 +104,7 @@ class Ui_MainWindow(object):
         self.toolBar.addAction(self.actionSaveWorkspace)
         self.toolBar.addSeparator()
         self.toolBar.addAction(self.actionImportSlide)
+        self.toolBar.addSeparator()
 
         self.retranslateUi(MainWindow)
         self.tabWidget.setCurrentIndex(-1)

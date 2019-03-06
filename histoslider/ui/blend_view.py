@@ -1,7 +1,7 @@
 from typing import Dict
 
 from PyQt5.QtWidgets import QWidget
-from pyqtgraph import ImageView, ScaleBar
+from pyqtgraph import ImageView, ScaleBar, makeARGB
 from skimage import color
 
 from histoslider.core.data_manager import DataManager
@@ -20,7 +20,7 @@ class BlendView(ImageView, HubListener):
         self.register_to_hub(DataManager.hub)
         self.getHistogramWidget().hide()
 
-        self.layers: Dict[str, object] = dict()
+        self.channels: Dict[str, Channel] = dict()
 
         self.scale = ScaleBar(size=10, suffix='μm')
         self.scale.setParentItem(self.getView())
@@ -30,7 +30,7 @@ class BlendView(ImageView, HubListener):
     def register_to_hub(self, hub):
         hub.subscribe(self, SlideRemovedMessage, self._on_slide_removed)
         hub.subscribe(self, SlideUnloadedMessage, self._on_slide_unloaded)
-        hub.subscribe(self, CheckedChannelChangedMessage, self._on_show_item_changed)
+        hub.subscribe(self, CheckedChannelChangedMessage, self._on_checked_channel_changed)
 
     def _on_slide_removed(self, message: SlideRemovedMessage):
         self.getHistogramWidget().hide()
@@ -40,26 +40,26 @@ class BlendView(ImageView, HubListener):
         self.getHistogramWidget().hide()
         self.clear()
 
-    def _on_show_item_changed(self, message: CheckedChannelChangedMessage):
+    def _on_checked_channel_changed(self, message: CheckedChannelChangedMessage):
         channel = message.channel
         if isinstance(channel, Channel):
             if channel.checked:
-                if channel.name not in self.layers:
-                    layer = channel.image
-                    self.layers[channel.name] = layer
+                if channel.name not in self.channels:
+                    self.channels[channel.name] = channel
             else:
-                if channel.name in self.layers:
-                    self.layers.pop(channel.name)
+                if channel.name in self.channels:
+                    self.channels.pop(channel.name)
 
-            if len(self.layers) > 0:
+            if len(self.channels) > 0:
                 blend_image = None
                 alpha = 0.5
-                for i, layer in enumerate(self.layers.values()):
-                    rgb_image = color.gray2rgb(layer, False)
+                for i, ch in enumerate(self.channels.values()):
+                    argb, alpha = makeARGB(ch.image, lut=ch.settings.lut, levels=ch.settings.levels)
+                    # argb = color.gray2rgb(ch.image, False)
                     if blend_image is None:
-                        blend_image = rgb_image * self.color_multiplier[i]
+                        blend_image = argb
                     else:
-                        blend_image = alpha * blend_image + (1 - alpha) * (rgb_image * self.color_multiplier[i])
+                        blend_image = alpha * blend_image + (1 - alpha) * argb
                 self.setImage(blend_image)
                 self.getHistogramWidget().show()
 

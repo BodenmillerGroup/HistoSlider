@@ -4,7 +4,6 @@ from pyqtgraph import ImageView, ScaleBar
 from histoslider.core.data_manager import DataManager
 from histoslider.core.hub_listener import HubListener
 from histoslider.core.message import SelectedTreeNodeChangedMessage, SlideRemovedMessage, SlideUnloadedMessage
-from histoslider.image.channel_image_item import ChannelImageItem
 from histoslider.models.channel import Channel
 
 
@@ -54,11 +53,9 @@ class OriginView(ImageView, HubListener):
     def _on_selected_tree_node_changed(self, message: SelectedTreeNodeChangedMessage):
         if not isinstance(message.node, Channel):
             return
-
-        slide_graphics_item = ChannelImageItem()
         self.channel = message.node
-        slide_graphics_item.setImage(self.channel.image)
-        self.setImage(slide_graphics_item.image, levels=self.channel.settings.levels)
+
+        self.setImage(self.channel.image, levels=self.channel.settings.levels)
         self.getImageItem().setLookupTable(self.channel.settings.lut)
         self.getHistogramWidget().show()
 
