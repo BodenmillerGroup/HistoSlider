@@ -1,3 +1,9 @@
+from typing import Dict
+
+from histoslider.models.base_data import BaseData
+from histoslider.models.channel import Channel
+
+
 class Message:
 
     """
@@ -35,22 +41,31 @@ class ErrorMessage(Message):
     pass
 
 
-class TreeViewCurrentItemChangedMessage(Message):
+class SelectedTreeNodeChangedMessage(Message):
 
-    """ Indicates that the current slide has changed """
+    """ Indicates that the selected TreeView node has changed """
 
-    def __init__(self, sender, item, tag=None):
+    def __init__(self, sender, node: BaseData, tag=None):
         Message.__init__(self, sender, tag=tag)
-        self.item = item
+        self.node = node
 
 
-class ShowItemChangedMessage(Message):
+class CheckedChannelChangedMessage(Message):
 
-    """ Indicates that the current slide has changed """
+    """ Indicates that the selected channel has changed """
 
-    def __init__(self, sender, item, tag=None):
+    def __init__(self, sender, channel: Channel, tag=None):
         Message.__init__(self, sender, tag=tag)
-        self.item = item
+        self.channel = channel
+
+
+class CheckedChannelsChangedMessage(Message):
+
+    """ Indicates that checked channels are changed """
+
+    def __init__(self, sender, channels: Dict[str, Channel], tag=None):
+        Message.__init__(self, sender, tag=tag)
+        self.channels = channels
 
 
 class SlideImportedMessage(Message):

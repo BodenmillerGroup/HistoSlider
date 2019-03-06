@@ -6,8 +6,8 @@ from histoslider.models.channel import Channel
 
 
 class OmeTiffChannel(Channel):
-    def __init__(self, label: str, metal: str, mass: float, image: ndarray):
-        super().__init__(label, metal, mass, image)
+    def __init__(self, label: str, meta: dict, image: ndarray):
+        super().__init__(label, meta, image)
 
     @property
     def acquisition(self) -> "OmeTiffAcquisition":

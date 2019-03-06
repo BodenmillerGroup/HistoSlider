@@ -5,22 +5,20 @@ from typing import List
 from PyQt5.QtGui import QIcon
 
 from histoslider.slides.mcd.mcd_acquisition import McdAcquisition
-from histoslider.slides.mcd.acquisition_roi_meta import AcquisitionROIMeta
 from histoslider.models.base_data import BaseData
-from histoslider.slides.mcd.roi_point_meta import ROIPointMeta
+from histoslider.slides.mcd.mcd_roi_point import McdROIPoint
 
 
-class AcquisitionROI(BaseData):
-    def __init__(self, meta: AcquisitionROIMeta, roi_points: List[ROIPointMeta]):
-        super().__init__(meta.roi_type)
-        self.meta: AcquisitionROIMeta = meta
-        self.roi_points: List[ROIPointMeta] = roi_points
+class McdAcquisitionROI(BaseData):
+    def __init__(self, label: str, meta: dict, roi_points: List[McdROIPoint]):
+        super().__init__(label, meta)
+        self.roi_points: List[McdROIPoint] = roi_points
 
     def add_acquisition(self, acquisition: McdAcquisition):
         self.addChild(acquisition)
 
     @property
-    def panorama(self) -> "Panorama":
+    def panorama(self) -> "McdPanorama":
         return self.parent()
 
     @property

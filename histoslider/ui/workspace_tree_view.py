@@ -3,7 +3,7 @@ from functools import partial
 from PyQt5.QtCore import Qt, QModelIndex, QItemSelection
 from PyQt5.QtWidgets import QTreeView, QWidget, QAbstractItemView, QMenu
 
-from histoslider.core.message import TreeViewCurrentItemChangedMessage
+from histoslider.core.message import SelectedTreeNodeChangedMessage
 from histoslider.core.data_manager import DataManager
 from histoslider.models.slide import Slide
 
@@ -34,14 +34,14 @@ class WorkspaceTreeView(QTreeView):
         menu = QMenu(self)
 
         if level == 1:
-            action = menu.addAction("Load slide")
-            action.triggered.connect(partial(self._load_slides, indexes))
+            action = menu.addAction("Load")
+            action.triggered.connect(partial(self._load, indexes))
 
-            action = menu.addAction("Unload slide")
-            action.triggered.connect(partial(self._unload_slides, indexes))
+            action = menu.addAction("Close")
+            action.triggered.connect(partial(self._close, indexes))
 
-            action = menu.addAction("Delete slide")
-            action.triggered.connect(partial(self._delete_slides, indexes))
+            action = menu.addAction("Remove")
+            action.triggered.connect(partial(self._remove, indexes))
         elif level == 2:
             menu.addAction("Edit object/container")
         elif level == 3:
@@ -49,19 +49,19 @@ class WorkspaceTreeView(QTreeView):
 
         menu.exec_(self.viewport().mapToGlobal(position))
 
-    def _unload_slides(self, indexes: [QModelIndex]):
-        DataManager.unload_slides(indexes)
+    def _close(self, indexes: [QModelIndex]):
+        DataManager.close_slides(indexes)
 
-    def _load_slides(self, indexes: [QModelIndex]):
+    def _load(self, indexes: [QModelIndex]):
         DataManager.load_slides(indexes)
 
-    def _delete_slides(self, indexes: [QModelIndex]):
-        DataManager.delete_slides(indexes)
+    def _remove(self, indexes: [QModelIndex]):
+        DataManager.remove_slides(indexes)
 
     def _treeview_current_changed(self, current: QModelIndex, previous: QModelIndex):
         if current.isValid():
             item = current.model().getItem(current)
-            DataManager.hub.broadcast(TreeViewCurrentItemChangedMessage(self, item))
+            DataManager.hub.broadcast(SelectedTreeNodeChangedMessage(self, item))
 
     def _treeview_selection_changed(self, selected: QItemSelection, deselected: QItemSelection):
         indexes = selected.indexes()

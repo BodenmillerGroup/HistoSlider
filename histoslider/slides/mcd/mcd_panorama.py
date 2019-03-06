@@ -4,17 +4,16 @@ from typing import List
 
 from PyQt5.QtGui import QIcon
 
-from histoslider.slides.mcd.acquisition_roi import AcquisitionROI
+from histoslider.slides.mcd.mcd_acquisition_roi import McdAcquisitionROI
 from histoslider.models.base_data import BaseData
-from histoslider.slides.mcd.panorama_meta import PanoramaMeta
 
 
-class Panorama(BaseData):
-    def __init__(self, meta: PanoramaMeta):
-        super().__init__(meta.description)
+class McdPanorama(BaseData):
+    def __init__(self, label: str, meta: dict):
+        super().__init__(label, meta)
         self.meta = meta
 
-    def add_acquisition_roi(self, acquisition_roi: AcquisitionROI):
+    def add_acquisition_roi(self, acquisition_roi: McdAcquisitionROI):
         self.addChild(acquisition_roi)
 
     @property
@@ -27,8 +26,8 @@ class Panorama(BaseData):
 
     @property
     def tooltip(self):
-        return "Panorama"
+        return "MCD Panorama"
 
     @property
-    def acquisition_rois(self) -> List[AcquisitionROI]:
+    def acquisition_rois(self) -> List[McdAcquisitionROI]:
         return self._children
