@@ -40,7 +40,10 @@ class TilesView(GraphicsView, HubListener):
 
     def get_cell(self, i: int):
         l = len(self.tiles.keys())
-        if l > 4:
+        if l > 9:
+            rows = (0, 0, 0, 0, 1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3)
+            cols = (0, 1, 2, 3, 0, 1, 2, 3, 0, 1, 2, 3, 0, 1, 2, 3)
+        elif l > 4:
             rows = (0, 0, 0, 1, 1, 1, 2, 2, 2)
             cols = (0, 1, 2, 0, 1, 2, 0, 1, 2)
         else:
@@ -49,6 +52,7 @@ class TilesView(GraphicsView, HubListener):
         return rows[i], cols[i]
 
     def _on_selected_channels_changed(self, message: SelectedChannelsChangedMessage):
+        if len()
         self.clear()
         if len(message.channels) > 0:
             for channel in message.channels.values():
