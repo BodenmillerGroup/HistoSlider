@@ -79,7 +79,7 @@ class DataManager:
                 DataManager.hub.broadcast(SlideImportedMessage(DataManager))
 
     @staticmethod
-    @catch_error("Could not load slide")
+    # @catch_error("Could not load slide")
     def load_slides(indexes: [QModelIndex]) -> None:
         with BusyCursor():
             DataManager.workspace_model.beginResetModel()

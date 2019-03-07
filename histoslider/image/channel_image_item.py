@@ -6,8 +6,8 @@ from histoslider.core.decorators import catch_error
 
 
 class ChannelImageItem(ImageItem):
-    def __init__(self):
-        ImageItem.__init__(self)
+    def __init__(self, image: np.ndarray = None, **kargs):
+        ImageItem.__init__(self, image, **kargs)
         self.setPxMode(False)
         self.setAutoDownsample(False)
 

@@ -19,7 +19,7 @@ class OriginView(ImageView, HubListener):
 
         self.scale = ScaleBar(size=10, suffix='μm')
         self.scale.setParentItem(self.getView())
-        self.scale.anchor((1, 1), (1, 1), offset=(-20, -20))
+        self.scale.anchor((1, 1), (1, 1), offset=(-40, -40))
         self.scale.hide()
 
         self.channel: Channel = None
@@ -39,7 +39,7 @@ class OriginView(ImageView, HubListener):
     def _on_lookup_table_changed(self):
         if self.channel is None or self.getImageItem() is None:
             return
-        lut = self.getHistogramWidget().item.getLookupTable(n=round(self.channel.settings.levels[1]), alpha=0.5)
+        lut = self.getHistogramWidget().item.getLookupTable(n=int(self.channel.settings.levels[1]), alpha=0.5)
         self.channel.settings.lut = lut
 
     def _on_slide_removed(self, message: SlideRemovedMessage):

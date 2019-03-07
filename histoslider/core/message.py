@@ -1,4 +1,4 @@
-from typing import Dict
+from typing import Dict, List
 
 from histoslider.models.base_data import BaseData
 from histoslider.models.channel import Channel
@@ -62,6 +62,15 @@ class CheckedChannelChangedMessage(Message):
 class CheckedChannelsChangedMessage(Message):
 
     """ Indicates that checked channels are changed """
+
+    def __init__(self, sender, channels: Dict[str, Channel], tag=None):
+        Message.__init__(self, sender, tag=tag)
+        self.channels = channels
+
+
+class SelectedChannelsChangedMessage(Message):
+
+    """ Indicates that selected channels are changed """
 
     def __init__(self, sender, channels: Dict[str, Channel], tag=None):
         Message.__init__(self, sender, tag=tag)

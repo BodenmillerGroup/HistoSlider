@@ -38,15 +38,15 @@ class McdLoader(Loader):
                             # Dict key should be str!
                             acquisition = Acquisition(acquisition_item.properties['Description'], acquisition_item.properties)
                             acquisition_roi.add_acquisition(acquisition)
-                            channel_list = list(acquisition_item.childs['AcquisitionChannel'].values())
                             imc_acquisition = mcd.get_imc_acquisition(acquisition.id)
                             for i in range(imc_acquisition.n_channels):
-                                img = imc_acquisition.get_img_by_label(imc_acquisition.channel_labels[i])
-                                ch = channel_list[i]
-                                meta = ch.properties.copy()
+                                meta = dict()
+                                label = imc_acquisition.channel_labels[i]
+                                meta['Label'] = label
                                 meta['Metal'] = imc_acquisition.channel_metals[i]
                                 meta['Mass'] = imc_acquisition.channel_mass[i]
-                                channel = Channel(meta['ChannelLabel'], meta, img)
+                                img = imc_acquisition.get_img_by_label(label)
+                                channel = Channel(label, meta, img)
                                 acquisition.add_channel(channel)
             return slide
 

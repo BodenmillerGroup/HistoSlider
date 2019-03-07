@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from PyQt5.QtGui import QIcon
 from numpy.core.multiarray import ndarray
-from skimage import color
+from pyqtgraph import makeARGB
 
 from histoslider.image.channel_settings import ChannelSettings
 from histoslider.models.base_data import BaseData
@@ -13,7 +13,7 @@ class Channel(BaseData):
         super().__init__(label, meta)
         self.image = image
         self.processed_image = None
-        self.settings = ChannelSettings()
+        self.settings = ChannelSettings(image)
 
     @property
     def icon(self):
@@ -24,9 +24,8 @@ class Channel(BaseData):
         return "Acquisition channel"
 
     @property
-    def rgb_image(self):
-        rgb = color.gray2rgb(self.image, False)
-        return rgb * self.settings.color_multiplier
+    def label(self) -> str:
+        return self.meta["Label"] if "label" in self.meta else None
 
     @property
     def metal(self) -> str:
@@ -35,3 +34,7 @@ class Channel(BaseData):
     @property
     def mass(self) -> float:
         return float(self.meta["Mass"]) if "Mass" in self.meta else None
+
+    def get_argb(self):
+        argb, alpha = makeARGB(self.image, lut=self.settings.lut, levels=self.settings.levels)
+        return argb

@@ -1,10 +1,10 @@
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QWidget, QVBoxLayout, QToolBar, QAction
-from imctools.io.mcdxmlparser import Acquisition
 
 from histoslider.core.data_manager import DataManager
 from histoslider.core.hub_listener import HubListener
 from histoslider.core.message import SelectedTreeNodeChangedMessage
+from histoslider.models.acquisition import Acquisition
 from histoslider.ui.channels_table_view import ChannelsTableView
 
 
@@ -27,10 +27,9 @@ class ChannelsViewWidget(QWidget, HubListener):
         hub.subscribe(self, SelectedTreeNodeChangedMessage, self._on_selected_tree_node_changed)
 
     def _on_selected_tree_node_changed(self, message: SelectedTreeNodeChangedMessage):
-        item = message.node
-        if isinstance(item, Acquisition):
-            acquisition: Acquisition = item
-            self.channels_view.set_channels(item.get_channels())
+        if isinstance(message.node, Acquisition):
+            acquisition: Acquisition = message.node
+            self.channels_view.set_channels(acquisition.channels)
 
     def fit_all_tiles(self):
         pass

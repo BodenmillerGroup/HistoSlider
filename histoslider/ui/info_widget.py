@@ -10,13 +10,14 @@ class InfoWidget(QTableWidget, HubListener):
         QTableWidget.__init__(self, parent)
         HubListener.__init__(self)
 
-        # self.setSelectionBehavior(QTableWidget.SelectRows)
+        self.setSortingEnabled(True)
         self.setEditTriggers(QTableWidget.NoEditTriggers)
         self.verticalHeader().hide()
-        self.verticalHeader().setDefaultSectionSize(10);
+        self.verticalHeader().setDefaultSectionSize(10)
         self.setColumnCount(2)
         self.setHorizontalHeaderLabels(('Key', 'Value'))
-        self.horizontalHeader().setSectionResizeMode(0, QHeaderView.ResizeToContents)
+        self.setHorizontalScrollMode(QTableWidget.ScrollPerPixel)
+        self.horizontalHeader().setSectionResizeMode(0, QHeaderView.Interactive)
         self.horizontalHeader().setSectionResizeMode(1, QHeaderView.ResizeToContents)
 
         self.register_to_hub(DataManager.hub)
