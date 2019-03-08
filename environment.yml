@@ -30,5 +30,6 @@ dependencies:
     - PyInstaller
     - flake8
     - scikit-image
+    - opencv-python
     - git+https://github.com/BodenmillerGroup/imctools.git
 prefix: /home/anton/anaconda3/envs/HistoSlider

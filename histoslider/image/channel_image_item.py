@@ -3,11 +3,13 @@ from PIL import Image
 from pyqtgraph import ImageItem
 
 from histoslider.core.decorators import catch_error
+from histoslider.models.channel import Channel
 
 
 class ChannelImageItem(ImageItem):
-    def __init__(self, image: np.ndarray = None, **kargs):
-        ImageItem.__init__(self, image, **kargs)
+    def __init__(self, channel: Channel, **kargs):
+        ImageItem.__init__(self, channel.image, levels=channel.settings.levels, lut=channel.settings.lut, **kargs)
+        self.channel = channel
         self.setPxMode(False)
         self.setAutoDownsample(False)
 

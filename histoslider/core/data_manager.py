@@ -31,6 +31,10 @@ class DataManager:
         DataManager.hub = Hub()
         DataManager.workspace_model.checked_item_changed.connect(DataManager._on_checked_item_changed)
 
+        # TODO: test code that should be removed later
+        DataManager.import_slide('/home/anton/Documents/histocat_not_working/20190304_LC_FibroPanelTest_LungAdeno/2019ABTest.mcd')
+        DataManager.load_slides([DataManager.workspace_model.index(0,0)])
+
     @staticmethod
     def load_workspace(path: str) -> None:
         with BusyCursor():

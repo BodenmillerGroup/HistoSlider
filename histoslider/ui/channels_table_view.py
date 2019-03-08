@@ -25,7 +25,6 @@ class ChannelsTableView(QTableView):
         model = ChannelsModel(channels)
         self.model().setSourceModel(model)
 
-
     def _on_selection_changed(self, selected: QItemSelection, deselected: QItemSelection):
         proxy_model: QSortFilterProxyModel = self.model()
         model = proxy_model.sourceModel()

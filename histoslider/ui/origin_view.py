@@ -23,6 +23,16 @@ class OriginView(ImageView, HubListener):
         self.scale.hide()
 
         self.channel: Channel = None
+        self.lut = None
+
+    # FIX: https://stackoverflow.com/questions/50722238/pyqtgraph-imageview-and-color-images
+    def updateImage(self, autoHistogramRange=True):
+        super().updateImage(autoHistogramRange)
+        self.getImageItem().setLookupTable(self.lut)
+
+    def setLookupTable(self, lut):
+        self.lut = lut
+        self.updateImage()
 
     def register_to_hub(self, hub):
         hub.subscribe(self, SelectedTreeNodeChangedMessage, self._on_selected_tree_node_changed)

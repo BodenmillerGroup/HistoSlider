@@ -5,7 +5,7 @@ from subprocess import check_call
 from setuptools import setup, find_packages, Command
 from setuptools.command.sdist import sdist
 
-requirements = ['PyQt5', 'numpy', 'psutil', 'pyqtgraph', 'jsonpickle', 'scikit-image']
+requirements = ['PyQt5', 'numpy', 'psutil', 'pyqtgraph', 'jsonpickle', 'scikit-image', 'opencv-python']
 extra_requirements = {
     'dev': [
         'pytest',
