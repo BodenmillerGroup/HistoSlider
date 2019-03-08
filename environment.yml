@@ -29,7 +29,6 @@ dependencies:
     - pyqt-distutils
     - PyInstaller
     - flake8
-    - dacite
-    - python-dateutil
+    - scikit-image
     - git+https://github.com/BodenmillerGroup/imctools.git
 prefix: /home/anton/anaconda3/envs/HistoSlider

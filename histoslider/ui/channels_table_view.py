@@ -38,4 +38,5 @@ class ChannelsTableView(QTableView):
                 row = source_index.row()
                 channel = model.channels[row]
                 selected_channels[channel.name] = channel
-        DataManager.hub.broadcast(SelectedChannelsChangedMessage(self, selected_channels))
+        if len(selected_channels) < 17:
+            DataManager.hub.broadcast(SelectedChannelsChangedMessage(self, selected_channels))

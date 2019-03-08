@@ -52,7 +52,6 @@ class TilesView(GraphicsView, HubListener):
         return rows[i], cols[i]
 
     def _on_selected_channels_changed(self, message: SelectedChannelsChangedMessage):
-        if len()
         self.clear()
         if len(message.channels) > 0:
             for channel in message.channels.values():
