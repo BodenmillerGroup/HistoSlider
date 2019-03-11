@@ -12,6 +12,7 @@ class ChannelsViewWidget(QWidget, HubListener):
     def __init__(self, parent: QWidget):
         QWidget.__init__(self, parent)
         HubListener.__init__(self)
+        self.register_to_hub(DataManager.hub)
 
         self.channels_view = ChannelsTableView(self)
 
@@ -20,8 +21,6 @@ class ChannelsViewWidget(QWidget, HubListener):
         self.verticalLayout.setSpacing(0)
         self.verticalLayout.addWidget(self.toolbar)
         self.verticalLayout.addWidget(self.channels_view)
-
-        self.register_to_hub(DataManager.hub)
 
     def register_to_hub(self, hub):
         hub.subscribe(self, SelectedTreeNodeChangedMessage, self._on_selected_tree_node_changed)

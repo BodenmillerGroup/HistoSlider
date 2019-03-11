@@ -1,6 +1,6 @@
 from typing import List, Dict
 
-from PyQt5.QtCore import QSortFilterProxyModel, QItemSelection
+from PyQt5.QtCore import QSortFilterProxyModel, QItemSelection, Qt
 from PyQt5.QtWidgets import QTableView, QHeaderView
 
 from histoslider.core.data_manager import DataManager
@@ -13,11 +13,13 @@ class ChannelsTableView(QTableView):
     def __init__(self, parent):
         QTableView.__init__(self, parent)
         proxy_model = QSortFilterProxyModel()
+        proxy_model.setSortCaseSensitivity(Qt.CaseInsensitive)
         self.setModel(proxy_model)
         self.horizontalHeader().setResizeMode(QHeaderView.ResizeToContents)
         self.verticalHeader().setDefaultSectionSize(10)
         self.setSelectionBehavior(QTableView.SelectRows)
         self.setEditTriggers(QTableView.NoEditTriggers)
+        self.sortByColumn(1, Qt.AscendingOrder)
         self.setSortingEnabled(True)
         self.selectionModel().selectionChanged.connect(self._on_selection_changed)
 

@@ -2,12 +2,18 @@ from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QWidget, QVBoxLayout, QToolBar, QAction, QComboBox, QLabel
 
+from histoslider.core.data_manager import DataManager
+from histoslider.core.hub_listener import HubListener
+from histoslider.core.message import SelectedTreeNodeChangedMessage, SlideRemovedMessage, SlideUnloadedMessage
+from histoslider.models.channel import Channel
 from histoslider.ui.origin_view import OriginView
 
 
-class OriginViewWidget(QWidget):
+class OriginViewWidget(QWidget, HubListener):
     def __init__(self, parent: QWidget):
         QWidget.__init__(self, parent)
+        HubListener.__init__(self)
+        self.register_to_hub(DataManager.hub)
 
         self.origin_view = OriginView(self)
 
@@ -16,6 +22,22 @@ class OriginViewWidget(QWidget):
         self.verticalLayout.setSpacing(0)
         self.verticalLayout.addWidget(self.toolbar)
         self.verticalLayout.addWidget(self.origin_view)
+
+    def register_to_hub(self, hub):
+        hub.subscribe(self, SelectedTreeNodeChangedMessage, self._on_selected_tree_node_changed)
+        hub.subscribe(self, SlideRemovedMessage, self._on_slide_removed)
+        hub.subscribe(self, SlideUnloadedMessage, self._on_slide_unloaded)
+
+    def _on_slide_removed(self, message: SlideRemovedMessage):
+        self.origin_view.clear()
+
+    def _on_slide_unloaded(self, message: SlideUnloadedMessage):
+        self.origin_view.clear()
+
+    def _on_selected_tree_node_changed(self, message: SelectedTreeNodeChangedMessage):
+        if not isinstance(message.node, Channel):
+            return
+        self.origin_view.set_channel(message.node)
 
     def show_scale_bar(self, state: bool):
         self.origin_view.show_scale_bar(state)
