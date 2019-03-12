@@ -1,9 +1,10 @@
+from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QWidget, QVBoxLayout, QToolBar, QAction
 
-from histoslider.core.data_manager import DataManager
 from histoslider.core.hub_listener import HubListener
-from histoslider.core.message import SelectedChannelsChangedMessage
+from histoslider.core.manager import Manager
+from histoslider.core.message import SelectedChannelsChangedMessage, SlideRemovedMessage, SlideUnloadedMessage
 from histoslider.image.channel_image_item import ChannelImageItem
 from histoslider.ui.blend_view import BlendView
 from histoslider.ui.histograms_view import HistogramsView
@@ -13,7 +14,7 @@ class BlendViewWidget(QWidget, HubListener):
     def __init__(self, parent: QWidget):
         QWidget.__init__(self, parent)
         HubListener.__init__(self)
-        self.register_to_hub(DataManager.hub)
+        self.register_to_hub(Manager.hub)
 
         self.blend_view = BlendView(self)
         # self.histograms_view = HistogramsView(self)
@@ -27,6 +28,8 @@ class BlendViewWidget(QWidget, HubListener):
 
     def register_to_hub(self, hub):
         hub.subscribe(self, SelectedChannelsChangedMessage, self._on_selected_channels_changed)
+        hub.subscribe(self, SlideRemovedMessage, self._on_slide_removed)
+        hub.subscribe(self, SlideUnloadedMessage, self._on_slide_unloaded)
 
     def _on_selected_channels_changed(self, message: SelectedChannelsChangedMessage):
         items = []
@@ -35,12 +38,19 @@ class BlendViewWidget(QWidget, HubListener):
         self.blend_view.set_channels(items)
         # self.histograms_view.set_channels(items)
 
+    def _on_slide_removed(self, message: SlideRemovedMessage):
+        self.blend_view.clear()
+
+    def _on_slide_unloaded(self, message: SlideUnloadedMessage):
+        self.blend_view.clear()
+
     def _show_scale_bar(self, state: bool):
         self.blend_view.show_scale_bar(state)
 
     @property
     def toolbar(self) -> QToolBar:
         toolbar = QToolBar(self)
+        toolbar.setToolButtonStyle(Qt.ToolButtonTextBesideIcon)
 
         show_scale_bar_action = QAction(QIcon(":/icons/icons8-ruler-16.png"), "Scale Bar", self)
         show_scale_bar_action.triggered.connect(self._show_scale_bar)

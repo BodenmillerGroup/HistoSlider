@@ -8,7 +8,7 @@ from histoslider.models.channel import Channel
 
 class ChannelImageItem(ImageItem):
     def __init__(self, channel: Channel, **kargs):
-        ImageItem.__init__(self, channel.image, levels=channel.settings.levels, lut=channel.settings.lut, **kargs)
+        ImageItem.__init__(self, channel.image, levels=channel.settings.levels, **kargs)
         self.channel = channel
         self.setPxMode(False)
         self.setAutoDownsample(False)

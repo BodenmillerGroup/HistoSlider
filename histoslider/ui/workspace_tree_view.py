@@ -3,8 +3,9 @@ from functools import partial
 from PyQt5.QtCore import Qt, QModelIndex, QItemSelection
 from PyQt5.QtWidgets import QTreeView, QWidget, QAbstractItemView, QMenu
 
-from histoslider.core.message import SelectedTreeNodeChangedMessage
-from histoslider.core.data_manager import DataManager
+from histoslider.core.message import SelectedTreeNodeChangedMessage, SelectedAcquisitionChangedMessage
+from histoslider.core.manager import Manager
+from histoslider.models.acquisition import Acquisition
 from histoslider.models.slide import Slide
 
 
@@ -14,7 +15,7 @@ class WorkspaceTreeView(QTreeView):
         self.setContextMenuPolicy(Qt.CustomContextMenu)
         self.setSelectionMode(QAbstractItemView.SingleSelection)
         self.setSelectionBehavior(QAbstractItemView.SelectItems)
-        self.setModel(DataManager.workspace_model)
+        self.setModel(Manager.data.workspace_model)
         self.customContextMenuRequested.connect(self._open_menu)
         self.selectionModel().selectionChanged.connect(self._treeview_selection_changed)
         self.selectionModel().currentChanged.connect(self._treeview_current_changed)
@@ -50,18 +51,20 @@ class WorkspaceTreeView(QTreeView):
         menu.exec_(self.viewport().mapToGlobal(position))
 
     def _close(self, indexes: [QModelIndex]):
-        DataManager.close_slides(indexes)
+        Manager.close_slides(indexes)
 
     def _load(self, indexes: [QModelIndex]):
-        DataManager.load_slides(indexes)
+        Manager.load_slides(indexes)
 
     def _remove(self, indexes: [QModelIndex]):
-        DataManager.remove_slides(indexes)
+        Manager.remove_slides(indexes)
 
     def _treeview_current_changed(self, current: QModelIndex, previous: QModelIndex):
         if current.isValid():
             item = current.model().getItem(current)
-            DataManager.hub.broadcast(SelectedTreeNodeChangedMessage(self, item))
+            Manager.hub.broadcast(SelectedTreeNodeChangedMessage(self, item))
+            if isinstance(item, Acquisition):
+                Manager.hub.broadcast(SelectedAcquisitionChangedMessage(self, item))
 
     def _treeview_selection_changed(self, selected: QItemSelection, deselected: QItemSelection):
         indexes = selected.indexes()
@@ -70,4 +73,4 @@ class WorkspaceTreeView(QTreeView):
         if index.isValid():
             item = index.model().getItem(index)
             if isinstance(item, Slide) and not item.loaded:
-                DataManager.load_slides([index])
+                Manager.load_slides([index])

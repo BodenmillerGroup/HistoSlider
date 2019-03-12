@@ -1,7 +1,7 @@
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QWidget, QVBoxLayout, QToolBar, QAction
 
-from histoslider.core.data_manager import DataManager
+from histoslider.core.manager import Manager
 from histoslider.core.hub_listener import HubListener
 from histoslider.core.message import SelectedTreeNodeChangedMessage
 from histoslider.models.acquisition import Acquisition
@@ -12,7 +12,7 @@ class ChannelsViewWidget(QWidget, HubListener):
     def __init__(self, parent: QWidget):
         QWidget.__init__(self, parent)
         HubListener.__init__(self)
-        self.register_to_hub(DataManager.hub)
+        self.register_to_hub(Manager.hub)
 
         self.channels_view = ChannelsTableView(self)
 

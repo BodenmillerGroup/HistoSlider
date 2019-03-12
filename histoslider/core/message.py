@@ -1,5 +1,7 @@
 from typing import Dict, List
 
+from histoslider.core.view_mode import ViewMode
+from histoslider.models.acquisition import Acquisition
 from histoslider.models.base_data import BaseData
 from histoslider.models.channel import Channel
 
@@ -77,6 +79,15 @@ class SelectedChannelsChangedMessage(Message):
         self.channels = channels
 
 
+class SelectedAcquisitionChangedMessage(Message):
+
+    """ Indicates that selected acquisition is changed """
+
+    def __init__(self, sender, acquisition: Acquisition, tag=None):
+        Message.__init__(self, sender, tag=tag)
+        self.acquisition = acquisition
+
+
 class SlideImportedMessage(Message):
 
     """ Indicates that the slide has been imported """
@@ -99,3 +110,11 @@ class SlideUnloadedMessage(Message):
 
     """ Indicates that the slide has been unloaded """
     pass
+
+class ViewModeChangedMessage(Message):
+
+    """ Indicates that current view mode is changed """
+
+    def __init__(self, sender, mode: ViewMode, tag=None):
+        Message.__init__(self, sender, tag=tag)
+        self.mode = mode

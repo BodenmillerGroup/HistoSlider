@@ -3,7 +3,7 @@ from PyQt5.QtGui import QIcon, QPixmapCache
 from PyQt5.QtWidgets import QApplication
 from pyqtgraph import setConfigOptions
 
-from histoslider.core.data_manager import DataManager
+from histoslider.core.manager import Manager
 
 # Global PyQtGraph settings
 setConfigOptions(
@@ -13,7 +13,7 @@ setConfigOptions(
     leftButtonPan=True,
     antialias=False,
     useOpenGL=False,
-    useWeave=False
+    useWeave=True
 )
 
 
@@ -34,4 +34,4 @@ class App(QApplication):
         f.close()
 
         # DataManager singleton initialization
-        DataManager()
+        Manager()

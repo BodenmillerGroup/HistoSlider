@@ -3,7 +3,7 @@ from typing import List, Dict
 from PyQt5.QtCore import QSortFilterProxyModel, QItemSelection, Qt
 from PyQt5.QtWidgets import QTableView, QHeaderView
 
-from histoslider.core.data_manager import DataManager
+from histoslider.core.manager import Manager
 from histoslider.core.message import SelectedChannelsChangedMessage
 from histoslider.models.channel import Channel
 from histoslider.models.channels_model import ChannelsModel
@@ -40,4 +40,4 @@ class ChannelsTableView(QTableView):
                 channel = model.channels[row]
                 selected_channels[channel.name] = channel
         if len(selected_channels) < 17:
-            DataManager.hub.broadcast(SelectedChannelsChangedMessage(self, selected_channels))
+            Manager.hub.broadcast(SelectedChannelsChangedMessage(self, selected_channels))

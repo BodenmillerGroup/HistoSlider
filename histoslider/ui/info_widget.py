@@ -1,6 +1,6 @@
 from PyQt5.QtWidgets import QTableWidget, QTableWidgetItem, QHeaderView
 
-from histoslider.core.data_manager import DataManager
+from histoslider.core.manager import Manager
 from histoslider.core.hub_listener import HubListener
 from histoslider.core.message import SelectedTreeNodeChangedMessage, SlideRemovedMessage, SlideUnloadedMessage
 
@@ -20,7 +20,7 @@ class InfoWidget(QTableWidget, HubListener):
         self.horizontalHeader().setSectionResizeMode(0, QHeaderView.Interactive)
         self.horizontalHeader().setSectionResizeMode(1, QHeaderView.ResizeToContents)
 
-        self.register_to_hub(DataManager.hub)
+        self.register_to_hub(Manager.hub)
 
     def register_to_hub(self, hub):
         hub.subscribe(self, SelectedTreeNodeChangedMessage, self._on_selected_tree_node_changed)

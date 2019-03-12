@@ -1,9 +1,9 @@
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QIcon
-from PyQt5.QtWidgets import QWidget, QVBoxLayout, QToolBar, QAction, QComboBox, QLabel
+from PyQt5.QtWidgets import QWidget, QVBoxLayout, QToolBar, QAction
 
-from histoslider.core.data_manager import DataManager
 from histoslider.core.hub_listener import HubListener
+from histoslider.core.manager import Manager
 from histoslider.core.message import SelectedTreeNodeChangedMessage, SlideRemovedMessage, SlideUnloadedMessage
 from histoslider.models.channel import Channel
 from histoslider.ui.origin_view import OriginView
@@ -13,7 +13,7 @@ class OriginViewWidget(QWidget, HubListener):
     def __init__(self, parent: QWidget):
         QWidget.__init__(self, parent)
         HubListener.__init__(self)
-        self.register_to_hub(DataManager.hub)
+        self.register_to_hub(Manager.hub)
 
         self.origin_view = OriginView(self)
 
@@ -51,12 +51,5 @@ class OriginViewWidget(QWidget, HubListener):
         show_scale_bar_action.triggered.connect(self.show_scale_bar)
         show_scale_bar_action.setCheckable(True)
         toolbar.addAction(show_scale_bar_action)
-
-        label = QLabel("View Mode:")
-        toolbar.addWidget(label)
-
-        combobox = QComboBox(toolbar)
-        combobox.addItems(["Greyscale", "RGB", "CMY", "Heat"])
-        toolbar.addWidget(combobox)
 
         return toolbar

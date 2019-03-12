@@ -7,11 +7,11 @@ class ChannelSettings:
     def __init__(self, image: ndarray):
         while image.size > 2 ** 16:
             image = image[::2, ::2]
-        min, max = image.min(), image.max()
-        if min == max:
-            min = 0
-            max = 255
-        self.levels: Tuple[float, float] = (min, max)
+        self.min, self.max = image.min(), image.max()
+        if self.min == self.max:
+            self.min = 0
+            self.max = 255
+        self.levels: Tuple[float, float] = (self.min, self.max)
         self.lut: ndarray = None
         self.color_multiplier: Tuple[int, int, int] = (1, 1, 1)
 

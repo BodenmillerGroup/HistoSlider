@@ -2,11 +2,11 @@ from __future__ import annotations
 
 from PyQt5.QtGui import QIcon
 from numpy.core.multiarray import ndarray
-from pyqtgraph import makeARGB, rescaleData
 import numpy as np
 import cv2
 
 from histoslider.image.channel_settings import ChannelSettings
+from histoslider.image.utils import rescaleData, makeARGB
 from histoslider.models.base_data import BaseData
 
 
@@ -40,11 +40,18 @@ class Channel(BaseData):
     def image(self):
         return self._image
 
+    def get_scaled(self):
+        # scale = self.settings.max
+        # result = rescaleData(self._image, 255.0/(self.settings.levels[1] - self.settings.levels[0]), 0)
+        # result = self._image * (scale/(self.settings.levels[1] - self.settings.levels[0]))
+        result = cv2.convertScaleAbs(self.image, alpha=(255.0 / (self.settings.levels[1] - self.settings.levels[0])))
+        return result
+
     def get_normalized(self):
-        # result = cv2.normalize(self.image, None, alpha=0, beta=1, norm_type=cv2.NORM_MINMAX, dtype=cv2.CV_8U)
-        result = self._image.astype(dtype=np.uint8)
+        # result = cv2.normalize(self.image, None, alpha=0, beta=1, norm_type=cv2.NORM_MINMAX, dtype=cv2.CV_16U)
+        result = self._image.astype(dtype=np.uint16)
         return result
 
     def get_argb(self):
-        argb, alpha = makeARGB(self._image, lut=self.settings.lut, levels=self.settings.levels, useRGBA=True)
+        argb = makeARGB(self._image, levels=self.settings.levels, useRGBA=True)
         return argb
