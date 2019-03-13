@@ -1,10 +1,10 @@
-from typing import List, Dict
+from typing import List, Set, Tuple
 
 from PyQt5.QtCore import QSortFilterProxyModel, QItemSelection, Qt
 from PyQt5.QtWidgets import QTableView, QHeaderView
 
 from histoslider.core.manager import Manager
-from histoslider.core.message import SelectedChannelsChangedMessage
+from histoslider.core.message import SelectedMetalsChangedMessage
 from histoslider.models.channel import Channel
 from histoslider.models.channels_model import ChannelsModel
 
@@ -23,14 +23,21 @@ class ChannelsTableView(QTableView):
         self.setSortingEnabled(True)
         self.selectionModel().selectionChanged.connect(self._on_selection_changed)
 
+        self.channel_list: List[Tuple[str, str, int]] = None
+
     def set_channels(self, channels: List[Channel]):
-        model = ChannelsModel(channels)
-        self.model().setSourceModel(model)
+        new_channel_list = list()
+        for c in channels:
+            new_channel_list.append((c.label, c.metal, c.mass))
+        if new_channel_list != self.channel_list:
+            self.channel_list = new_channel_list
+            model = ChannelsModel(self.channel_list)
+            self.model().setSourceModel(model)
 
     def _on_selection_changed(self, selected: QItemSelection, deselected: QItemSelection):
         proxy_model: QSortFilterProxyModel = self.model()
         model = proxy_model.sourceModel()
-        selected_channels: Dict[str, Channel] = dict()
+        selected_metals: Set[str] = set()
         for index in self.selectedIndexes():
             if index.column() != 0:
                 continue
@@ -38,6 +45,6 @@ class ChannelsTableView(QTableView):
                 source_index = proxy_model.mapToSource(index)
                 row = source_index.row()
                 channel = model.channels[row]
-                selected_channels[channel.name] = channel
-        if len(selected_channels) < 17:
-            Manager.hub.broadcast(SelectedChannelsChangedMessage(self, selected_channels))
+                selected_metals.add(channel[1])
+        if len(selected_metals) < 7:
+            Manager.hub.broadcast(SelectedMetalsChangedMessage(self, selected_metals))

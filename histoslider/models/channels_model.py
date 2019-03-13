@@ -1,15 +1,13 @@
-from typing import List
+from typing import List, Tuple
 
 from PyQt5.QtCore import QAbstractTableModel, QModelIndex, Qt
-
-from histoslider.models.channel import Channel
 
 
 class ChannelsModel(QAbstractTableModel):
 
     header = ('Label', 'Metal', 'Mass')
 
-    def __init__(self, channels: List[Channel], parent=None):
+    def __init__(self, channels: List[Tuple[str, str, float]], parent=None):
         QAbstractTableModel.__init__(self, parent)
         self.channels = channels
 
@@ -18,8 +16,8 @@ class ChannelsModel(QAbstractTableModel):
             return None
         elif role != Qt.DisplayRole:
             return None
-        meta = self.channels[index.row()].meta
-        return meta[self.header[index.column()]]
+        item = self.channels[index.row()]
+        return item[index.column()]
 
     def headerData(self, col: int, orientation: int, role: int):
         if orientation == Qt.Horizontal and role == Qt.DisplayRole:

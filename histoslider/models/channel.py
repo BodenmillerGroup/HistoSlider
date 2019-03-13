@@ -26,7 +26,7 @@ class Channel(BaseData):
 
     @property
     def label(self) -> str:
-        return self.meta["Label"] if "label" in self.meta else None
+        return self.meta["Label"] if "Label" in self.meta else None
 
     @property
     def metal(self) -> str:

@@ -1,4 +1,4 @@
-from typing import Dict, List
+from typing import Dict, List, Set
 
 from histoslider.core.view_mode import ViewMode
 from histoslider.models.acquisition import Acquisition
@@ -77,6 +77,15 @@ class SelectedChannelsChangedMessage(Message):
     def __init__(self, sender, channels: Dict[str, Channel], tag=None):
         Message.__init__(self, sender, tag=tag)
         self.channels = channels
+
+
+class SelectedMetalsChangedMessage(Message):
+
+    """ Indicates that selected metals are changed """
+
+    def __init__(self, sender, metals: Set[str], tag=None):
+        Message.__init__(self, sender, tag=tag)
+        self.metals = metals
 
 
 class SelectedAcquisitionChangedMessage(Message):

@@ -1,5 +1,5 @@
 import os
-from typing import Dict
+from typing import Dict, List, Set
 
 import gc
 from PyQt5.QtCore import QModelIndex
@@ -9,7 +9,8 @@ from pyqtgraph import BusyCursor
 from histoslider.core.hub import Hub
 from histoslider.core.hub_listener import HubListener
 from histoslider.core.message import SelectedChannelsChangedMessage, SelectedAcquisitionChangedMessage, \
-    SlideImportedMessage, SlideLoadedMessage, SlideUnloadedMessage, SlideRemovedMessage, ViewModeChangedMessage
+    SlideImportedMessage, SlideLoadedMessage, SlideUnloadedMessage, SlideRemovedMessage, ViewModeChangedMessage, \
+    SelectedMetalsChangedMessage
 from histoslider.core.view_mode import ViewMode
 from histoslider.image.slide_type import SlideType
 from histoslider.loaders.mcd.mcd_loader import McdLoader
@@ -30,15 +31,36 @@ class Data(HubListener):
 
         self.view_mode = ViewMode.GREYSCALE
         self.selected_acquisition: Acquisition = None
+        self.selected_metals: Set[str] = None
         self.selected_channels: Dict[str, Channel] = None
 
     def register_to_hub(self, hub):
         hub.subscribe(self, SelectedAcquisitionChangedMessage, self._on_selected_acquisition_changed)
+        hub.subscribe(self, SelectedMetalsChangedMessage, self._on_selected_metals_changed)
         hub.subscribe(self, SelectedChannelsChangedMessage, self._on_selected_channels_changed)
         hub.subscribe(self, ViewModeChangedMessage, self._on_view_mode_changed)
 
     def _on_selected_acquisition_changed(self, message: SelectedAcquisitionChangedMessage) -> None:
+        if self.selected_acquisition is message.acquisition:
+            return
         self.selected_acquisition = message.acquisition
+        if self.selected_metals is None:
+            return
+        selected_channels = dict()
+        for channel in self.selected_acquisition.channels:
+            if channel.metal in self.selected_metals:
+                selected_channels[channel.metal] = channel
+        if len(selected_channels) > 0:
+            self.hub.broadcast(SelectedChannelsChangedMessage(self, selected_channels))
+
+    def _on_selected_metals_changed(self, message: SelectedMetalsChangedMessage) -> None:
+        self.selected_metals = message.metals
+        selected_channels = dict()
+        for channel in self.selected_acquisition.channels:
+            if channel.metal in self.selected_metals:
+                selected_channels[channel.metal] = channel
+        if len(selected_channels) > 0:
+            self.hub.broadcast(SelectedChannelsChangedMessage(self, selected_channels))
 
     def _on_selected_channels_changed(self, message: SelectedChannelsChangedMessage) -> None:
         self.selected_channels = message.channels
