@@ -40,35 +40,39 @@ class Data(HubListener):
         hub.subscribe(self, SelectedChannelsChangedMessage, self._on_selected_channels_changed)
         hub.subscribe(self, ViewModeChangedMessage, self._on_view_mode_changed)
 
+    def clear(self):
+        self.selected_acquisition = None
+        self.selected_metals = None
+        self.selected_channels = None
+        QPixmapCache.clear()
+        gc.collect()
+
+    def _broadcast_channels_update(self):
+        selected_channels = dict()
+        for channel in self.selected_acquisition.channels:
+            if channel.metal in self.selected_metals:
+                selected_channels[channel.metal] = channel
+        if len(selected_channels) > 0:
+            self.hub.broadcast(SelectedChannelsChangedMessage(self, selected_channels))
+
     def _on_selected_acquisition_changed(self, message: SelectedAcquisitionChangedMessage) -> None:
         if self.selected_acquisition is message.acquisition:
             return
         self.selected_acquisition = message.acquisition
         if self.selected_metals is None:
             return
-        selected_channels = dict()
-        for channel in self.selected_acquisition.channels:
-            if channel.metal in self.selected_metals:
-                selected_channels[channel.metal] = channel
-        if len(selected_channels) > 0:
-            self.hub.broadcast(SelectedChannelsChangedMessage(self, selected_channels))
+        self._broadcast_channels_update()
 
     def _on_selected_metals_changed(self, message: SelectedMetalsChangedMessage) -> None:
         self.selected_metals = message.metals
-        selected_channels = dict()
-        for channel in self.selected_acquisition.channels:
-            if channel.metal in self.selected_metals:
-                selected_channels[channel.metal] = channel
-        if len(selected_channels) > 0:
-            self.hub.broadcast(SelectedChannelsChangedMessage(self, selected_channels))
+        self._broadcast_channels_update()
 
     def _on_selected_channels_changed(self, message: SelectedChannelsChangedMessage) -> None:
         self.selected_channels = message.channels
 
     def load_workspace(self, path: str) -> None:
         with BusyCursor():
-            self.selected_acquisition = None
-            self.selected_channels = None
+            self.clear()
             self.workspace_model.beginResetModel()
             self.workspace_model.load_workspace(path)
             self.workspace_model.endResetModel()
@@ -130,3 +134,4 @@ class Data(HubListener):
 
     def _on_view_mode_changed(self, message: ViewModeChangedMessage):
         self.view_mode = message.mode
+        self._broadcast_channels_update()

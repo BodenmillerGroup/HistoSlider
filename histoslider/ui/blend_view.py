@@ -56,8 +56,8 @@ class BlendView(ImageView):
                 else:
                     # blend_image = alpha * blend_image + (1 - alpha) * image
                     # blend_image = np.add(blend_image, image)
-                    # blend_image = cv2.add(blend_image, image)
-                    blend_image = cv2.addWeighted(blend_image, alpha, image, 1 - alpha, 0)
+                    blend_image = cv2.add(blend_image, image)
+                    # blend_image = cv2.addWeighted(blend_image, alpha, image, 1 - alpha, 0)
             try:
                 self.getHistogramWidget().item.sigLevelChangeFinished.disconnect()
             except TypeError:

@@ -1,9 +1,8 @@
 from __future__ import annotations
 
+import numpy as np
 from PyQt5.QtGui import QIcon
 from numpy.core.multiarray import ndarray
-import numpy as np
-import cv2
 from pyqtgraph import makeARGB
 
 from histoslider.image.channel_settings import ChannelSettings
@@ -38,6 +37,8 @@ class Channel(BaseData):
 
     @property
     def image(self):
+        if self._image is None:
+            return np.zeros((1, 1))
         return self._image.astype(dtype=np.float32)
 
     def get_scaled(self):
@@ -59,3 +60,8 @@ class Channel(BaseData):
     def get_argb(self):
         argb, alpha = makeARGB(self.image, levels=self.settings.levels, useRGBA=True)
         return argb
+
+    def __getstate__(self):
+        state = self.__dict__.copy()
+        state['_image'] = None
+        return state

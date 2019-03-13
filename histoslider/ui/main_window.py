@@ -84,7 +84,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
     def load_workspace_dialog(self):
         options = QFileDialog.Options()
-        file_ext = "*.json"
+        file_ext = "*.workspace"
         file_path, _ = QFileDialog.getOpenFileName(
             self,
             "Load Workspace",
@@ -96,9 +96,9 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             Manager.load_workspace(file_path)
 
     def save_workspace_dialog(self):
-        file_ext = "*.json"
+        file_ext = "*.workspace"
         dialog = QFileDialog(self)
-        dialog.setDefaultSuffix(".json")
+        dialog.setDefaultSuffix(".workspace")
         dialog.setAcceptMode(QFileDialog.AcceptSave)
         dialog.setWindowTitle("Save Workspace")
         dialog.setNameFilter("Workspace Files ({})".format(file_ext))
