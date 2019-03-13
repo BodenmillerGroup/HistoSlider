@@ -10,6 +10,7 @@ from histoslider.core.manager import Manager
 from histoslider.core.view_mode import ViewMode
 from histoslider.image.channel_image_item import ChannelImageItem
 from histoslider.image.utils import colorize
+from histoslider.libs import blend_modes
 
 
 class BlendView(ImageView):
@@ -38,30 +39,35 @@ class BlendView(ImageView):
         self.items = items
         if len(items) > 0:
             hue_rotations = np.linspace(0, 270, len(items), dtype=np.uint8)
-            color_multipliers = ((1, 0, 0), (0, 1, 0), (0, 0, 1), (1, 1, 0), (1, 0, 1), (0, 1, 1))
+            color_multipliers = ((1, 0, 0, 1), (0, 1, 0, 1), (0, 0, 1, 1), (1, 1, 0, 1), (1, 0, 1, 1), (0, 1, 1, 1))
             blend_image = None
             alpha = 0.5
+            blend_method = getattr(blend_modes, Manager.data.blend_mode)
             for i, item in enumerate(items):
                 ch = item.channel
                 if len(items) == 1:
                     image = ch.image
                 else:
                     image = ch.get_scaled()
+                image = cv2.cvtColor(image, cv2.COLOR_GRAY2RGBA)
                 if Manager.data.view_mode == ViewMode.RGB:
-                    image = cv2.cvtColor(image, cv2.COLOR_GRAY2RGB)
+                    # image = cv2.cvtColor(image, cv2.COLOR_GRAY2RGB)
                     # image = colorize(image, hue_rotations[i], saturation=1)
-                    image = image * color_multipliers[i]
+                    image = (image * color_multipliers[i]).astype(np.float32)
                 if blend_image is None:
                     blend_image = image
                 else:
                     # blend_image = alpha * blend_image + (1 - alpha) * image
                     # blend_image = np.add(blend_image, image)
-                    blend_image = cv2.add(blend_image, image)
+                    # blend_image = cv2.add(blend_image, image)
                     # blend_image = cv2.addWeighted(blend_image, alpha, image, 1 - alpha, 0)
+
+                    blend_image = blend_method(blend_image, image, alpha)
             try:
                 self.getHistogramWidget().item.sigLevelChangeFinished.disconnect()
             except TypeError:
                 pass
+            blend_image = cv2.cvtColor(blend_image, cv2.COLOR_RGBA2RGB)
             self.setImage(blend_image)
             if len(items) == 1:
                 channel = items[0].channel

@@ -10,7 +10,7 @@ from histoslider.core.hub import Hub
 from histoslider.core.hub_listener import HubListener
 from histoslider.core.message import SelectedChannelsChangedMessage, SelectedAcquisitionChangedMessage, \
     SlideImportedMessage, SlideLoadedMessage, SlideUnloadedMessage, SlideRemovedMessage, ViewModeChangedMessage, \
-    SelectedMetalsChangedMessage
+    SelectedMetalsChangedMessage, BlendModeChangedMessage
 from histoslider.core.view_mode import ViewMode
 from histoslider.image.slide_type import SlideType
 from histoslider.loaders.mcd.mcd_loader import McdLoader
@@ -29,6 +29,7 @@ class Data(HubListener):
         self.register_to_hub(self.hub)
         self.workspace_model = WorkspaceModel()
 
+        self.blend_mode = "addition"
         self.view_mode = ViewMode.GREYSCALE
         self.selected_acquisition: Acquisition = None
         self.selected_metals: Set[str] = None
@@ -39,6 +40,7 @@ class Data(HubListener):
         hub.subscribe(self, SelectedMetalsChangedMessage, self._on_selected_metals_changed)
         hub.subscribe(self, SelectedChannelsChangedMessage, self._on_selected_channels_changed)
         hub.subscribe(self, ViewModeChangedMessage, self._on_view_mode_changed)
+        hub.subscribe(self, BlendModeChangedMessage, self._on_blend_mode_changed)
 
     def clear(self):
         self.selected_acquisition = None
@@ -134,4 +136,8 @@ class Data(HubListener):
 
     def _on_view_mode_changed(self, message: ViewModeChangedMessage):
         self.view_mode = message.mode
+        self._broadcast_channels_update()
+
+    def _on_blend_mode_changed(self, message: BlendModeChangedMessage):
+        self.blend_mode = message.mode
         self._broadcast_channels_update()

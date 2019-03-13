@@ -1,11 +1,15 @@
+from inspect import getmembers, isfunction
+
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QIcon
-from PyQt5.QtWidgets import QWidget, QVBoxLayout, QToolBar, QAction
+from PyQt5.QtWidgets import QWidget, QVBoxLayout, QToolBar, QAction, QLabel, QComboBox
 
 from histoslider.core.hub_listener import HubListener
 from histoslider.core.manager import Manager
-from histoslider.core.message import SelectedChannelsChangedMessage, SlideRemovedMessage, SlideUnloadedMessage
+from histoslider.core.message import SelectedChannelsChangedMessage, SlideRemovedMessage, SlideUnloadedMessage, \
+    BlendModeChangedMessage
 from histoslider.image.channel_image_item import ChannelImageItem
+from histoslider.libs import blend_modes
 from histoslider.ui.blend_view import BlendView
 from histoslider.ui.histograms_view import HistogramsView
 
@@ -47,10 +51,25 @@ class BlendViewWidget(QWidget, HubListener):
     def _show_scale_bar(self, state: bool):
         self.blend_view.show_scale_bar(state)
 
+    def _blend_current_text_changed(self, text: str):
+        Manager.hub.broadcast(BlendModeChangedMessage(self, text))
+
     @property
     def toolbar(self) -> QToolBar:
         toolbar = QToolBar(self)
         toolbar.setToolButtonStyle(Qt.ToolButtonTextBesideIcon)
+
+        label = QLabel("Blend:")
+        toolbar.addWidget(label)
+
+        blend_combo_box = QComboBox()
+        functions_list = [o for o in getmembers(blend_modes) if isfunction(o[1]) and not o[0].startswith('_')]
+        print(functions_list)
+        blend_combo_box.addItems([f[0] for f in functions_list])
+        blend_combo_box.currentTextChanged.connect(self._blend_current_text_changed)
+        toolbar.addWidget(blend_combo_box)
+
+        toolbar.addSeparator()
 
         show_scale_bar_action = QAction(QIcon(":/icons/icons8-ruler-16.png"), "Scale Bar", self)
         show_scale_bar_action.triggered.connect(self._show_scale_bar)

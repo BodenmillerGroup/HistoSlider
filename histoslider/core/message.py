@@ -127,3 +127,12 @@ class ViewModeChangedMessage(Message):
     def __init__(self, sender, mode: ViewMode, tag=None):
         Message.__init__(self, sender, tag=tag)
         self.mode = mode
+
+
+class BlendModeChangedMessage(Message):
+
+    """ Indicates that current blend mode is changed """
+
+    def __init__(self, sender, mode: str, tag=None):
+        Message.__init__(self, sender, tag=tag)
+        self.mode = mode
