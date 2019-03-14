@@ -1,7 +1,6 @@
 from typing import List
 
 import cv2
-import numpy as np
 from PyQt5.QtCore import pyqtSlot
 from PyQt5.QtWidgets import QWidget
 from pyqtgraph import ImageView, ScaleBar
@@ -9,7 +8,7 @@ from pyqtgraph import ImageView, ScaleBar
 from histoslider.core.manager import Manager
 from histoslider.core.view_mode import ViewMode
 from histoslider.image.channel_image_item import ChannelImageItem
-from histoslider.image.utils import colorize
+from histoslider.image.utils import colorize, scale_image
 from histoslider.libs import blend_modes
 
 
@@ -35,25 +34,19 @@ class BlendView(ImageView):
     #     self.lut = lut
     #     self.updateImage()
 
-    def set_channels(self, items: List[ChannelImageItem]):
+    def set_images(self, items: List[ChannelImageItem]):
         self.items = items
         if len(items) > 0:
-            hue_rotations = np.linspace(0, 270, len(items), dtype=np.uint8)
-            color_multipliers = ((1, 0, 0, 1), (0, 1, 0, 1), (0, 0, 1, 1), (1, 1, 0, 1), (1, 0, 1, 1), (0, 1, 1, 1))
             blend_image = None
             alpha = 0.5
             blend_method = getattr(blend_modes, Manager.data.blend_mode)
-            for i, item in enumerate(items):
-                ch = item.channel
+            for item in items:
                 if len(items) == 1:
-                    image = ch.image
+                    image = item.image
                 else:
-                    image = ch.get_scaled()
-                image = cv2.cvtColor(image, cv2.COLOR_GRAY2RGBA)
-                if Manager.data.view_mode == ViewMode.RGB:
-                    # image = cv2.cvtColor(image, cv2.COLOR_GRAY2RGB)
-                    # image = colorize(image, hue_rotations[i], saturation=1)
-                    image = (image * color_multipliers[i]).astype(np.float32)
+                    image = scale_image(item.image, item.channel.settings.max, item.channel.settings.levels)
+                    image = cv2.cvtColor(image, cv2.COLOR_GRAY2RGBA) if Manager.data.view_mode is ViewMode.GREYSCALE else cv2.cvtColor(image, cv2.COLOR_RGB2RGBA)
+
                 if blend_image is None:
                     blend_image = image
                 else:
@@ -61,7 +54,6 @@ class BlendView(ImageView):
                     # blend_image = np.add(blend_image, image)
                     # blend_image = cv2.add(blend_image, image)
                     # blend_image = cv2.addWeighted(blend_image, alpha, image, 1 - alpha, 0)
-
                     blend_image = blend_method(blend_image, image, alpha)
             try:
                 self.getHistogramWidget().item.sigLevelChangeFinished.disconnect()
@@ -75,6 +67,9 @@ class BlendView(ImageView):
                 self.getHistogramWidget().item.sigLevelChangeFinished.connect(self._on_level_change_finished)
             self.getHistogramWidget().item.autoHistogramRange()
             self.getHistogramWidget().show()
+
+    def refresh_images(self):
+        self.set_images(self.items)
 
     def show_scale_bar(self, state: bool):
         if state:

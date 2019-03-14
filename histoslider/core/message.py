@@ -1,6 +1,7 @@
-from typing import Dict, List, Set
+from typing import Dict, List, Set, Tuple
 
 from histoslider.core.view_mode import ViewMode
+from histoslider.image.channel_image_item import ChannelImageItem
 from histoslider.models.acquisition import Acquisition
 from histoslider.models.base_data import BaseData
 from histoslider.models.channel import Channel
@@ -74,9 +75,19 @@ class SelectedChannelsChangedMessage(Message):
 
     """ Indicates that selected channels are changed """
 
-    def __init__(self, sender, channels: Dict[str, Channel], tag=None):
+    def __init__(self, sender, channels: Dict[str, Channel], metal_color_map: Dict[str, Tuple[int, int, int, int]], tag=None):
         Message.__init__(self, sender, tag=tag)
         self.channels = channels
+        self.metal_color_map = metal_color_map
+
+
+class ChannelImagesChangedMessage(Message):
+
+    """ Indicates that selected channel images are changed """
+
+    def __init__(self, sender, images: List[ChannelImageItem], tag=None):
+        Message.__init__(self, sender, tag=tag)
+        self.images = images
 
 
 class SelectedMetalsChangedMessage(Message):

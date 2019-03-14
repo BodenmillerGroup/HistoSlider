@@ -15,6 +15,7 @@ from histoslider.core.message import ViewModeChangedMessage
 from histoslider.core.view_mode import ViewMode
 from histoslider.ui.blend_view_widget import BlendViewWidget
 from histoslider.ui.channels_view_widget import ChannelsViewWidget
+from histoslider.ui.histograms_view import HistogramsView
 from histoslider.ui.info_widget import InfoWidget
 from histoslider.ui.main_window_ui import Ui_MainWindow
 from histoslider.ui.origin_view_widget import OriginViewWidget
@@ -56,6 +57,9 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
         self.tiles_view_widget = TilesViewWidget(self)
         self.tabWidget.addTab(self.tiles_view_widget, QIcon(":/icons/icons8-medium-icons-16.png"), "Tiles")
+
+        self.histograms_view = HistogramsView(self.dockWidgetContentsSettings, self.blend_view_widget.blend_view)
+        self.verticalLayoutSettings.addWidget(self.histograms_view)
 
         self.actionImportSlide.triggered.connect(self.import_slide_dialog)
         self.actionOpenWorkspace.triggered.connect(self.load_workspace_dialog)

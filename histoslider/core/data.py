@@ -1,6 +1,8 @@
 import os
-from typing import Dict, List, Set
+from typing import Dict, List, Set, Tuple
 
+import cv2
+import numpy as np
 import gc
 from PyQt5.QtCore import QModelIndex
 from PyQt5.QtGui import QPixmapCache
@@ -10,8 +12,9 @@ from histoslider.core.hub import Hub
 from histoslider.core.hub_listener import HubListener
 from histoslider.core.message import SelectedChannelsChangedMessage, SelectedAcquisitionChangedMessage, \
     SlideImportedMessage, SlideLoadedMessage, SlideUnloadedMessage, SlideRemovedMessage, ViewModeChangedMessage, \
-    SelectedMetalsChangedMessage, BlendModeChangedMessage
+    SelectedMetalsChangedMessage, BlendModeChangedMessage, ChannelImagesChangedMessage
 from histoslider.core.view_mode import ViewMode
+from histoslider.image.channel_image_item import ChannelImageItem
 from histoslider.image.slide_type import SlideType
 from histoslider.loaders.mcd.mcd_loader import McdLoader
 from histoslider.loaders.ome_tiff.ome_tiff_loader import OmeTiffLoader
@@ -20,6 +23,9 @@ from histoslider.models.acquisition import Acquisition
 from histoslider.models.channel import Channel
 from histoslider.models.slide import Slide
 from histoslider.models.workspace_model import WorkspaceModel
+
+
+color_multipliers = ((1, 0, 0), (0, 1, 0), (0, 0, 1), (1, 1, 0), (1, 0, 1), (0, 1, 1))
 
 
 class Data(HubListener):
@@ -35,6 +41,8 @@ class Data(HubListener):
         self.selected_metals: Set[str] = None
         self.selected_channels: Dict[str, Channel] = None
 
+        self._metal_color_map: Dict[str, Tuple[int, int, int, int]] = dict()
+
     def register_to_hub(self, hub):
         hub.subscribe(self, SelectedAcquisitionChangedMessage, self._on_selected_acquisition_changed)
         hub.subscribe(self, SelectedMetalsChangedMessage, self._on_selected_metals_changed)
@@ -49,13 +57,18 @@ class Data(HubListener):
         QPixmapCache.clear()
         gc.collect()
 
-    def _broadcast_channels_update(self):
-        selected_channels = dict()
+    def broadcast_channel_images_changed(self):
+        images: List[ChannelImageItem] = []
         for channel in self.selected_acquisition.channels:
             if channel.metal in self.selected_metals:
-                selected_channels[channel.metal] = channel
-        if len(selected_channels) > 0:
-            self.hub.broadcast(SelectedChannelsChangedMessage(self, selected_channels))
+                if self.view_mode == ViewMode.RGB:
+                    image = cv2.cvtColor(channel.image, cv2.COLOR_GRAY2RGB)
+                    image = (image * self._metal_color_map[channel.metal]).astype(np.float32)
+                else:
+                    image = channel.image
+                images.append(ChannelImageItem(image, channel))
+        if len(images) > 0:
+            self.hub.broadcast(ChannelImagesChangedMessage(self, images))
 
     def _on_selected_acquisition_changed(self, message: SelectedAcquisitionChangedMessage) -> None:
         if self.selected_acquisition is message.acquisition:
@@ -63,11 +76,13 @@ class Data(HubListener):
         self.selected_acquisition = message.acquisition
         if self.selected_metals is None:
             return
-        self._broadcast_channels_update()
+        self.broadcast_channel_images_changed()
 
     def _on_selected_metals_changed(self, message: SelectedMetalsChangedMessage) -> None:
         self.selected_metals = message.metals
-        self._broadcast_channels_update()
+        for i, metal in enumerate(self.selected_metals):
+            self._metal_color_map[metal] = color_multipliers[i]
+        self.broadcast_channel_images_changed()
 
     def _on_selected_channels_changed(self, message: SelectedChannelsChangedMessage) -> None:
         self.selected_channels = message.channels
@@ -136,8 +151,8 @@ class Data(HubListener):
 
     def _on_view_mode_changed(self, message: ViewModeChangedMessage):
         self.view_mode = message.mode
-        self._broadcast_channels_update()
+        self.broadcast_channel_images_changed()
 
     def _on_blend_mode_changed(self, message: BlendModeChangedMessage):
         self.blend_mode = message.mode
-        self._broadcast_channels_update()
+        self.broadcast_channel_images_changed()

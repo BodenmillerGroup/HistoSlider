@@ -1,9 +1,9 @@
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QWidget, QVBoxLayout, QToolBar, QAction
 
-from histoslider.core.manager import Manager
 from histoslider.core.hub_listener import HubListener
-from histoslider.core.message import SelectedChannelsChangedMessage
+from histoslider.core.manager import Manager
+from histoslider.core.message import ChannelImagesChangedMessage
 from histoslider.ui.tiles_view import TilesView
 
 
@@ -22,10 +22,10 @@ class TilesViewWidget(QWidget, HubListener):
         self.verticalLayout.addWidget(self.tiles_view)
 
     def register_to_hub(self, hub):
-        hub.subscribe(self, SelectedChannelsChangedMessage, self._on_selected_channels_changed)
+        hub.subscribe(self, ChannelImagesChangedMessage, self._on_channel_images_changed)
 
-    def _on_selected_channels_changed(self, message: SelectedChannelsChangedMessage):
-        self.tiles_view.set_channels(message.channels)
+    def _on_channel_images_changed(self, message: ChannelImagesChangedMessage):
+        self.tiles_view.set_images(message.images)
 
     def fit_all_tiles(self):
         self.tiles_view.fit_all_tiles()

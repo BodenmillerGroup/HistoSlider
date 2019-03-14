@@ -6,6 +6,7 @@ from numpy.core.multiarray import ndarray
 from pyqtgraph import makeARGB
 
 from histoslider.image.channel_settings import ChannelSettings
+from histoslider.image.utils import scale_image
 from histoslider.models.base_data import BaseData
 
 
@@ -42,15 +43,7 @@ class Channel(BaseData):
         return self._image.astype(dtype=np.float32)
 
     def get_scaled(self):
-        # scale = self.settings.max
-        # result = rescaleData(self._image, 255.0/(self.settings.levels[1] - self.settings.levels[0]), 0)
-        # result = self._image * (scale/(self.settings.levels[1] - self.settings.levels[0]))
-        scale = self.settings.max
-        minL = self.settings.levels[0]
-        maxL = self.settings.levels[1]
-        result = self.image * (scale / (maxL - minL))
-        # result = cv2.convertScaleAbs(self.image, alpha=(scale / (maxL - minL)))
-        return result.astype(dtype=np.float32)
+        return scale_image(self.image, self.settings.max, self.settings.levels)
 
     def get_normalized(self):
         # result = cv2.normalize(self.image, None, alpha=0, beta=1, norm_type=cv2.NORM_MINMAX, dtype=cv2.CV_16U)
