@@ -2,15 +2,15 @@ import os
 from typing import Dict, List, Set, Tuple
 
 import cv2
-import numpy as np
 import gc
+import numpy as np
 from PyQt5.QtCore import QModelIndex
 from PyQt5.QtGui import QPixmapCache
 from pyqtgraph import BusyCursor
 
 from histoslider.core.hub import Hub
 from histoslider.core.hub_listener import HubListener
-from histoslider.core.message import SelectedChannelsChangedMessage, SelectedAcquisitionChangedMessage, \
+from histoslider.core.message import SelectedAcquisitionChangedMessage, \
     SlideImportedMessage, SlideLoadedMessage, SlideUnloadedMessage, SlideRemovedMessage, ViewModeChangedMessage, \
     SelectedMetalsChangedMessage, BlendModeChangedMessage, ChannelImagesChangedMessage
 from histoslider.core.view_mode import ViewMode
@@ -20,10 +20,8 @@ from histoslider.loaders.mcd.mcd_loader import McdLoader
 from histoslider.loaders.ome_tiff.ome_tiff_loader import OmeTiffLoader
 from histoslider.loaders.txt.txt_loader import TxtLoader
 from histoslider.models.acquisition import Acquisition
-from histoslider.models.channel import Channel
 from histoslider.models.slide import Slide
 from histoslider.models.workspace_model import WorkspaceModel
-
 
 color_multipliers = ((1, 0, 0), (0, 1, 0), (0, 0, 1), (1, 1, 0), (1, 0, 1), (0, 1, 1))
 
@@ -39,21 +37,18 @@ class Data(HubListener):
         self.view_mode = ViewMode.GREYSCALE
         self.selected_acquisition: Acquisition = None
         self.selected_metals: Set[str] = None
-        self.selected_channels: Dict[str, Channel] = None
 
         self._metal_color_map: Dict[str, Tuple[int, int, int, int]] = dict()
 
     def register_to_hub(self, hub):
         hub.subscribe(self, SelectedAcquisitionChangedMessage, self._on_selected_acquisition_changed)
         hub.subscribe(self, SelectedMetalsChangedMessage, self._on_selected_metals_changed)
-        hub.subscribe(self, SelectedChannelsChangedMessage, self._on_selected_channels_changed)
         hub.subscribe(self, ViewModeChangedMessage, self._on_view_mode_changed)
         hub.subscribe(self, BlendModeChangedMessage, self._on_blend_mode_changed)
 
     def clear(self):
         self.selected_acquisition = None
         self.selected_metals = None
-        self.selected_channels = None
         self._metal_color_map.clear()
         QPixmapCache.clear()
         gc.collect()
@@ -86,9 +81,6 @@ class Data(HubListener):
         for i, metal in enumerate(self.selected_metals):
             self._metal_color_map[metal] = color_multipliers[i]
         self.broadcast_channel_images_changed()
-
-    def _on_selected_channels_changed(self, message: SelectedChannelsChangedMessage) -> None:
-        self.selected_channels = message.channels
 
     def load_workspace(self, path: str) -> None:
         with BusyCursor():

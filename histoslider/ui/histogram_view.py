@@ -12,7 +12,6 @@ class HistogramView(HistogramLUTItem):
         self.channel = image_item.channel
         self.setLevels(*self.channel.settings.levels)
         self.sigLevelChangeFinished.connect(self._on_level_change_finished)
-        self.sigLookupTableChanged.connect(self._on_lookup_table_changed)
 
     def _on_level_change_finished(self):
         if self.channel is None:
@@ -20,9 +19,3 @@ class HistogramView(HistogramLUTItem):
         self.channel.settings.levels = self.getLevels()
         if self.blend_view is not None:
             self.blend_view.refresh_images()
-
-    def _on_lookup_table_changed(self):
-        if self.channel is None:
-            return
-        lut = self.getLookupTable(n=int(self.channel.settings.levels[1]), alpha=0.5)
-        self.channel.settings.lut = lut
