@@ -1,5 +1,8 @@
-from typing import Dict, List
+from typing import Dict, List, Set, Tuple
 
+from histoslider.core.view_mode import ViewMode
+from histoslider.image.channel_image_item import ChannelImageItem
+from histoslider.models.acquisition import Acquisition
 from histoslider.models.base_data import BaseData
 from histoslider.models.channel import Channel
 
@@ -72,9 +75,37 @@ class SelectedChannelsChangedMessage(Message):
 
     """ Indicates that selected channels are changed """
 
-    def __init__(self, sender, channels: Dict[str, Channel], tag=None):
+    def __init__(self, sender, channels: Dict[str, Channel], metal_color_map: Dict[str, Tuple[int, int, int, int]], tag=None):
         Message.__init__(self, sender, tag=tag)
         self.channels = channels
+        self.metal_color_map = metal_color_map
+
+
+class ChannelImagesChangedMessage(Message):
+
+    """ Indicates that selected channel images are changed """
+
+    def __init__(self, sender, images: List[ChannelImageItem], tag=None):
+        Message.__init__(self, sender, tag=tag)
+        self.images = images
+
+
+class SelectedMetalsChangedMessage(Message):
+
+    """ Indicates that selected metals are changed """
+
+    def __init__(self, sender, metals: Set[str], tag=None):
+        Message.__init__(self, sender, tag=tag)
+        self.metals = metals
+
+
+class SelectedAcquisitionChangedMessage(Message):
+
+    """ Indicates that selected acquisition is changed """
+
+    def __init__(self, sender, acquisition: Acquisition, tag=None):
+        Message.__init__(self, sender, tag=tag)
+        self.acquisition = acquisition
 
 
 class SlideImportedMessage(Message):
@@ -99,3 +130,20 @@ class SlideUnloadedMessage(Message):
 
     """ Indicates that the slide has been unloaded """
     pass
+
+class ViewModeChangedMessage(Message):
+
+    """ Indicates that current view mode is changed """
+
+    def __init__(self, sender, mode: ViewMode, tag=None):
+        Message.__init__(self, sender, tag=tag)
+        self.mode = mode
+
+
+class BlendModeChangedMessage(Message):
+
+    """ Indicates that current blend mode is changed """
+
+    def __init__(self, sender, mode: str, tag=None):
+        Message.__init__(self, sender, tag=tag)
+        self.mode = mode

@@ -1,8 +1,9 @@
-from typing import Dict
+from typing import Dict, Tuple, List
 
 from PyQt5.QtWidgets import QWidget
 from pyqtgraph import GraphicsView, GraphicsLayout, ViewBox
 
+from histoslider.image.channel_image_item import ChannelImageItem
 from histoslider.models.channel import Channel
 from histoslider.ui.tile_view import TileView
 
@@ -33,12 +34,12 @@ class TilesView(GraphicsView):
             cols = (0, 1, 0, 1)
         return rows[i], cols[i]
 
-    def set_channels(self, channels: Dict[str, Channel]):
+    def set_images(self, items: List[ChannelImageItem]):
         self.clear()
-        if len(channels) > 0:
-            for channel in channels.values():
-                tile = TileView(self.layout, channel)
-                self.tiles[channel.name] = tile
+        if len(items) > 0:
+            for item in items:
+                tile = TileView(self.layout, item)
+                self.tiles[item.channel.metal] = tile
 
             first_tile = self.tiles[list(self.tiles.keys())[0]]
             for i, tile in enumerate(self.tiles.values()):

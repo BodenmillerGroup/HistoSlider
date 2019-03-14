@@ -8,11 +8,14 @@ from PyQt5.QtWidgets import (
     QFileDialog,
     QLabel,
     QApplication,
-    QDialog)
+    QDialog, QComboBox)
 
-from histoslider.core.data_manager import DataManager
+from histoslider.core.manager import Manager
+from histoslider.core.message import ViewModeChangedMessage
+from histoslider.core.view_mode import ViewMode
 from histoslider.ui.blend_view_widget import BlendViewWidget
 from histoslider.ui.channels_view_widget import ChannelsViewWidget
+from histoslider.ui.histograms_view import HistogramsView
 from histoslider.ui.info_widget import InfoWidget
 from histoslider.ui.main_window_ui import Ui_MainWindow
 from histoslider.ui.origin_view_widget import OriginViewWidget
@@ -46,18 +49,30 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.channels_view_widget = ChannelsViewWidget(self.dockWidgetContentsChannels)
         self.verticalLayoutChannels.addWidget(self.channels_view_widget)
 
-        self.origin_view_widget = OriginViewWidget(self)
-        self.blend_view_widget = BlendViewWidget(self)
-        self.tiles_view_widget = TilesViewWidget(self)
+        # self.origin_view_widget = OriginViewWidget(self)
+        # self.tabWidget.addTab(self.origin_view_widget, QIcon(":/icons/icons8-eukaryotic-cells-16.png"), "Origin")
 
-        self.tabWidget.addTab(self.origin_view_widget, QIcon(":/icons/icons8-eukaryotic-cells-16.png"), "Origin")
+        self.blend_view_widget = BlendViewWidget(self)
         self.tabWidget.addTab(self.blend_view_widget, QIcon(":/icons/icons8-eukaryotic-cells-16.png"), "Blend")
+
+        self.tiles_view_widget = TilesViewWidget(self)
         self.tabWidget.addTab(self.tiles_view_widget, QIcon(":/icons/icons8-medium-icons-16.png"), "Tiles")
+
+        self.histograms_view = HistogramsView(self.dockWidgetContentsSettings, self.blend_view_widget.blend_view)
+        self.verticalLayoutSettings.addWidget(self.histograms_view)
 
         self.actionImportSlide.triggered.connect(self.import_slide_dialog)
         self.actionOpenWorkspace.triggered.connect(self.load_workspace_dialog)
         self.actionSaveWorkspace.triggered.connect(self.save_workspace_dialog)
         self.actionExit.triggered.connect(lambda: QApplication.exit())
+
+        label = QLabel("Mode:")
+        self.toolBar.addWidget(label)
+
+        mode_combo_box = QComboBox()
+        mode_combo_box.addItems([e.value for e in ViewMode])
+        mode_combo_box.currentTextChanged.connect(self._mode_current_text_changed)
+        self.toolBar.addWidget(mode_combo_box)
 
         self.load_settings()
 
@@ -73,7 +88,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
     def load_workspace_dialog(self):
         options = QFileDialog.Options()
-        file_ext = "*.json"
+        file_ext = "*.workspace"
         file_path, _ = QFileDialog.getOpenFileName(
             self,
             "Load Workspace",
@@ -82,17 +97,17 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             options=options,
         )
         if file_path:
-            DataManager.load_workspace(file_path)
+            Manager.load_workspace(file_path)
 
     def save_workspace_dialog(self):
-        file_ext = "*.json"
+        file_ext = "*.workspace"
         dialog = QFileDialog(self)
-        dialog.setDefaultSuffix(".json")
+        dialog.setDefaultSuffix(".workspace")
         dialog.setAcceptMode(QFileDialog.AcceptSave)
         dialog.setWindowTitle("Save Workspace")
         dialog.setNameFilter("Workspace Files ({})".format(file_ext))
         if dialog.exec() == QDialog.Accepted:
-            DataManager.save_workspace(dialog.selectedFiles()[0])
+            Manager.save_workspace(dialog.selectedFiles()[0])
 
     def update_memory_usage(self):
         # return the memory usage in MB
@@ -100,7 +115,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.memory_usage_label.setText(f"Memory usage: {mem:.2f} Mb")
 
     def import_slide(self, file_path: str):
-        DataManager.import_slide(file_path)
+        Manager.import_slide(file_path)
 
     def import_slide_dialog(self):
         options = QFileDialog.Options()
@@ -123,3 +138,6 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     def closeEvent(self, event):
         if self.okToQuit:
             self.save_settings()
+
+    def _mode_current_text_changed(self, text: str):
+        Manager.hub.broadcast(ViewModeChangedMessage(self, ViewMode(text)))

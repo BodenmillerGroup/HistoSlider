@@ -115,6 +115,20 @@
     <layout class="QVBoxLayout" name="verticalLayoutInfo"/>
    </widget>
   </widget>
+  <widget class="QDockWidget" name="dockWidgetSettings">
+   <property name="features">
+    <set>QDockWidget::AllDockWidgetFeatures</set>
+   </property>
+   <property name="windowTitle">
+    <string>Settings</string>
+   </property>
+   <attribute name="dockWidgetArea">
+    <number>2</number>
+   </attribute>
+   <widget class="QWidget" name="dockWidgetContentsSettings">
+    <layout class="QVBoxLayout" name="verticalLayoutSettings"/>
+   </widget>
+  </widget>
   <action name="actionExit">
    <property name="icon">
     <iconset resource="../../resources/resources.qrc">
@@ -174,6 +188,7 @@
   </action>
   <zorder>dockWidgetChannels</zorder>
   <zorder>dockWidgetInfo</zorder>
+  <zorder>dockWidgetSettings</zorder>
  </widget>
  <resources>
   <include location="../../resources/resources.qrc"/>

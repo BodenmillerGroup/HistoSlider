@@ -24,7 +24,6 @@ dependencies:
     - numpy
     - pyqtgraph
     - psutil
-    - jsonpickle
     - pytest
     - pyqt-distutils
     - PyInstaller
