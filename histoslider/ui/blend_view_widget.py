@@ -31,14 +31,17 @@ class BlendViewWidget(QWidget, HubListener):
         hub.subscribe(self, SlideRemovedMessage, self._on_slide_removed)
         hub.subscribe(self, SlideUnloadedMessage, self._on_slide_unloaded)
 
+    def clear(self):
+        self.blend_view.clear()
+
     def _on_channel_images_changed(self, message: ChannelImagesChangedMessage):
         self.blend_view.set_images(message.images)
 
     def _on_slide_removed(self, message: SlideRemovedMessage):
-        self.blend_view.clear()
+        self.clear()
 
     def _on_slide_unloaded(self, message: SlideUnloadedMessage):
-        self.blend_view.clear()
+        self.clear()
 
     def _show_scale_bar(self, state: bool):
         self.blend_view.show_scale_bar(state)

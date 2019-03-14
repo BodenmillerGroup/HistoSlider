@@ -13,7 +13,7 @@ setConfigOptions(
     leftButtonPan=True,
     antialias=False,
     useOpenGL=False,
-    useWeave=True
+    useWeave=False
 )
 
 

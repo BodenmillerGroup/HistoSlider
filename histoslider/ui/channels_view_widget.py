@@ -3,7 +3,7 @@ from PyQt5.QtWidgets import QWidget, QVBoxLayout, QToolBar, QAction
 
 from histoslider.core.manager import Manager
 from histoslider.core.hub_listener import HubListener
-from histoslider.core.message import SelectedTreeNodeChangedMessage
+from histoslider.core.message import SelectedTreeNodeChangedMessage, SlideRemovedMessage, SlideUnloadedMessage
 from histoslider.models.acquisition import Acquisition
 from histoslider.ui.channels_table_view import ChannelsTableView
 
@@ -19,11 +19,22 @@ class ChannelsViewWidget(QWidget, HubListener):
         self.verticalLayout = QVBoxLayout(self)
         self.verticalLayout.setContentsMargins(0, 0, 0, 0)
         self.verticalLayout.setSpacing(0)
-        self.verticalLayout.addWidget(self.toolbar)
+        # self.verticalLayout.addWidget(self.toolbar)
         self.verticalLayout.addWidget(self.channels_view)
 
     def register_to_hub(self, hub):
         hub.subscribe(self, SelectedTreeNodeChangedMessage, self._on_selected_tree_node_changed)
+        hub.subscribe(self, SlideRemovedMessage, self._on_slide_removed)
+        hub.subscribe(self, SlideUnloadedMessage, self._on_slide_unloaded)
+
+    def clear(self):
+        self.channels_view.clear()
+
+    def _on_slide_removed(self, message: SlideRemovedMessage):
+        self.clear()
+
+    def _on_slide_unloaded(self, message: SlideUnloadedMessage):
+        self.clear()
 
     def _on_selected_tree_node_changed(self, message: SelectedTreeNodeChangedMessage):
         if isinstance(message.node, Acquisition):

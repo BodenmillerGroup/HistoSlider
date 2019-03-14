@@ -54,10 +54,13 @@ class Data(HubListener):
         self.selected_acquisition = None
         self.selected_metals = None
         self.selected_channels = None
+        self._metal_color_map.clear()
         QPixmapCache.clear()
         gc.collect()
 
     def broadcast_channel_images_changed(self):
+        if self.selected_acquisition is None:
+            return
         images: List[ChannelImageItem] = []
         for channel in self.selected_acquisition.channels:
             if channel.metal in self.selected_metals:
@@ -115,7 +118,6 @@ class Data(HubListener):
                 self.workspace_model.beginResetModel()
                 self.workspace_model.workspace_data.add_slide(slide)
                 self.workspace_model.endResetModel()
-                QPixmapCache.clear()
                 self.hub.broadcast(SlideImportedMessage(self))
 
     def load_slides(self, indexes: [QModelIndex]) -> None:
@@ -137,8 +139,7 @@ class Data(HubListener):
                     item.close()
             self.workspace_model.endResetModel()
             self.hub.broadcast(SlideUnloadedMessage(self))
-            QPixmapCache.clear()
-            gc.collect()
+            self.clear()
 
     def remove_slides(self, indexes: [QModelIndex]) -> None:
         self.workspace_model.beginResetModel()
@@ -146,8 +147,7 @@ class Data(HubListener):
             self.workspace_model.removeRow(index.row(), parent=index.parent())
         self.workspace_model.endResetModel()
         self.hub.broadcast(SlideRemovedMessage(self))
-        QPixmapCache.clear()
-        gc.collect()
+        self.clear()
 
     def _on_view_mode_changed(self, message: ViewModeChangedMessage):
         self.view_mode = message.mode

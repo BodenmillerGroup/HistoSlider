@@ -25,6 +25,10 @@ class ChannelsTableView(QTableView):
 
         self.channel_list: List[Tuple[str, str, int]] = None
 
+    def clear(self):
+        self.model().setSourceModel(None)
+        self.channel_list = None
+
     def set_channels(self, channels: List[Channel]):
         new_channel_list = list()
         for c in channels:

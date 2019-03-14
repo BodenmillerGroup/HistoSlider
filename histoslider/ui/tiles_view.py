@@ -1,10 +1,9 @@
-from typing import Dict, Tuple, List
+from typing import Dict, List
 
 from PyQt5.QtWidgets import QWidget
 from pyqtgraph import GraphicsView, GraphicsLayout, ViewBox
 
 from histoslider.image.channel_image_item import ChannelImageItem
-from histoslider.models.channel import Channel
 from histoslider.ui.tile_view import TileView
 
 

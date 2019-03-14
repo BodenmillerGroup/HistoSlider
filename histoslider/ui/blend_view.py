@@ -34,6 +34,10 @@ class BlendView(ImageView):
     #     self.lut = lut
     #     self.updateImage()
 
+    def clear(self):
+        super().clear()
+        self.items = None
+
     def set_images(self, items: List[ChannelImageItem]):
         self.items = items
         if len(items) > 0:

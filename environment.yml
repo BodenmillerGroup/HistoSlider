@@ -16,7 +16,6 @@ dependencies:
   - pip:
     - PyQt5
     - numpy
-    - pyqtgraph
     - psutil
     - pytest
     - pyqt-distutils
@@ -24,5 +23,6 @@ dependencies:
     - flake8
     - scikit-image
     - opencv-python
+    - git+https://github.com/pyqtgraph/pyqtgraph
     - git+https://github.com/BodenmillerGroup/imctools.git
     - git+https://github.com/BodenmillerGroup/HistoSlider.git
