@@ -5,6 +5,7 @@ dependencies:
   - ca-certificates
   - certifi
   - openssl
+  - git
   - pip
   - python=3.7
   - setuptools
