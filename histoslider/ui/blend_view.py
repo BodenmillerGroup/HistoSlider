@@ -69,7 +69,7 @@ class BlendView(ImageView):
         #     pass
 
         # self.getHistogramWidget().item.setLevelMode("rgba") if Manager.data.view_mode is ViewMode.RGB else self.getHistogramWidget().item.setLevelMode("mono")
-        self.setImage(blend_image)
+        self.setImage(blend_image, autoHistogramRange=False)
         # self.getHistogramWidget().item.autoHistogramRange()
         # self.setLevels([])
         # self.getHistogramWidget().show()

@@ -1,16 +1,23 @@
+from enum import Enum, unique
 from typing import Tuple
 
 import numpy as np
 import cv2
 
 
-COLOR_MULTIPLIERS = ((1, 0, 0), (0, 1, 0), (0, 0, 1), (1, 1, 0), (1, 0, 1), (0, 1, 1))
+@unique
+class Color(Enum):
+    RED = (1, 0, 0)
+    GREEN = (0, 1, 0)
+    BLUE = (0, 0, 1)
+    YELLOW = (1, 1, 0)
+    CYAN = (1, 0, 1)
+    MAGENTA = (0, 1, 1)
 
 
-def colorize(image: np.ndarray, color_index: int):
+def colorize(image: np.ndarray, color: Color):
     image = cv2.cvtColor(image, cv2.COLOR_GRAY2RGB)
-    # image = np.stack((image,) * 3, axis=-1)
-    image = image * COLOR_MULTIPLIERS[color_index]
+    image = image * color.value
     return image
 
 

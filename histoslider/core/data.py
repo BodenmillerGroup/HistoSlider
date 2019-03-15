@@ -1,9 +1,7 @@
 import os
-from typing import Dict, List, Set, Tuple
+from typing import Dict, List, Set
 
-import cv2
 import gc
-import numpy as np
 from PyQt5.QtCore import QModelIndex
 from PyQt5.QtGui import QPixmapCache
 from pyqtgraph import BusyCursor
@@ -16,15 +14,13 @@ from histoslider.core.message import SelectedAcquisitionChangedMessage, \
 from histoslider.core.view_mode import ViewMode
 from histoslider.image.channel_image_item import ChannelImageItem
 from histoslider.image.slide_type import SlideType
-from histoslider.image.utils import colorize
+from histoslider.image.utils import colorize, Color
 from histoslider.loaders.mcd.mcd_loader import McdLoader
 from histoslider.loaders.ome_tiff.ome_tiff_loader import OmeTiffLoader
 from histoslider.loaders.txt.txt_loader import TxtLoader
 from histoslider.models.acquisition import Acquisition
 from histoslider.models.slide import Slide
 from histoslider.models.workspace_model import WorkspaceModel
-
-color_multipliers = ((1, 0, 0), (0, 1, 0), (0, 0, 1), (1, 1, 0), (1, 0, 1), (0, 1, 1))
 
 
 class Data(HubListener):
@@ -37,9 +33,9 @@ class Data(HubListener):
         self.blend_mode = "addition"
         self.view_mode = ViewMode.GREYSCALE
         self.selected_acquisition: Acquisition = None
-        self.selected_metals: Set[str] = None
+        self.selected_metals: Set[str] = set()
 
-        self._metal_color_map: Dict[str, int] = dict()
+        self._metal_color_map: Dict[str, Color] = dict()
 
     def register_to_hub(self, hub):
         hub.subscribe(self, SelectedAcquisitionChangedMessage, self._on_selected_acquisition_changed)
@@ -49,7 +45,7 @@ class Data(HubListener):
 
     def clear(self):
         self.selected_acquisition = None
-        self.selected_metals = None
+        self.selected_metals.clear()
         self._metal_color_map.clear()
         QPixmapCache.clear()
         gc.collect()
@@ -72,14 +68,23 @@ class Data(HubListener):
         if self.selected_acquisition is message.acquisition:
             return
         self.selected_acquisition = message.acquisition
-        if self.selected_metals is None:
-            return
         self.broadcast_channel_images_changed()
+
+    def _find_color(self):
+        colors = Color.__members__.values()
+        for c in colors:
+            if c not in self._metal_color_map.values():
+                return c
 
     def _on_selected_metals_changed(self, message: SelectedMetalsChangedMessage) -> None:
         self.selected_metals = message.metals
-        for i, metal in enumerate(self.selected_metals):
-            self._metal_color_map[metal] = i
+        previous_metal_color_map = self._metal_color_map.copy()
+        self._metal_color_map.clear()
+        for metal in self.selected_metals:
+            if metal in previous_metal_color_map:
+                self._metal_color_map[metal] = previous_metal_color_map[metal]
+            else:
+                self._metal_color_map[metal] = self._find_color()
         self.broadcast_channel_images_changed()
 
     def load_workspace(self, path: str) -> None:
