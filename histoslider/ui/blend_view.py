@@ -1,6 +1,7 @@
 from typing import List
 
 import cv2
+import numpy as np
 from PyQt5.QtCore import pyqtSlot
 from PyQt5.QtWidgets import QWidget
 from pyqtgraph import ImageView, ScaleBar
@@ -16,6 +17,8 @@ class BlendView(ImageView):
     def __init__(self, parent: QWidget):
         ImageView.__init__(self, parent, "BlendView")
         self.getHistogramWidget().hide()
+        self.ui.roiBtn.hide()
+        self.ui.menuBtn.hide()
 
         self.scale = ScaleBar(size=10, suffix='μm')
         self.scale.setParentItem(self.getView())
@@ -40,37 +43,45 @@ class BlendView(ImageView):
 
     def set_images(self, items: List[ChannelImageItem]):
         self.items = items
-        if len(items) > 0:
-            blend_image = None
-            alpha = 0.5
-            blend_method = getattr(blend_modes, Manager.data.blend_mode)
+        if len(items) == 0:
+            return
+        blend_image = 0
+        levels = []
+        if len(items) == 1:
+            blend_image = items[0].image
+            levels = items[0].channel.settings.levels
+        else:
             for item in items:
-                if len(items) == 1:
-                    image = item.image
-                else:
-                    image = scale_image(item.image, item.channel.settings.max, item.channel.settings.levels)
-                    image = cv2.cvtColor(image, cv2.COLOR_GRAY2RGBA) if Manager.data.view_mode is ViewMode.GREYSCALE else cv2.cvtColor(image, cv2.COLOR_RGB2RGBA)
+                image = scale_image(item.image, item.channel.settings.max, item.channel.settings.levels)
+                blend_image = cv2.add(blend_image, image)
+                levels.append(item.channel.settings.levels)
+                # if blend_image is None:
+                #     blend_image = image
+                # else:
+                #     # blend_image = alpha * blend_image + (1 - alpha) * image
+                #     # blend_image = np.add(blend_image, image)
+                #     blend_image = cv2.add(blend_image, image)
+                #     # blend_image = cv2.addWeighted(blend_image, alpha, image, 1 - alpha, 0)
+                #     # blend_image = blend_method(blend_image, image, alpha)
+        # try:
+        #     self.getHistogramWidget().item.sigLevelChangeFinished.disconnect()
+        # except TypeError:
+        #     pass
 
-                if blend_image is None:
-                    blend_image = image
-                else:
-                    # blend_image = alpha * blend_image + (1 - alpha) * image
-                    # blend_image = np.add(blend_image, image)
-                    # blend_image = cv2.add(blend_image, image)
-                    # blend_image = cv2.addWeighted(blend_image, alpha, image, 1 - alpha, 0)
-                    blend_image = blend_method(blend_image, image, alpha)
-            try:
-                self.getHistogramWidget().item.sigLevelChangeFinished.disconnect()
-            except TypeError:
-                pass
-            blend_image = cv2.cvtColor(blend_image, cv2.COLOR_RGBA2RGB)
-            self.setImage(blend_image)
-            if len(items) == 1:
-                channel = items[0].channel
-                self.setLevels(*channel.settings.levels)
-                self.getHistogramWidget().item.sigLevelChangeFinished.connect(self._on_level_change_finished)
-            self.getHistogramWidget().item.autoHistogramRange()
-            self.getHistogramWidget().show()
+        # self.getHistogramWidget().item.setLevelMode("rgba") if Manager.data.view_mode is ViewMode.RGB else self.getHistogramWidget().item.setLevelMode("mono")
+        self.setImage(blend_image)
+        # self.getHistogramWidget().item.autoHistogramRange()
+        # self.setLevels([])
+        # self.getHistogramWidget().show()
+        if len(items) == 1:
+            self.setLevels(*items[0].channel.settings.levels)
+            # self.getHistogramWidget().item.sigLevelChangeFinished.connect(self._on_level_change_finished)
+        else:
+            # mx = np.amax(blend_image)
+            self.setLevels(*max(levels))
+            # self.getHistogramWidget().item.autoHistogramRange()
+            # self.setLevels(*levels)
+            pass
 
     def refresh_images(self):
         self.set_images(self.items)
@@ -88,10 +99,3 @@ class BlendView(ImageView):
         channel = self.items[0].channel
         levels = self.getHistogramWidget().item.getLevels()
         channel.settings.levels = levels
-
-    def _on_lookup_table_changed(self):
-        if self.items is None or len(self.items) != 1 or self.getImageItem() is None:
-            return
-        channel = self.items[0].channel
-        lut = self.getHistogramWidget().item.getLookupTable(n=int(channel.settings.levels[1]), alpha=0.5)
-        channel.settings.lut = lut

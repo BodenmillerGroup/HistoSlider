@@ -16,6 +16,7 @@ from histoslider.core.message import SelectedAcquisitionChangedMessage, \
 from histoslider.core.view_mode import ViewMode
 from histoslider.image.channel_image_item import ChannelImageItem
 from histoslider.image.slide_type import SlideType
+from histoslider.image.utils import colorize
 from histoslider.loaders.mcd.mcd_loader import McdLoader
 from histoslider.loaders.ome_tiff.ome_tiff_loader import OmeTiffLoader
 from histoslider.loaders.txt.txt_loader import TxtLoader
@@ -38,7 +39,7 @@ class Data(HubListener):
         self.selected_acquisition: Acquisition = None
         self.selected_metals: Set[str] = None
 
-        self._metal_color_map: Dict[str, Tuple[int, int, int, int]] = dict()
+        self._metal_color_map: Dict[str, int] = dict()
 
     def register_to_hub(self, hub):
         hub.subscribe(self, SelectedAcquisitionChangedMessage, self._on_selected_acquisition_changed)
@@ -60,8 +61,7 @@ class Data(HubListener):
         for channel in self.selected_acquisition.channels:
             if channel.metal in self.selected_metals:
                 if self.view_mode == ViewMode.RGB:
-                    image = cv2.cvtColor(channel.image, cv2.COLOR_GRAY2RGB)
-                    image = (image * self._metal_color_map[channel.metal]).astype(np.float32)
+                    image = colorize(channel.image, self._metal_color_map[channel.metal])
                 else:
                     image = channel.image
                 images.append(ChannelImageItem(image, channel))
@@ -79,7 +79,7 @@ class Data(HubListener):
     def _on_selected_metals_changed(self, message: SelectedMetalsChangedMessage) -> None:
         self.selected_metals = message.metals
         for i, metal in enumerate(self.selected_metals):
-            self._metal_color_map[metal] = color_multipliers[i]
+            self._metal_color_map[metal] = i
         self.broadcast_channel_images_changed()
 
     def load_workspace(self, path: str) -> None:

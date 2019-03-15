@@ -11,9 +11,10 @@ class HistogramView(HistogramLUTItem):
         self.blend_view = blend_view
         self.channel = image_item.channel
         self.setLevels(*self.channel.settings.levels)
-        self.sigLevelChangeFinished.connect(self._on_level_change_finished)
+        # self.sigLevelChangeFinished.connect(self._on_levels_changed)
+        self.sigLevelsChanged.connect(self._on_levels_changed)
 
-    def _on_level_change_finished(self):
+    def _on_levels_changed(self):
         if self.channel is None:
             return
         self.channel.settings.levels = self.getLevels()

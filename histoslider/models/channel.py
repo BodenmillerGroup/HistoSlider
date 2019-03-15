@@ -40,19 +40,10 @@ class Channel(BaseData):
     def image(self):
         if self._image is None:
             return np.zeros((1, 1))
-        return self._image.astype(dtype=np.float32)
+        return self._image
 
     def get_scaled(self):
         return scale_image(self.image, self.settings.max, self.settings.levels)
-
-    def get_normalized(self):
-        # result = cv2.normalize(self.image, None, alpha=0, beta=1, norm_type=cv2.NORM_MINMAX, dtype=cv2.CV_16U)
-        result = self.image.astype(dtype=np.float32)
-        return result
-
-    def get_argb(self):
-        argb, alpha = makeARGB(self.image, levels=self.settings.levels, useRGBA=True)
-        return argb
 
     def __getstate__(self):
         state = self.__dict__.copy()
