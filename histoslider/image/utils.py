@@ -36,5 +36,8 @@ def hue_colorize(image: np.ndarray, hue, saturation=1):
 
 
 def scale_image(image: np.ndarray, scale: float, levels: Tuple[float, float]):
-    result = image * (scale / (levels[1] - levels[0]))
+    minL, maxL = levels
+    if maxL <= minL:
+        return image
+    result = image * (scale / (maxL - minL))
     return result
