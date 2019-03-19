@@ -1,11 +1,12 @@
 from pyqtgraph import HistogramLUTItem
 
 from histoslider.image.channel_image_item import ChannelImageItem
+from histoslider.ui.histogram_item import HistogramItem
 
 
-class HistogramView(HistogramLUTItem):
+class HistogramView(HistogramItem):
     def __init__(self, image_item: ChannelImageItem, blend_view=None):
-        HistogramLUTItem.__init__(self, image_item, rgbHistogram=True)
+        HistogramItem.__init__(self, image_item)
         self.gradient.hide()
         self.blend_view = blend_view
         self.channel = image_item.channel

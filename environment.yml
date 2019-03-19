@@ -24,6 +24,7 @@ dependencies:
     - flake8
     - scikit-image
     - opencv-python
+    - qimage2ndarray
     - git+https://github.com/pyqtgraph/pyqtgraph
     - git+https://github.com/BodenmillerGroup/imctools.git
     - git+https://github.com/BodenmillerGroup/HistoSlider.git
