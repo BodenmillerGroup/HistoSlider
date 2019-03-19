@@ -50,6 +50,7 @@
     <addaction name="actionSaveWorkspace"/>
     <addaction name="separator"/>
     <addaction name="actionImportSlide"/>
+    <addaction name="actionImportMask"/>
     <addaction name="separator"/>
     <addaction name="actionExit"/>
    </widget>
@@ -80,6 +81,7 @@
    <addaction name="actionSaveWorkspace"/>
    <addaction name="separator"/>
    <addaction name="actionImportSlide"/>
+   <addaction name="actionImportMask"/>
    <addaction name="separator"/>
   </widget>
   <widget class="QDockWidget" name="dockWidgetOverview">
@@ -184,6 +186,18 @@
    </property>
    <property name="toolTip">
     <string>Save workspace...</string>
+   </property>
+  </action>
+  <action name="actionImportMask">
+   <property name="icon">
+    <iconset resource="../../resources/resources.qrc">
+     <normaloff>:/icons/icons8-import-16.png</normaloff>:/icons/icons8-import-16.png</iconset>
+   </property>
+   <property name="text">
+    <string>Import Mask</string>
+   </property>
+   <property name="toolTip">
+    <string>Import mask...</string>
    </property>
   </action>
   <zorder>dockWidgetChannels</zorder>

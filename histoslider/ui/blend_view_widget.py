@@ -31,6 +31,9 @@ class BlendViewWidget(QWidget, HubListener):
         hub.subscribe(self, SlideRemovedMessage, self._on_slide_removed)
         hub.subscribe(self, SlideUnloadedMessage, self._on_slide_unloaded)
 
+    def notify(self, message):
+        pass
+
     def clear(self):
         self.blend_view.clear()
 

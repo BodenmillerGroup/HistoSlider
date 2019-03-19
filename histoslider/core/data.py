@@ -13,12 +13,15 @@ from histoslider.core.message import SelectedAcquisitionChangedMessage, \
     SelectedMetalsChangedMessage, BlendModeChangedMessage, ChannelImagesChangedMessage
 from histoslider.core.view_mode import ViewMode
 from histoslider.image.channel_image_item import ChannelImageItem
+from histoslider.image.mask_type import MaskType
 from histoslider.image.slide_type import SlideType
 from histoslider.image.utils import colorize, Color
+from histoslider.loaders.mask.mask_loader import MaskLoader
 from histoslider.loaders.mcd.mcd_loader import McdLoader
 from histoslider.loaders.ome_tiff.ome_tiff_loader import OmeTiffLoader
 from histoslider.loaders.txt.txt_loader import TxtLoader
 from histoslider.models.acquisition import Acquisition
+from histoslider.models.mask import Mask
 from histoslider.models.slide import Slide
 from histoslider.models.workspace_model import WorkspaceModel
 
@@ -146,6 +149,21 @@ class Data(HubListener):
         self.workspace_model.endResetModel()
         self.hub.broadcast(SlideRemovedMessage(self))
         self.clear()
+
+    def import_mask(self, file_path: str) -> None:
+        with BusyCursor():
+            filename, file_extension = os.path.splitext(file_path)
+            file_name = os.path.basename(file_path)
+            file_extension = file_extension.lower()
+            if file_extension == '.tiff' or file_extension == '.tif':
+                mask = Mask(file_name, file_path, MaskType.TIFF, MaskLoader)
+                mask.load()
+
+            if mask is not None:
+                self.workspace_model.beginResetModel()
+                self.workspace_model.workspace_data.add_slide(mask)
+                self.workspace_model.endResetModel()
+                # self.hub.broadcast(MaskImportedMessage(self))
 
     def _on_view_mode_changed(self, message: ViewModeChangedMessage):
         self.view_mode = message.mode

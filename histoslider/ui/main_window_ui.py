@@ -98,6 +98,9 @@ class Ui_MainWindow(object):
         icon4.addPixmap(QtGui.QPixmap(":/icons/icons8-save-16.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.actionSaveWorkspace.setIcon(icon4)
         self.actionSaveWorkspace.setObjectName("actionSaveWorkspace")
+        self.actionImportMask = QtWidgets.QAction(MainWindow)
+        self.actionImportMask.setIcon(icon2)
+        self.actionImportMask.setObjectName("actionImportMask")
         self.dockWidgetChannels.raise_()
         self.dockWidgetInfo.raise_()
         self.dockWidgetSettings.raise_()
@@ -105,6 +108,7 @@ class Ui_MainWindow(object):
         self.menuFile.addAction(self.actionSaveWorkspace)
         self.menuFile.addSeparator()
         self.menuFile.addAction(self.actionImportSlide)
+        self.menuFile.addAction(self.actionImportMask)
         self.menuFile.addSeparator()
         self.menuFile.addAction(self.actionExit)
         self.menuHelp.addAction(self.actionAbout)
@@ -114,6 +118,7 @@ class Ui_MainWindow(object):
         self.toolBar.addAction(self.actionSaveWorkspace)
         self.toolBar.addSeparator()
         self.toolBar.addAction(self.actionImportSlide)
+        self.toolBar.addAction(self.actionImportMask)
         self.toolBar.addSeparator()
 
         self.retranslateUi(MainWindow)
@@ -138,6 +143,8 @@ class Ui_MainWindow(object):
         self.actionOpenWorkspace.setToolTip(_translate("MainWindow", "Open workspace..."))
         self.actionSaveWorkspace.setText(_translate("MainWindow", "Save Workspace"))
         self.actionSaveWorkspace.setToolTip(_translate("MainWindow", "Save workspace..."))
+        self.actionImportMask.setText(_translate("MainWindow", "Import Mask"))
+        self.actionImportMask.setToolTip(_translate("MainWindow", "Import mask..."))
 
 
 import resources_rc

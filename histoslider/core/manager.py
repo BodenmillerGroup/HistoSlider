@@ -46,3 +46,8 @@ class Manager:
     @catch_error("Could not remove slide")
     def remove_slides(indexes: [QModelIndex]) -> None:
         Manager.data.remove_slides(indexes)
+
+    @staticmethod
+    # @catch_error("Could not import slide")
+    def import_mask(file_path: str) -> None:
+        Manager.data.import_mask(file_path)
