@@ -402,7 +402,7 @@ class QRangeSlider(QWidget, Ui_Form):
 
     def _valueToPos(self, value):
         """converts slider value to local pixel x coord"""
-        return scale(value, (self.min(), self.max()), (0, self.width()))
+        return scale(value, (self.min(), self.max()), (0, self.parent().width()))
 
     def _posToValue(self, xpos):
         """converts local pixel x coord to slider value"""
