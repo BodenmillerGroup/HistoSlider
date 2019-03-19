@@ -54,16 +54,17 @@ class BlendViewWidget(QWidget, HubListener):
         toolbar = QToolBar(self)
         toolbar.setToolButtonStyle(Qt.ToolButtonTextBesideIcon)
 
-        # label = QLabel("Blend:")
-        # toolbar.addWidget(label)
-        #
-        # blend_combo_box = QComboBox()
+        label = QLabel("Blend:")
+        toolbar.addWidget(label)
+
+        blend_combo_box = QComboBox()
         # functions_list = [o for o in getmembers(blend_modes) if isfunction(o[1]) and not o[0].startswith('_')]
         # blend_combo_box.addItems([f[0] for f in functions_list])
-        # blend_combo_box.currentTextChanged.connect(self._blend_current_text_changed)
-        # toolbar.addWidget(blend_combo_box)
-        #
-        # toolbar.addSeparator()
+        blend_combo_box.addItems(['Weighted', 'Add'])
+        blend_combo_box.currentTextChanged.connect(self._blend_current_text_changed)
+        toolbar.addWidget(blend_combo_box)
+
+        toolbar.addSeparator()
 
         show_scale_bar_action = QAction(QIcon(":/icons/icons8-ruler-16.png"), "Scale Bar", self)
         show_scale_bar_action.triggered.connect(self._show_scale_bar)

@@ -30,7 +30,7 @@ class Data(HubListener):
         self.register_to_hub(self.hub)
         self.workspace_model = WorkspaceModel()
 
-        self.blend_mode = "addition"
+        self.blend_mode = "Weighted"
         self.view_mode = ViewMode.GREYSCALE
         self.selected_acquisition: Acquisition = None
         self.selected_metals: Set[str] = set()
@@ -70,10 +70,10 @@ class Data(HubListener):
         self.selected_acquisition = message.acquisition
         self.broadcast_channel_images_changed()
 
-    def _find_color(self):
+    def _find_color(self, selected_colors):
         colors = Color.__members__.values()
         for c in colors:
-            if c not in self._metal_color_map.values():
+            if c not in selected_colors:
                 return c
 
     def _on_selected_metals_changed(self, message: SelectedMetalsChangedMessage) -> None:
@@ -82,9 +82,10 @@ class Data(HubListener):
         self._metal_color_map.clear()
         for metal in self.selected_metals:
             if metal in previous_metal_color_map:
-                self._metal_color_map[metal] = previous_metal_color_map[metal]
+                color = previous_metal_color_map[metal]
             else:
-                self._metal_color_map[metal] = self._find_color()
+                color = self._find_color(previous_metal_color_map.values())
+            self._metal_color_map[metal] = color
         self.broadcast_channel_images_changed()
 
     def load_workspace(self, path: str) -> None:
