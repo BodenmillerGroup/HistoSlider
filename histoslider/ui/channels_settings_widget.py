@@ -1,3 +1,4 @@
+from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QWidget, QVBoxLayout
 
 from histoslider.core.message import ChannelImagesChangedMessage
@@ -10,6 +11,7 @@ class ChannelsSettingsWidget(QWidget):
         self.blend_view = blend_view
 
         layout = QVBoxLayout()
+        layout.setAlignment(Qt.AlignTop)
         layout.setContentsMargins(0, 0, 0, 0)
         layout.setSpacing(0)
         self.setLayout(layout)

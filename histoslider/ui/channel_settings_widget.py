@@ -10,6 +10,8 @@ class ChannelSettingsWidget(QGroupBox):
         self.image_item = image_item
         self.blend_view = blend_view
 
+        self.setMaximumHeight(60)
+
         layout = QVBoxLayout()
         self.setLayout(layout)
         layout.setContentsMargins(0, 0, 0, 0)

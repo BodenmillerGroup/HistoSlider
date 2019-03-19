@@ -18,9 +18,16 @@ __version__ = "0.1.1"
   - ticks
 
 """
+import sys
+
 from PyQt5 import QtCore
 from PyQt5.QtWidgets import QGridLayout, QSplitter, QGroupBox, QApplication, QHBoxLayout, QWidget
-from PyQt5.QtGui import QPainter, QColor, QFont
+from PyQt5.QtGui import QPainter, QColor, QFont, QResizeEvent
+
+try:
+    _fromUtf8 = QtCore.QString.fromUtf8
+except AttributeError:
+    _fromUtf8 = lambda s: s
 
 __all__ = ['QRangeSlider']
 
@@ -64,27 +71,27 @@ class Ui_Form(object):
     """default range slider form"""
 
     def setupUi(self, Form):
-        Form.setObjectName("QRangeSlider")
+        Form.setObjectName(_fromUtf8("QRangeSlider"))
         Form.resize(300, 30)
-        Form.setStyleSheet(DEFAULT_CSS)
+        Form.setStyleSheet(_fromUtf8(DEFAULT_CSS))
         self.gridLayout = QGridLayout(Form)
         self.gridLayout.setContentsMargins(0, 0, 0, 0)
         self.gridLayout.setSpacing(0)
-        self.gridLayout.setObjectName("gridLayout")
+        self.gridLayout.setObjectName(_fromUtf8("gridLayout"))
         self._splitter = QSplitter(Form)
         self._splitter.setMinimumSize(QtCore.QSize(0, 0))
         self._splitter.setMaximumSize(QtCore.QSize(16777215, 16777215))
         self._splitter.setOrientation(QtCore.Qt.Horizontal)
-        self._splitter.setObjectName("splitter")
+        self._splitter.setObjectName(_fromUtf8("splitter"))
         self._head = QGroupBox(self._splitter)
-        self._head.setTitle("")
-        self._head.setObjectName("Head")
+        self._head.setTitle(_fromUtf8(""))
+        self._head.setObjectName(_fromUtf8("Head"))
         self._handle = QGroupBox(self._splitter)
-        self._handle.setTitle("")
-        self._handle.setObjectName("Span")
+        self._handle.setTitle(_fromUtf8(""))
+        self._handle.setObjectName(_fromUtf8("Span"))
         self._tail = QGroupBox(self._splitter)
-        self._tail.setTitle("")
-        self._tail.setObjectName("Tail")
+        self._tail.setTitle(_fromUtf8(""))
+        self._tail.setObjectName(_fromUtf8("Tail"))
         self.gridLayout.addWidget(self._splitter, 0, 0, 1, 1)
 
         QtCore.QMetaObject.connectSlotsByName(Form)
@@ -95,7 +102,6 @@ class Element(QGroupBox):
     def __init__(self, parent, main):
         super(Element, self).__init__(parent)
         self.main = main
-        __textColor = QColor(125, 125, 125)
 
     def setStyleSheet(self, style):
         """redirect style to parent groupbox"""
@@ -103,7 +109,7 @@ class Element(QGroupBox):
 
     def textColor(self):
         """text paint color"""
-        return self.__textColor
+        return getattr(self, '__textColor', QColor(125, 125, 125))
 
     def setTextColor(self, color):
         """set the text paint color"""
@@ -111,7 +117,7 @@ class Element(QGroupBox):
             color = QColor(color[0], color[1], color[2])
         elif type(color) == int:
             color = QColor(color, color, color)
-        self.__textColor = color
+        setattr(self, '__textColor', color)
 
     def paintEvent(self, event):
         """overrides paint event to handle text"""
@@ -151,7 +157,6 @@ class Handle(Element):
 
     def __init__(self, parent, main):
         super(Handle, self).__init__(parent, main)
-        self.__mx = None
 
     def drawText(self, event, qp):
         qp.setPen(self.textColor())
@@ -162,12 +167,12 @@ class Handle(Element):
     def mouseMoveEvent(self, event):
         event.accept()
         mx = event.globalX()
-        _mx = self.__mx
+        _mx = getattr(self, '__mx', None)
         vrange = self.main.max() - self.main.min()
         size = self.main.width()
         step = vrange/size
         if not _mx:
-            self.__mx = mx
+            setattr(self, '__mx', mx)
             dx = 0
         else:
             dx = mx - _mx
@@ -176,7 +181,7 @@ class Handle(Element):
             event.ignore()
             return
         dx = round(dx)
-        self.__mx = mx
+        setattr(self, '__mx', mx)
 
         s = self.main.start() + dx
         e = self.main.end() + dx
@@ -184,7 +189,7 @@ class Handle(Element):
             self.main.setRange(s, e)
 
     def mousePressEvent(self, event):
-        self.__mx = event.globalX()
+        setattr(self, '__mx', event.globalX())
 
 
 class QRangeSlider(QWidget, Ui_Form):
@@ -290,30 +295,30 @@ class QRangeSlider(QWidget, Ui_Form):
         self._tail_layout.addWidget(self.tail)
 
         # defaults
-        self.__min = 0
-        self.__max = 99
-        self.__start = 0
-        self.__end = 99
-        self.__drawValues = True
+        self.setMin(0)
+        self.setMax(99)
+        self.setStart(0)
+        self.setEnd(99)
+        self.setDrawValues(True)
 
     def min(self):
         """:return: minimum value"""
-        return self.__min
+        return getattr(self, '__min', None)
 
     def max(self):
         """:return: maximum value"""
-        return self.__max
+        return getattr(self, '__max', None)
 
     def setMin(self, value):
         """sets minimum value"""
         assert type(value) is int
-        self.__min = value
+        setattr(self, '__min', value)
         self.minValueChanged.emit(value)
 
     def setMax(self, value):
         """sets maximum value"""
         assert type(value) is int
-        self.__max = value
+        setattr(self, '__max', value)
         self.maxValueChanged.emit(value)
 
     def start(self):
@@ -439,3 +444,15 @@ class QRangeSlider(QWidget, Ui_Form):
         _unlockWidth(self._tail)
         _unlockWidth(self._head)
         _unlockWidth(self._handle)
+
+
+if __name__ == '__main__':
+    app = QApplication(sys.argv)
+    rs = QRangeSlider()
+    rs.show()
+    rs.setRange(15, 35)
+    rs.setBackgroundStyle(
+        'background: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 #222, stop:1 #333);')
+    rs.handle.setStyleSheet(
+        'background: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 #282, stop:1 #393);')
+    app.exec_()
