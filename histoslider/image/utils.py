@@ -40,7 +40,7 @@ def apply_mask(image: np.ndarray, mask: np.ndarray):
     blue_mask = cv2.bitwise_and(img, img, mask=mask)
     # im_color = cv2.applyColorMap(mask, cv2.COLORMAP_JET)
     # result = cv2.add(image, blue_mask)
-    result = cv2.addWeighted(image, 0.8, blue_mask, 0.2, 0)
+    result = cv2.addWeighted(blue_mask, 0.2, image, 0.8, 0)
     return result
 
 

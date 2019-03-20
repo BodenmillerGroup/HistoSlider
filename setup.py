@@ -5,8 +5,15 @@ from subprocess import check_call
 from setuptools import setup, find_packages, Command
 from setuptools.command.sdist import sdist
 
-requirements = ['PyQt5', 'numpy', 'psutil', 'pyqtgraph', 'scikit-image', 'opencv-python']
-extra_requirements = {
+install_requires = [
+    'PyQt5',
+    'numpy',
+    'psutil',
+    'scikit-image',
+    'opencv-python'
+]
+
+extras_require = {
     'dev': [
         'pytest',
         'pyqt-distutils',
@@ -14,6 +21,11 @@ extra_requirements = {
         'flake8'
     ]
 }
+
+dependency_links=[
+    'git+https://github.com/pyqtgraph/pyqtgraph',
+    'git+https://github.com/BodenmillerGroup/imctools.git'
+]
 
 cmdclass = {}
 
@@ -72,8 +84,9 @@ setup(name='histoslider',
       author_email='anton.rau@uzh.ch',
       license='MIT',
       url='https://github.com/plankter/histoslider',
-      install_requires=requirements,
-      extras_require=extra_requirements,
+      install_requires=install_requires,
+      extras_require=extras_require,
+      dependency_links=dependency_links,
       entry_points={
           'gui_scripts': ['histoslider=histoslider.__main__:main'],
       },

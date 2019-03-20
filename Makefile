@@ -30,3 +30,6 @@ build:
 
 install: clean ## install the package to the active Python's site-packages
 	python setup.py install
+
+setup:
+	pyinstaller setup/histoslider.spec

@@ -147,4 +147,4 @@ class Ui_MainWindow(object):
         self.actionImportMask.setToolTip(_translate("MainWindow", "Import mask..."))
 
 
-import resources_rc
+import histoslider.resources_rc

@@ -11,7 +11,7 @@ class MaskLoader(Loader):
     @classmethod
     def load(cls, mask: Mask) -> Mask:
         path = mask.path
-        image = imread(path, plugin='pil')
+        image = imread(path)
         mask._image = image
         meta = dict()
         meta['MaxX'] = image.shape[1]
