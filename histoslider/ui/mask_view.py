@@ -1,12 +1,6 @@
-from typing import List
-
-import cv2
 from PyQt5.QtWidgets import QWidget
-from pyqtgraph import ImageView, ScaleBar
+from pyqtgraph import ImageView
 
-from histoslider.core.manager import Manager
-from histoslider.image.channel_image_item import ChannelImageItem
-from histoslider.image.utils import scale_image
 from histoslider.models.mask import Mask
 
 

@@ -10,7 +10,7 @@ from histoslider.core.hub import Hub
 from histoslider.core.hub_listener import HubListener
 from histoslider.core.message import SelectedAcquisitionChangedMessage, \
     SlideImportedMessage, SlideLoadedMessage, SlideUnloadedMessage, SlideRemovedMessage, ViewModeChangedMessage, \
-    SelectedMetalsChangedMessage, BlendModeChangedMessage, ChannelImagesChangedMessage
+    SelectedMetalsChangedMessage, BlendModeChangedMessage, ChannelImagesChangedMessage, SelectedMaskChangedMessage
 from histoslider.core.view_mode import ViewMode
 from histoslider.image.channel_image_item import ChannelImageItem
 from histoslider.image.mask_type import MaskType
@@ -35,13 +35,17 @@ class Data(HubListener):
 
         self.blend_mode = "Weighted"
         self.view_mode = ViewMode.GREYSCALE
+
         self.selected_acquisition: Acquisition = None
         self.selected_metals: Set[str] = set()
+
+        self.selected_mask: Mask = None
 
         self._metal_color_map: Dict[str, Color] = dict()
 
     def register_to_hub(self, hub):
         hub.subscribe(self, SelectedAcquisitionChangedMessage, self._on_selected_acquisition_changed)
+        hub.subscribe(self, SelectedMaskChangedMessage, self._on_selected_mask_changed)
         hub.subscribe(self, SelectedMetalsChangedMessage, self._on_selected_metals_changed)
         hub.subscribe(self, ViewModeChangedMessage, self._on_view_mode_changed)
         hub.subscribe(self, BlendModeChangedMessage, self._on_blend_mode_changed)
@@ -72,6 +76,11 @@ class Data(HubListener):
             return
         self.selected_acquisition = message.acquisition
         self.broadcast_channel_images_changed()
+
+    def _on_selected_mask_changed(self, message: SelectedMaskChangedMessage) -> None:
+        if self.selected_mask is message.mask:
+            return
+        self.selected_mask = message.mask
 
     def _find_color(self, selected_colors):
         colors = Color.__members__.values()
