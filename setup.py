@@ -71,7 +71,7 @@ class bdist_app(Command):
 
     def run(self):
         self.run_command('build_res')
-        check_call(['pyinstaller', '-y', 'histoslider.spec'])
+        check_call(['pyinstaller', '-y', 'setup/histoslider.spec'])
 
 
 cmdclass['bdist_app'] = bdist_app
@@ -79,11 +79,11 @@ cmdclass['bdist_app'] = bdist_app
 setup(name='histoslider',
       version="0.1.0",
       packages=find_packages(),
-      description='HistoSlider Application',
+      description='HistoSlider viewer app',
       author='Anton Rau',
       author_email='anton.rau@uzh.ch',
       license='MIT',
-      url='https://github.com/plankter/histoslider',
+      url='https://github.com/BodenmillerGroup/HistoSlider',
       install_requires=install_requires,
       extras_require=extras_require,
       dependency_links=dependency_links,
