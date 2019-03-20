@@ -1,9 +1,12 @@
+import sys
+
 from PyQt5.QtCore import QFile, QTextStream
 from PyQt5.QtGui import QIcon, QPixmapCache
 from PyQt5.QtWidgets import QApplication
 from pyqtgraph import setConfigOptions
 
 from histoslider.core.manager import Manager
+from histoslider.ui.main_window import MainWindow
 
 # Global PyQtGraph settings
 setConfigOptions(
@@ -20,6 +23,7 @@ setConfigOptions(
 class App(QApplication):
     def __init__(self, args):
         QApplication.__init__(self, args)
+        self.setStyle('Fusion')
         self.setOrganizationName("UZH Zurich")
         self.setOrganizationDomain("http://www.bodenmillerlab.org")
         self.setApplicationName("HistoSlider")
@@ -35,3 +39,12 @@ class App(QApplication):
 
         # DataManager singleton initialization
         Manager()
+
+
+def main():
+    app = App(sys.argv)
+
+    mw = MainWindow()
+    mw.show()
+
+    sys.exit(app.exec_())

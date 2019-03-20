@@ -18,13 +18,8 @@ dependencies:
     - PyQt5
     - numpy
     - psutil
-    - pytest
-    - pyqt-distutils
-    - PyInstaller
-    - flake8
     - scikit-image
-    - opencv-python
-    - qimage2ndarray
+    - opencv-python-headless
     - git+https://github.com/pyqtgraph/pyqtgraph
     - git+https://github.com/BodenmillerGroup/imctools.git
     - git+https://github.com/BodenmillerGroup/HistoSlider.git

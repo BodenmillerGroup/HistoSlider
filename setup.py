@@ -10,19 +10,12 @@ install_requires = [
     'numpy',
     'psutil',
     'scikit-image',
-    'opencv-python'
+    'opencv-python-headless',
+    'imctools',
+    'pyqtgraph>=0.11'
 ]
 
-extras_require = {
-    'dev': [
-        'pytest',
-        'pyqt-distutils',
-        'PyInstaller',
-        'flake8'
-    ]
-}
-
-dependency_links=[
+dependency_links = [
     'git+https://github.com/pyqtgraph/pyqtgraph',
     'git+https://github.com/BodenmillerGroup/imctools.git'
 ]
@@ -77,17 +70,19 @@ class bdist_app(Command):
 cmdclass['bdist_app'] = bdist_app
 
 setup(name='histoslider',
-      version="0.1.0",
+      version="0.0.1.dev1",
       packages=find_packages(),
       description='HistoSlider viewer app',
       author='Anton Rau',
       author_email='anton.rau@uzh.ch',
       license='MIT',
       url='https://github.com/BodenmillerGroup/HistoSlider',
+      python_requires=">=3.7",
       install_requires=install_requires,
-      extras_require=extras_require,
       dependency_links=dependency_links,
       entry_points={
-          'gui_scripts': ['histoslider=histoslider.__main__:main'],
+          'gui_scripts': [
+              'histoslider = histoslider.app:main'
+          ]
       },
       cmdclass=cmdclass)

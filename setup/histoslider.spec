@@ -7,7 +7,7 @@ pathex = os.path.abspath(os.path.join(SPECPATH, '..'))
 block_cipher = None
 
 
-a = Analysis(['../bin/histoslider'],
+a = Analysis(['../histoslider/__main__.py'],
              pathex=[pathex],
              binaries=[],
              datas=[],

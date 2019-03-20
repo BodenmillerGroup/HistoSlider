@@ -1,16 +1,4 @@
-import sys
-
-from histoslider.app import App
-from histoslider.ui.main_window import MainWindow
-
-
-def main():
-    app = App(sys.argv)
-
-    mw = MainWindow()
-    mw.show()
-
-    sys.exit(app.exec_())
+from histoslider.app import main
 
 
 if __name__ == "__main__":

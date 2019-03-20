@@ -1,0 +1,9 @@
+# Contains requirements common to all environments
+
+PyQt5
+numpy
+psutil
+opencv-python-headless
+scikit-image
+git+https://github.com/pyqtgraph/pyqtgraph
+git+https://github.com/BodenmillerGroup/imctools.git

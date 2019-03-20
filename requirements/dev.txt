@@ -1,0 +1,8 @@
+# Specifies only dev-specific requirements, but imports the common ones too
+
+-r common.txt
+
+pyqt-distutils
+PyInstaller
+pytest
+flake8
