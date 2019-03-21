@@ -10,7 +10,7 @@ class BaseData:
         self.meta: dict = meta
 
         self._parent = None
-        self._children = []
+        self._children = list()
         self._row = 0
         self._checked = False
 

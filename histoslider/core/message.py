@@ -5,6 +5,7 @@ from histoslider.image.channel_image_item import ChannelImageItem
 from histoslider.models.acquisition import Acquisition
 from histoslider.models.base_data import BaseData
 from histoslider.models.channel import Channel
+from histoslider.models.mask import Mask
 
 
 class Message:
@@ -106,6 +107,15 @@ class SelectedAcquisitionChangedMessage(Message):
     def __init__(self, sender, acquisition: Acquisition, tag=None):
         Message.__init__(self, sender, tag=tag)
         self.acquisition = acquisition
+
+
+class SelectedMaskChangedMessage(Message):
+
+    """ Indicates that selected mask is changed """
+
+    def __init__(self, sender, mask: Mask, tag=None):
+        Message.__init__(self, sender, tag=tag)
+        self.mask = mask
 
 
 class SlideImportedMessage(Message):

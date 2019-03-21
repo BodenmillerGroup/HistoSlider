@@ -31,6 +31,9 @@ class BlendViewWidget(QWidget, HubListener):
         hub.subscribe(self, SlideRemovedMessage, self._on_slide_removed)
         hub.subscribe(self, SlideUnloadedMessage, self._on_slide_unloaded)
 
+    def notify(self, message):
+        pass
+
     def clear(self):
         self.blend_view.clear()
 
@@ -45,6 +48,9 @@ class BlendViewWidget(QWidget, HubListener):
 
     def _show_scale_bar(self, state: bool):
         self.blend_view.show_scale_bar(state)
+
+    def _show_mask(self, state: bool):
+        self.blend_view.set_show_mask(state)
 
     def _blend_current_text_changed(self, text: str):
         Manager.hub.broadcast(BlendModeChangedMessage(self, text))
@@ -70,5 +76,10 @@ class BlendViewWidget(QWidget, HubListener):
         show_scale_bar_action.triggered.connect(self._show_scale_bar)
         show_scale_bar_action.setCheckable(True)
         toolbar.addAction(show_scale_bar_action)
+
+        show_mask_action = QAction(QIcon(":/icons/icons8-ruler-16.png"), "Mask", self)
+        show_mask_action.triggered.connect(self._show_mask)
+        show_mask_action.setCheckable(True)
+        toolbar.addAction(show_mask_action)
 
         return toolbar

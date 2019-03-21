@@ -5,15 +5,20 @@ from subprocess import check_call
 from setuptools import setup, find_packages, Command
 from setuptools.command.sdist import sdist
 
-requirements = ['PyQt5', 'numpy', 'psutil', 'pyqtgraph', 'scikit-image', 'opencv-python']
-extra_requirements = {
-    'dev': [
-        'pytest',
-        'pyqt-distutils',
-        'PyInstaller',
-        'flake8'
-    ]
-}
+install_requires = [
+    'PyQt5',
+    'numpy',
+    'psutil',
+    'scikit-image',
+    'opencv-python-headless',
+    'imctools',
+    'pyqtgraph>=0.11'
+]
+
+dependency_links = [
+    'git+https://github.com/pyqtgraph/pyqtgraph',
+    'git+https://github.com/BodenmillerGroup/imctools.git'
+]
 
 cmdclass = {}
 
@@ -59,22 +64,25 @@ class bdist_app(Command):
 
     def run(self):
         self.run_command('build_res')
-        check_call(['pyinstaller', '-y', 'histoslider.spec'])
+        check_call(['pyinstaller', '-y', 'setup/histoslider.spec'])
 
 
 cmdclass['bdist_app'] = bdist_app
 
 setup(name='histoslider',
-      version="0.1.0",
+      version="0.0.1.dev1",
       packages=find_packages(),
-      description='HistoSlider Application',
+      description='HistoSlider viewer app',
       author='Anton Rau',
       author_email='anton.rau@uzh.ch',
       license='MIT',
-      url='https://github.com/plankter/histoslider',
-      install_requires=requirements,
-      extras_require=extra_requirements,
+      url='https://github.com/BodenmillerGroup/HistoSlider',
+      python_requires=">=3.7",
+      install_requires=install_requires,
+      dependency_links=dependency_links,
       entry_points={
-          'gui_scripts': ['histoslider=histoslider.__main__:main'],
+          'gui_scripts': [
+              'histoslider = histoslider.app:main'
+          ]
       },
       cmdclass=cmdclass)

@@ -21,6 +21,29 @@ def colorize(image: np.ndarray, color: Color):
     return image
 
 
+def colorize_mask(mask: np.ndarray, saturation=1):
+    unique_values = np.unique(mask)
+    hue_rotations = np.linspace(0, 360, len(unique_values), dtype=np.uint8)
+    rgb = cv2.cvtColor(mask, cv2.COLOR_GRAY2RGB)
+    hsv = cv2.cvtColor(rgb, cv2.COLOR_RGB2HSV)
+    hsv[:, :, 1] = saturation
+    hsv[:, :, 0] = hue_rotations[mask[:, :]]
+    return hue_rotations
+
+
+def apply_mask(image: np.ndarray, mask: np.ndarray):
+    # image = image.astype(np.uint8)
+    mask = mask.astype(np.uint8)
+    img = np.zeros(image.shape, image.dtype)
+    if len(img.shape) == 3:
+        img[:, :] = (0, 0, 255)
+    blue_mask = cv2.bitwise_and(img, img, mask=mask)
+    # im_color = cv2.applyColorMap(mask, cv2.COLORMAP_JET)
+    # result = cv2.add(image, blue_mask)
+    result = cv2.addWeighted(blue_mask, 0.2, image, 0.8, 0)
+    return result
+
+
 def hue_colorize(image: np.ndarray, hue, saturation=1):
     """ Add color of the given hue to an RGB image.
 

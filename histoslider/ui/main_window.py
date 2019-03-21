@@ -18,6 +18,7 @@ from histoslider.ui.channels_view_widget import ChannelsViewWidget
 from histoslider.ui.histograms_view import HistogramsView
 from histoslider.ui.info_widget import InfoWidget
 from histoslider.ui.main_window_ui import Ui_MainWindow
+from histoslider.ui.mask_view_widget import MaskViewWidget
 from histoslider.ui.origin_view_widget import OriginViewWidget
 from histoslider.ui.settings_widget import SettingsWidget
 from histoslider.ui.tiles_view_widget import TilesViewWidget
@@ -56,6 +57,9 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.blend_view_widget = BlendViewWidget(self)
         self.tabWidget.addTab(self.blend_view_widget, QIcon(":/icons/icons8-eukaryotic-cells-16.png"), "Blend")
 
+        self.mask_view_widget = MaskViewWidget(self)
+        self.tabWidget.addTab(self.mask_view_widget, QIcon(":/icons/icons8-eukaryotic-cells-16.png"), "Mask")
+
         self.tiles_view_widget = TilesViewWidget(self)
         self.tabWidget.addTab(self.tiles_view_widget, QIcon(":/icons/icons8-medium-icons-16.png"), "Tiles")
 
@@ -63,6 +67,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.verticalLayoutSettings.addWidget(self.settings_widget)
 
         self.actionImportSlide.triggered.connect(self.import_slide_dialog)
+        self.actionImportMask.triggered.connect(self.import_mask_dialog)
         self.actionOpenWorkspace.triggered.connect(self.load_workspace_dialog)
         self.actionSaveWorkspace.triggered.connect(self.save_workspace_dialog)
         self.actionExit.triggered.connect(lambda: QApplication.exit())
@@ -131,6 +136,23 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         )
         if file_path:
             self.import_slide(file_path)
+
+    def import_mask(self, file_path: str):
+        Manager.import_mask(file_path)
+
+    def import_mask_dialog(self):
+        options = QFileDialog.Options()
+        file_ext_strings = ["*.tiff", "*.tif"]
+        file_ext_string = " ".join(file_ext_strings)
+        file_path, _ = QFileDialog.getOpenFileName(
+            self,
+            "Select mask image to import",
+            "",
+            "Mask images ({});;".format(file_ext_string),
+            options=options,
+        )
+        if file_path:
+            self.import_mask(file_path)
 
     @property
     def okToQuit(self):
