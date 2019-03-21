@@ -16,9 +16,9 @@ class Manager:
         Manager.data = Data(Manager.hub)
 
         # TODO: test code that should be removed later
-        Manager.import_slide('/home/anton/Documents/Data/histocat_not_working/20190304_LC_FibroPanelTest_LungAdeno/2019ABTest.mcd')
-        Manager.load_slides([Manager.data.workspace_model.index(0, 0)])
-        Manager.import_mask('/home/anton/Documents/Data/20190218_Hiertest2/probabilities/BRCA_Trilogy_0_ROI_003_3_a0_ilastik_s2_Probabilities__mask.tiff')
+        # Manager.import_slide('/home/anton/Documents/Data/histocat_not_working/20190304_LC_FibroPanelTest_LungAdeno/2019ABTest.mcd')
+        # Manager.load_slides([Manager.data.workspace_model.index(0, 0)])
+        # Manager.import_mask('/home/anton/Documents/Data/20190218_Hiertest2/probabilities/BRCA_Trilogy_0_ROI_003_3_a0_ilastik_s2_Probabilities__mask.tiff')
 
     @staticmethod
     def load_workspace(path: str) -> None:
