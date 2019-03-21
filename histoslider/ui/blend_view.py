@@ -1,12 +1,12 @@
 from typing import List
 
 import cv2
-import numpy as np
 from PyQt5.QtWidgets import QWidget
 from pyqtgraph import ImageView, ScaleBar
 
 from histoslider.core.manager import Manager
 from histoslider.core.view_mode import ViewMode
+from histoslider.core.workers.worker import Worker
 from histoslider.image.channel_image_item import ChannelImageItem
 from histoslider.image.utils import scale_image, apply_mask
 
@@ -44,13 +44,7 @@ class BlendView(ImageView):
                 image = scale_image(item.image, item.channel.settings.max, item.channel.settings.levels)
                 blend_image = cv2.addWeighted(blend_image, 0.5, image, 0.5, 0.0) if Manager.data.blend_mode == 'Weighted' else cv2.add(blend_image, image)
                 levels.append(item.channel.settings.levels)
-        if self._show_mask and Manager.data.selected_mask is not None:
-            mask_image = Manager.data.selected_mask.image
-            # if Manager.data.view_mode is ViewMode.RGB:
-            #     mask_image = cv2.cvtColor(mask_image, cv2.COLOR_GRAY2RGB)
-            # if mask_image.shape == blend_image.shape:
-                # blend_image = cv2.addWeighted(blend_image, 0.8, mask_image, 0.2, 0.0) if Manager.data.blend_mode == 'Weighted' else cv2.add(blend_image, mask_image)
-            blend_image = apply_mask(blend_image, mask_image)
+
         self.setImage(blend_image, autoHistogramRange=False, autoRange=False)
         self.setLevels(*max(levels))
 
@@ -63,6 +57,34 @@ class BlendView(ImageView):
         else:
             self.scale.hide()
 
-    def set_show_mask(self, state: bool):
+    def progress_fn(self, n):
+        print("%d%% done" % n)
+
+    def process_result(self, result):
+        print("PROCESS RESULTS!")
+        if self._show_mask:
+            self.setImage(result, autoHistogramRange=True, autoRange=False)
+
+    def thread_complete(self):
+        print("THREAD COMPLETE!")
+
+    def show_mask(self, state: bool):
         self._show_mask = state
-        self.refresh_images()
+        if not state:
+            self.refresh_images()
+            return
+
+        if Manager.data.selected_mask is None or Manager.data.view_mode is ViewMode.GREYSCALE:
+            return
+
+        mask = Manager.data.selected_mask.image
+        blend_image = self.getImageItem().image
+
+        # Pass the function to execute
+        worker = Worker(apply_mask, image=blend_image, mask=mask)  # Any other args, kwargs are passed to the run function
+        worker.signals.result.connect(self.process_result)
+        worker.signals.finished.connect(self.thread_complete)
+        worker.signals.progress.connect(self.progress_fn)
+
+        # Execute
+        Manager.threadpool.start(worker)

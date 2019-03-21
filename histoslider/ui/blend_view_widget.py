@@ -50,7 +50,7 @@ class BlendViewWidget(QWidget, HubListener):
         self.blend_view.show_scale_bar(state)
 
     def _show_mask(self, state: bool):
-        self.blend_view.set_show_mask(state)
+        self.blend_view.show_mask(state)
 
     def _blend_current_text_changed(self, text: str):
         Manager.hub.broadcast(BlendModeChangedMessage(self, text))

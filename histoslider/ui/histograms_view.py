@@ -1,8 +1,6 @@
 from pyqtgraph import GraphicsView, GraphicsLayout
 
-from histoslider.core.hub_listener import HubListener
-from histoslider.core.manager import Manager
-from histoslider.core.message import ChannelImagesChangedMessage, SlideRemovedMessage, SlideUnloadedMessage
+from histoslider.core.message import ChannelImagesChangedMessage
 from histoslider.ui.histogram_view import HistogramView
 
 
@@ -22,3 +20,4 @@ class HistogramsView(GraphicsView):
         for item in message.images:
             histogram_view = HistogramView(item, self.blend_view)
             self.layout.addItem(histogram_view)
+            self.layout.nextRow()
