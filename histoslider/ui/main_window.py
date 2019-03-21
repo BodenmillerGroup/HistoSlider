@@ -18,6 +18,7 @@ from histoslider.ui.channels_view_widget import ChannelsViewWidget
 from histoslider.ui.info_widget import InfoWidget
 from histoslider.ui.main_window_ui import Ui_MainWindow
 from histoslider.ui.mask_view_widget import MaskViewWidget
+from histoslider.ui.merge_view_widget import MergeViewWidget
 from histoslider.ui.settings_widget import SettingsWidget
 from histoslider.ui.tiles_view_widget import TilesViewWidget
 from histoslider.ui.workspace_tree_view import WorkspaceTreeView
@@ -51,6 +52,9 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
         self.blend_view_widget = BlendViewWidget(self)
         self.tabWidget.addTab(self.blend_view_widget, QIcon(":/icons/icons8-eukaryotic-cells-16.png"), "Blend")
+
+        self.merge_view_widget = MergeViewWidget(self)
+        self.tabWidget.addTab(self.merge_view_widget, QIcon(":/icons/icons8-eukaryotic-cells-16.png"), "Merge")
 
         self.mask_view_widget = MaskViewWidget(self)
         self.tabWidget.addTab(self.mask_view_widget, QIcon(":/icons/icons8-eukaryotic-cells-16.png"), "Mask")

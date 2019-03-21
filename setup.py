@@ -11,6 +11,7 @@ install_requires = [
     'psutil',
     'scikit-image',
     'opencv-python-headless',
+    'qimage2ndarray',
     'imctools',
     'pyqtgraph>=0.11'
 ]
