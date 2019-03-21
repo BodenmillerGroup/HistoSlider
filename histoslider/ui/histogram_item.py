@@ -29,7 +29,7 @@ class HistogramItem(GraphicsWidget):
     sigLevelsChanged = pyqtSignal(object)
     sigLevelChangeFinished = pyqtSignal(object)
 
-    def __init__(self, image=None, fillHistogram=True, bounds: tuple = None, label = None):
+    def __init__(self, image=None, fillHistogram=True, bounds: tuple = None):
         GraphicsWidget.__init__(self)
         self.imageItem = lambda: None  # fake a dead weakref
 
@@ -38,7 +38,7 @@ class HistogramItem(GraphicsWidget):
         self.layout.setContentsMargins(1, 1, 1, 1)
         self.layout.setSpacing(0)
         self.vb = ViewBox(parent=self)
-        # self.vb.setMaximumWidth(152)
+        # self.vb.setMaximumHeight(152)
         # self.vb.setMinimumWidth(45)
         self.vb.setMouseEnabled(x=True, y=False)
 
@@ -51,7 +51,6 @@ class HistogramItem(GraphicsWidget):
         self.region.sigRegionChangeFinished.connect(self.regionChanged)
 
         self.axis = AxisItem('bottom', linkView=self.vb, maxTickLength=-10, parent=self)
-        self.axis.setLabel(label)
         self.layout.addItem(self.axis, 1, 0)
         self.layout.addItem(self.vb, 0, 0)
         self.range = None
@@ -115,7 +114,7 @@ class HistogramItem(GraphicsWidget):
         self.sigLevelsChanged.emit(self)
         self.update()
 
-    def imageChanged(self, autoLevel=False, autoRange=False):
+    def imageChanged(self, autoLevel=False):
         if self.imageItem() is None:
             return
 

@@ -70,7 +70,7 @@ class bdist_app(Command):
 cmdclass['bdist_app'] = bdist_app
 
 setup(name='histoslider',
-      version="0.0.1.dev1",
+      version="0.0.1.dev2",
       packages=find_packages(),
       description='HistoSlider viewer app',
       author='Anton Rau',
