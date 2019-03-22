@@ -62,7 +62,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.tiles_view_widget = TilesViewWidget(self)
         self.tabWidget.addTab(self.tiles_view_widget, QIcon(":/icons/icons8-medium-icons-16.png"), "Tiles")
 
-        self.settings_widget = SettingsWidget(self.dockWidgetContentsSettings, self.blend_view_widget.blend_view)
+        self.settings_widget = SettingsWidget(self.dockWidgetContentsSettings, self.merge_view_widget.merge_view)
         self.verticalLayoutSettings.addWidget(self.settings_widget)
 
         self.actionImportSlide.triggered.connect(self.import_slide_dialog)

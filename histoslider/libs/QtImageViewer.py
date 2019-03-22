@@ -38,8 +38,8 @@ class QtImageViewer(QGraphicsView):
     leftMouseButtonDoubleClicked = pyqtSignal(float, float)
     rightMouseButtonDoubleClicked = pyqtSignal(float, float)
 
-    def __init__(self):
-        QGraphicsView.__init__(self)
+    def __init__(self, parent):
+        QGraphicsView.__init__(self, parent)
 
         # Image is displayed as a QPixmap in a QGraphicsScene attached to this QGraphicsView.
         self.scene = QGraphicsScene()
