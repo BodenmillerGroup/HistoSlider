@@ -3,7 +3,6 @@ from __future__ import annotations
 import numpy as np
 from PyQt5.QtGui import QIcon
 from numpy.core.multiarray import ndarray
-from pyqtgraph import makeARGB
 
 from histoslider.image.channel_settings import ChannelSettings
 from histoslider.image.utils import scale_image

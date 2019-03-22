@@ -5,5 +5,6 @@ numpy
 psutil
 opencv-python-headless
 scikit-image
+qimage2ndarray
 git+https://github.com/pyqtgraph/pyqtgraph
 git+https://github.com/BodenmillerGroup/imctools.git
