@@ -1,14 +1,13 @@
-from inspect import getmembers, isfunction
+from inspect import getmembers
 
 from PyQt5.QtCore import Qt
-from PyQt5.QtGui import QIcon
+from PyQt5.QtGui import QIcon, QPainter
 from PyQt5.QtWidgets import QWidget, QVBoxLayout, QToolBar, QAction, QLabel, QComboBox
 
 from histoslider.core.hub_listener import HubListener
 from histoslider.core.manager import Manager
 from histoslider.core.message import SlideRemovedMessage, SlideUnloadedMessage, \
-    BlendModeChangedMessage, ChannelImagesChangedMessage
-from histoslider.libs import blend_modes
+    ChannelImagesChangedMessage
 from histoslider.ui.blend_view import BlendView
 
 
@@ -50,7 +49,7 @@ class BlendViewWidget(QWidget, HubListener):
         self.blend_view.show_mask(state)
 
     def _blend_current_text_changed(self, text: str):
-        Manager.hub.broadcast(BlendModeChangedMessage(self, text))
+        self.blend_view.set_blend_mode(text)
 
     @property
     def toolbar(self) -> QToolBar:
@@ -61,9 +60,9 @@ class BlendViewWidget(QWidget, HubListener):
         toolbar.addWidget(label)
 
         blend_combo_box = QComboBox()
-        # functions_list = [o for o in getmembers(blend_modes) if isfunction(o[1]) and not o[0].startswith('_')]
-        # blend_combo_box.addItems([f[0] for f in functions_list])
-        blend_combo_box.addItems(['Weighted', 'Add'])
+        modes_list = [o for o in getmembers(QPainter) if o[0].startswith('CompositionMode_')]
+        blend_combo_box.addItems([f[0].replace('CompositionMode_', '') for f in modes_list])
+        blend_combo_box.setCurrentText('Screen')
         blend_combo_box.currentTextChanged.connect(self._blend_current_text_changed)
         toolbar.addWidget(blend_combo_box)
 
