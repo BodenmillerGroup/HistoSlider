@@ -2,24 +2,19 @@ name: histoslider
 channels:
   - defaults
 dependencies:
-  - ca-certificates
-  - certifi
-  - openssl
   - git
   - pip
   - python=3.7
   - setuptools
-  - sqlite
   - tk
   - wheel
-  - xz
-  - zlib
   - pip:
     - PyQt5
     - numpy
     - psutil
     - scikit-image
     - opencv-python-headless
+    - qimage2ndarray
     - git+https://github.com/pyqtgraph/pyqtgraph
     - git+https://github.com/BodenmillerGroup/imctools.git
     - git+https://github.com/BodenmillerGroup/HistoSlider.git

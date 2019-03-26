@@ -3,7 +3,7 @@
 SOURCE_DIR = histoslider
 
 init:
-	pip install -e .[dev] .
+	pip install -r requirements/dev.txt
 
 clean: ## remove all build, test, coverage and Python artifacts
 	rm -fr build/
@@ -14,7 +14,7 @@ clean: ## remove all build, test, coverage and Python artifacts
 	find $(SOURCE_DIR) -name '*_rc.py' -exec rm -f {} +
 
 lint: ## check style with flake8
-	flake8 $(SOURCE_DIR) tests
+	flake8
 
 test: ## run tests quickly with the default Python
 	py.test
@@ -31,5 +31,5 @@ build:
 install: clean ## install the package to the active Python's site-packages
 	python setup.py install
 
-setup:
+create_setup:
 	pyinstaller setup/histoslider.spec
